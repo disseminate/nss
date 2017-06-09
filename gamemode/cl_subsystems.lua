@@ -1,0 +1,2 @@
+GM.Subsystems = RequireDir( "subsystems" );
+
