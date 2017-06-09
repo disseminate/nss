@@ -60,6 +60,11 @@ function GM:HUDPaintResources()
 		surface.DrawRect( x, y, 170, py );
 
 		surface.SetDrawColor( self:GetSkin().COLOR_STATUS_GOOD );
+		if( k % 3 == 1 ) then
+			surface.SetDrawColor( self:GetSkin().COLOR_STATUS_DANGER );
+		elseif( k % 3 == 2 ) then
+			surface.SetDrawColor( self:GetSkin().COLOR_STATUS_DESTROYED );
+		end
 		surface.DrawRect( x + ( ( py - sh ) / 2 ), y + ( ( py - sh ) / 2 ), sh, sh );
 
 		local text = v[1];
