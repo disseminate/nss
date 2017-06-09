@@ -1,0 +1,7 @@
+"Need Some Space"
+{
+	"base"			"base"
+	"title"			"Need Some Space"
+	"menusystem" 	"1"
+	"maps"			"^nss_"
+}
