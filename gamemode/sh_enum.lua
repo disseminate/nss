@@ -2,6 +2,12 @@ STATE_PREGAME = 0;
 STATE_GAME = 1;
 STATE_POSTGAME = 2;
 
+STATE_TIMES = {
+	[STATE_PREGAME] = 10,
+	[STATE_GAME] = 600,
+	[STATE_POSTGAME] = 30
+};
+
 SUBSYSTEMS = {
 	{ "ELE", "Electrical" },
 	{ "OXY", "Oxygen" },

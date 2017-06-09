@@ -23,7 +23,15 @@ end
 
 function GM:HUDPaintTime()
 
-	local text = string.ToMinutesSecondsMilliseconds( 500.134 );
+	local text;
+	local text2 = " / " .. string.ToMinutesSeconds( STATE_TIMES[self.State] );
+	if( self.State == STATE_PREGAME ) then
+		text = string.ToMinutesSeconds( self.NextStateChange - CurTime() );
+	elseif( self.State == STATE_GAME ) then
+ 		text = string.ToMinutesSeconds( STATE_TIMES[self.State] - ( self.NextStateChange - CurTime() ) );
+	else
+		text = string.ToMinutesSeconds( self.NextStateChange - CurTime() );
+	end
 
 	surface.SetFont( "NSS Title 48" );
 
@@ -33,15 +41,13 @@ function GM:HUDPaintTime()
 	surface.SetTextPos( ScrW() / 2 - w / 2, 40 );
 	surface.DrawText( text );
 
-	local text = " / 10:00:00";
-
 	surface.SetFont( "NSS Title 32" );
 
-	local w2, h2 = surface.GetTextSize( text );
+	local w2, h2 = surface.GetTextSize( text2 );
 
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE_TRANS );
 	surface.SetTextPos( ScrW() / 2 + w / 2 + 10, 40 );
-	surface.DrawText( text );
+	surface.DrawText( text2 );
 
 end
 
