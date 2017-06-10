@@ -1,12 +1,17 @@
 local meta = FindMetaTable( "Player" );
 
-GM.StateCycleStart = GM.StateCycleStart or CurTime();
+function GM:ResetState()
+
+	self.StateCycleStart = CurTime();
+	self.CacheState = nil;
+
+	self:BroadcastState();
+
+end
 
 function GM:StateThink()
 	
-	if( !self.StateCycleStart ) then
-		self.StateCycleStart = CurTime();
-	end
+	if( #player.GetJoined() == 0 ) then return end
 
 	if( self:GetState() != self.CacheState ) then
 		self.CacheState = self:GetState();
@@ -24,6 +29,8 @@ end
 
 function GM:BroadcastState()
 
+	if( !self.StateCycleStart ) then return end
+	
 	net.Start( "nReceiveState" );
 		net.WriteFloat( self.StateCycleStart );
 	net.Broadcast();
@@ -32,6 +39,8 @@ end
 util.AddNetworkString( "nReceiveState" );
 
 function meta:SendState()
+
+	if( !GAMEMODE.StateCycleStart ) then return end
 
 	net.Start( "nReceiveState" );
 		net.WriteFloat( GAMEMODE.StateCycleStart );

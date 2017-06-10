@@ -1,4 +1,4 @@
-local titleSizes = { 20, 24, 32, 48, 64 };
+local titleSizes = { 20, 24, 32, 48, 64, 100, 128 };
 local textSizes = { 12, 14, 16, 18, 20, 24, 32 };
 
 for _, v in pairs( titleSizes ) do

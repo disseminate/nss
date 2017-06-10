@@ -1,6 +1,7 @@
-GM.Subsystems = RequireDir( "subsystems" );
-
 function GM:SubsystemThink()
+
+	if( #player.GetJoined() == 0 ) then return end
+	if( self:GetState() != STATE_GAME ) then return end
 
 	if( !self.NextDamage or CurTime() >= self.NextDamage ) then
 
@@ -8,6 +9,35 @@ function GM:SubsystemThink()
 		self:DeploySubsystemFault();
 
 	end
+
+end
+
+function GM:SetSubsystemState( id, state )
+
+	self.SubsystemStates[id] = state;
+
+	net.Start( "nSetSubsystemState" );
+		net.WriteString( id );
+		net.WriteUInt( state, 2 );
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nSetSubsystemState" );
+
+function GM:GetUnaffectedSubsystems()
+
+	local tab = { };
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self:GetSubsystemState( k ) == SUBSYSTEM_STATE_GOOD ) then
+
+			table.insert( tab, k );
+
+		end
+
+	end
+
+	return tab;
 
 end
 
@@ -25,10 +55,14 @@ function GM:DeploySubsystemFault()
 
 	end
 
-	local t = table.Random( tab );
-	if( t ) then
+	local ssTab = self:GetUnaffectedSubsystems();
 
-		t:SelectRandomProblem();
+	local t = table.Random( tab );
+	local ss = table.Random( ssTab );
+	if( t and ss ) then
+
+		t:SelectProblem( ss );
+		self:SetSubsystemState( ss, SUBSYSTEM_STATE_DANGER );
 
 	end
 

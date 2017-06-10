@@ -48,12 +48,35 @@ end
 
 function GM:HUDPaint()
 
-	self:HUDPaintTime();
-	self:HUDPaintSubsystems();
+	if( !LocalPlayer().Joined ) then
+		self:HUDPaintNotJoined();
+	else
+		self:HUDPaintTime();
+		self:HUDPaintSubsystems();
+	end
+
+end
+
+function GM:HUDPaintNotJoined()
+
+	if( !LocalPlayer().Joined ) then
+		
+		surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
+		surface.DrawRect( 0, 0, ScrW(), 50 );
+		surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
+
+		surface.SetFont( "NSS Title 100" );
+		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+		surface.SetTextPos( 100, 100 );
+		surface.DrawText( "Need Some Space" );
+
+	end
 
 end
 
 function GM:HUDPaintTime()
+
+	if( #player.GetJoined() == 0 ) then return end
 
 	local state = self:GetState();
 	local timeLeft = self:TimeLeftInState();
@@ -61,12 +84,12 @@ function GM:HUDPaintTime()
 	local text2 = " / " .. string.ToMinutesSeconds( STATE_TIMES[state] );
 	local col = self:GetSkin().COLOR_WHITE;
 	if( state == STATE_PREGAME ) then
-		text = string.ToMinutesSeconds( timeLeft );
+		text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
 		col = self:GetSkin().COLOR_GRAY;
 	elseif( state == STATE_GAME ) then
  		text = string.ToMinutesSeconds( STATE_TIMES[state] - timeLeft );
 	else
-		text = string.ToMinutesSeconds( timeLeft );
+		text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
 		col = self:GetSkin().COLOR_GRAY;
 	end
 
@@ -103,10 +126,13 @@ function GM:HUDPaintSubsystems()
 		surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
 		surface.DrawRect( x, y, 170, py );
 
-		surface.SetDrawColor( self:GetSkin().COLOR_STATUS_GOOD );
-		if( n % 3 == 1 ) then
+		local ssState = self:GetSubsystemState( k );
+
+		if( ssState == SUBSYSTEM_STATE_GOOD ) then
+			surface.SetDrawColor( self:GetSkin().COLOR_STATUS_GOOD );
+		elseif( ssState == SUBSYSTEM_STATE_DANGER ) then
 			surface.SetDrawColor( self:GetSkin().COLOR_STATUS_DANGER );
-		elseif( n % 3 == 2 ) then
+		elseif( ssState == SUBSYSTEM_STATE_BROKEN ) then
 			surface.SetDrawColor( self:GetSkin().COLOR_STATUS_DESTROYED );
 		end
 		surface.DrawRect( x + ( ( py - sh ) / 2 ), y + ( ( py - sh ) / 2 ), sh, sh );

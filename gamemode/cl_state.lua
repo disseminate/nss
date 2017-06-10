@@ -5,3 +5,11 @@ local function nReceiveState( len )
 
 end
 net.Receive( "nReceiveState", nReceiveState );
+
+local function nJoin( len )
+
+	local ply = net.ReadEntity();
+	ply.Joined = true;
+
+end
+net.Receive( "nJoin", nJoin );

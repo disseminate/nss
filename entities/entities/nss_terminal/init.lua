@@ -27,7 +27,21 @@ function ENT:SelectRandomProblem()
 
 end
 
+function ENT:SelectProblem( id )
+
+	local ss = GAMEMODE.Subsystems[id];
+
+	self:SetSubsystem( id );
+	self:SetExplodeDuration( math.Rand( 5, 20 ) );
+	self:SetStartTime( CurTime() );
+
+	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
+
+end
+
 function ENT:ProblemSolve()
+
+	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
 
 	self:SetSubsystem( "" );
 	self:SetExplodeDuration( 0 );
@@ -37,11 +51,12 @@ end
 
 function ENT:Think()
 
-	if( self:IsDamaged() ) then
+	if( self:GetStartTime() > 0 ) then
 
 		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
 			
-			self:Explode();
+			self:Explode(); -- TODO
+			--self:ProblemSolve();
 
 		end
 
@@ -54,6 +69,8 @@ function ENT:Explode()
 	local ed = EffectData();
 	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
 	util.Effect( "Explosion", ed );
+
+	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_BROKEN );
 
 	self:Remove();
 
