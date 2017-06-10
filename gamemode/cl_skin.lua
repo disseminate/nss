@@ -6,6 +6,7 @@ SKIN.DermaVersion	= 1
 SKIN.GwenTexture	= Material( "gwenskin/GModDefault.png" )
 
 SKIN.COLOR_WHITE = Color( 255, 255, 255 );
+SKIN.COLOR_GRAY = Color( 255, 255, 255, 150 );
 SKIN.COLOR_WHITE_TRANS = Color( 255, 255, 255, 100 );
 SKIN.COLOR_GLASS = Color( 0, 0, 0, 150 );
 

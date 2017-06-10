@@ -1,5 +1,6 @@
 include( "sh_enum.lua" );
 include( "shared.lua" );
+include( "sh_state.lua" );
 include( "sv_player.lua" );
 include( "sv_think.lua" );
 include( "sv_subsystems.lua" );
@@ -12,4 +13,5 @@ AddCSLuaFile( "cl_skin.lua" );
 AddCSLuaFile( "cl_state.lua" );
 AddCSLuaFile( "cl_subsystems.lua" );
 AddCSLuaFile( "sh_enum.lua" );
+AddCSLuaFile( "sh_state.lua" );
 AddCSLuaFile( "shared.lua" );

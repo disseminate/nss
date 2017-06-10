@@ -1,5 +1,6 @@
 local tab = { };
-tab.SSID = 2;
+tab.Name = "Oxygen";
+tab.Acronym = "OXY";
 
 tab.OnDestroyed = function() end;
 tab.DestroyedThink = function() end;
