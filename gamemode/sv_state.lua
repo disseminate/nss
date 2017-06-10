@@ -1,33 +1,31 @@
 local meta = FindMetaTable( "Player" );
 
-GM.State = GM.State or STATE_PREGAME;
-GM.NextStateChange = GM.NextStateChange or CurTime() + 10;
+GM.StateCycleStart = GM.StateCycleStart or CurTime();
 
 function GM:StateThink()
 	
-	if( CurTime() >= self.NextStateChange ) then
+	if( !self.StateCycleStart ) then
+		self.StateCycleStart = CurTime();
+	end
 
-		local newState = self.State + 1;
-		if( newState > STATE_POSTGAME ) then
-			newState = STATE_PREGAME;
-		end
-		
-		self.NextStateChange = CurTime() + STATE_TIMES[newState];
-		self.State = newState;
+	if( self:GetState() != self.CacheState ) then
+		self.CacheState = self:GetState();
 
-		MsgN( "STATE CHANGE" );
-
-		self:BroadcastStateChange();
-
+		self:OnStateTransition( self.CacheState );
 	end
 
 end
 
-function GM:BroadcastStateChange()
+function GM:OnStateTransition( state )
+
+
+
+end
+
+function GM:BroadcastState()
 
 	net.Start( "nReceiveState" );
-		net.WriteUInt( self.State, 2 );
-		net.WriteFloat( self.NextStateChange );
+		net.WriteFloat( self.StateCycleStart );
 	net.Broadcast();
 
 end
@@ -36,14 +34,13 @@ util.AddNetworkString( "nReceiveState" );
 function meta:SendState()
 
 	net.Start( "nReceiveState" );
-		net.WriteUInt( GAMEMODE.State, 2 );
-		net.WriteFloat( GAMEMODE.NextStateChange );
+		net.WriteFloat( GAMEMODE.StateCycleStart );
 	net.Send( self );
 
 end
 
 function GM:OnReloaded()
 
-	self:BroadcastStateChange();
+	self:BroadcastState();
 
 end

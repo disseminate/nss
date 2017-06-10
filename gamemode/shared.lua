@@ -1,4 +1,4 @@
-DeriveGamemode( "base" );
+DeriveGamemode( "sandbox" );
 
 function RequireDir( dir )
 
