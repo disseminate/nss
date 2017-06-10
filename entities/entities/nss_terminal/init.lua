@@ -10,6 +10,8 @@ function ENT:Initialize()
 	self:SetMoveType( MOVETYPE_NONE );
 	self:SetSolid( SOLID_VPHYSICS );
 
+	self:SetUseType( SIMPLE_USE );
+
 end
 
 function ENT:SelectRandomProblem()
@@ -18,24 +20,28 @@ function ENT:SelectRandomProblem()
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeTime( CurTime() + math.Rand( 30, 120 ) );
+	self:SetExplodeDuration( math.Rand( 30, 120 ) );
+	self:SetStartTime( CurTime() );
+
+	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 
 end
 
 function ENT:ProblemSolve()
 
 	self:SetSubsystem( "" );
-	self:SetSubsystemTime( 0 );
+	self:SetExplodeDuration( 0 );
+	self:SetStartTime( 0 );
 
 end
 
 function ENT:Think()
 
-	if( self:GetExplodeTime() and self:GetExplodeTime() > 0 ) then
+	if( self:IsDamaged() ) then
 
-		if( CurTime() > self:GetExplodeTime() ) then
+		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
 			
-			--self:Remove();
+			self:Explode();
 
 		end
 
@@ -43,8 +49,28 @@ function ENT:Think()
 
 end
 
+function ENT:Explode()
+
+	local ed = EffectData();
+	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
+	util.Effect( "Explosion", ed );
+
+	self:Remove();
+
+end
+
 function ENT:Use( ply )
 
+	if( self:IsDamaged() ) then
 
+		-- todo: skill
+		self:ProblemSolve();
+		self:EmitSound( Sound( "buttons/button5.wav" ) );
+
+	else
+
+		self:EmitSound( Sound( "buttons/button10.wav" ) );
+
+	end
 
 end
