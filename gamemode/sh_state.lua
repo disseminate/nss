@@ -23,7 +23,7 @@ function GM:TimeLeftInState()
 	end
 
 	local state = self:GetState();
-	local el = CurTime() - self.StateCycleStart;
+	local el = ( CurTime() - self.StateCycleStart ) % ( STATE_TIMES[STATE_PREGAME] + STATE_TIMES[STATE_GAME] + STATE_TIMES[STATE_POSTGAME] );
 
 	if( state == STATE_PREGAME ) then
 		return STATE_TIMES[STATE_PREGAME] - el;

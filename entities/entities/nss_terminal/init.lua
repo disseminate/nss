@@ -1,12 +1,6 @@
-ENT.Base = "base_anim";
-ENT.Type = "anim";
-
-function ENT:SetupDataTables()
-
-	self:NetworkVar( "Int", 0, "Subsystem" );
-	self:NetworkVar( "Float", 0, "ExplodeTime" );
-
-end
+AddCSLuaFile( "shared.lua" );
+AddCSLuaFile( "cl_init.lua" );
+include( "shared.lua" );
 
 function ENT:Initialize()
 
@@ -30,7 +24,7 @@ end
 
 function ENT:ProblemSolve()
 
-	self:SetSubsystem( 0 );
+	self:SetSubsystem( "" );
 	self:SetSubsystemTime( 0 );
 
 end
@@ -41,10 +35,16 @@ function ENT:Think()
 
 		if( CurTime() > self:GetExplodeTime() ) then
 			
-			self:Remove();
+			--self:Remove();
 
 		end
 
 	end
+
+end
+
+function ENT:Use( ply )
+
+
 
 end
