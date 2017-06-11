@@ -15,7 +15,7 @@ end
 for _, v in pairs( textSizes ) do
 
 	surface.CreateFont( "NSS " .. v, {
-		font = "Tahoma",
+		font = "Sani Trixie Sans",
 		size = v,
 		weight = 400
 	} );

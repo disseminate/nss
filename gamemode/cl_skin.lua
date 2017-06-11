@@ -16,6 +16,7 @@ SKIN.COLOR_STATUS_DANGER = Color( 255, 202, 0 );
 SKIN.COLOR_STATUS_DESTROYED = Color( 255, 60, 53 );
 
 SKIN.COLOR_HEALTH = Color( 255, 30, 30 );
+SKIN.COLOR_LOSE = Color( 200, 0, 0 );
 
 derma.DefineSkin( "NSS", "NSS Skin", SKIN );
 
