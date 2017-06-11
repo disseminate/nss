@@ -62,8 +62,10 @@ function GM:HUDPaint()
 
 	if( !LocalPlayer().Joined ) then
 		self:HUDPaintNotJoined();
-	elseif( self.Lost ) then
+	elseif( self:GetState() == STATE_LOST ) then
 		self:HUDPaintLost();
+	elseif( self:GetState() == STATE_POSTGAME ) then
+		self:HUDPaintWon();
 	else
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
@@ -111,6 +113,51 @@ function GM:HUDPaintLost()
 
 	local text = "Ship Lost";
 	local col = self:GetSkin().COLOR_LOSE;
+
+	surface.SetFont( "NSS Title 100" );
+
+	local w2, h2 = surface.GetTextSize( text );
+
+	surface.SetTextColor( col );
+	surface.SetTextPos( ScrW() / 2 - w2 / 2, 90 );
+	surface.DrawText( text );
+
+
+	local timeLeft = self:TimeLeftInState();
+
+	local text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
+	local col = self:GetSkin().COLOR_GRAY;
+
+	surface.SetFont( "NSS Title 48" );
+
+	local w, h = surface.GetTextSize( text );
+
+	surface.SetTextColor( col );
+	surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() - 50 - h - 40 );
+	surface.DrawText( text );
+
+	local text = "Resetting in";
+	local col = self:GetSkin().COLOR_GRAY;
+
+	surface.SetFont( "NSS 20" );
+
+	local w2, h2 = surface.GetTextSize( text );
+
+	surface.SetTextColor( col );
+	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() - 50 - h - 40 - h2 - 20 );
+	surface.DrawText( text );
+
+end
+
+function GM:HUDPaintWon()
+
+	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
+	surface.DrawRect( 0, 0, ScrW(), 50 );
+	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
+
+
+	local text = "Rescued";
+	local col = self:GetSkin().COLOR_WIN;
 
 	surface.SetFont( "NSS Title 100" );
 

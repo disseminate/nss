@@ -7,6 +7,12 @@ local function nSetSubsystemState( len )
 
 	GAMEMODE.SubsystemStates[id] = state;
 
+	if( state == SUBSYSTEM_STATE_DESTROYED and GAMEMODE.Subsystems[id].OnDestroyed ) then
+
+		GAMEMODE.Subsystems[sys].OnDestroyed();
+
+	end
+
 end
 net.Receive( "nSetSubsystemState", nSetSubsystemState );
 
@@ -14,6 +20,13 @@ local function nResetSubsystems( len )
 
 	for k, v in pairs( GAMEMODE.Subsystems ) do
 		GAMEMODE.SubsystemStates[k] = SUBSYSTEM_STATE_GOOD;
+		
+		if( v.Restore ) then
+
+			v.Restore();
+
+		end
+		
 	end
 
 end

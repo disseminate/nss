@@ -16,6 +16,16 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendState();
 	ply:SendShipHealth();
 
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self.SubsystemStates[k] == SUBSYSTEM_STATE_BROKEN and v.OnDestroyedPlayerJoin ) then
+
+			v.OnDestroyedPlayerJoin( ply );
+
+		end
+
+	end
+
 end
 
 local function nJoin( len, ply )

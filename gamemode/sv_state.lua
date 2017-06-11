@@ -31,6 +31,16 @@ function GM:Reset()
 
 	end
 
+	for k, v in pairs( self.Subsystems ) do
+
+		if( v.Restore ) then
+
+			v.Restore();
+
+		end
+
+	end
+
 end
 
 function GM:StateThink()
@@ -38,9 +48,10 @@ function GM:StateThink()
 	if( #player.GetJoined() == 0 ) then return end
 
 	if( self:GetState() != self.CacheState ) then
-		self.CacheState = self:GetState();
 
-		self:OnStateTransition( self.CacheState );
+		self:OnStateTransition( self.CacheState, self:GetState() );
+		self.CacheState = self:GetState();
+		
 	end
 
 	if( self:GetState() == STATE_LOST ) then
@@ -56,9 +67,11 @@ function GM:StateThink()
 
 end
 
-function GM:OnStateTransition( state )
+function GM:OnStateTransition( prev, state )
 
-
+	if( prev == STATE_POSTGAME ) then
+		self:Reset();
+	end
 
 end
 

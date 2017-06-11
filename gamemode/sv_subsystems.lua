@@ -18,6 +18,12 @@ function GM:DamageShip( sys )
 
 	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
 
+	if( self.Subsystems[sys].OnDestroyed ) then
+
+		self.Subsystems[sys].OnDestroyed();
+
+	end
+
 	self.ShipHealth = self.ShipHealth - 1;
 
 	if( self.ShipHealth == 0 ) then
