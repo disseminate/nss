@@ -15,6 +15,7 @@ AddCSLuaFile( "cl_hud.lua" );
 AddCSLuaFile( "cl_map.lua" );
 AddCSLuaFile( "cl_init.lua" );
 AddCSLuaFile( "cl_players.lua" );
+AddCSLuaFile( "cl_scoreboard.lua" );
 AddCSLuaFile( "cl_skin.lua" );
 AddCSLuaFile( "cl_state.lua" );
 AddCSLuaFile( "cl_subsystems.lua" );
