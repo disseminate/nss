@@ -15,3 +15,17 @@ function player.GetJoined()
 	return tab;
 
 end
+
+function GM:StartCommand( ply, cmd )
+
+	if( !ply.Joined ) then
+		cmd:ClearButtons();
+		cmd:ClearMovement();
+	end
+
+	if( self:GetState() == STATE_LOST ) then
+		cmd:ClearButtons();
+		cmd:ClearMovement();
+	end
+
+end

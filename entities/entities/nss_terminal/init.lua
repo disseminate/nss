@@ -2,20 +2,8 @@ AddCSLuaFile( "shared.lua" );
 AddCSLuaFile( "cl_init.lua" );
 include( "shared.lua" );
 
-function ENT:Initialize()
-
-	self:SetModel( "models/props_combine/combine_interface00" .. math.random( 1, 3 ) .. ".mdl" );
-
-	self:PhysicsInit( SOLID_VPHYSICS );
-	self:SetMoveType( MOVETYPE_NONE );
-	self:SetSolid( SOLID_VPHYSICS );
-
-	self:SetUseType( SIMPLE_USE );
-
-end
-
 function ENT:SelectRandomProblem()
-
+	
 	local id = table.Random( table.GetKeys( GAMEMODE.Subsystems ) );
 	local ss = GAMEMODE.Subsystems[id];
 
@@ -51,6 +39,9 @@ end
 
 function ENT:Think()
 
+	if( #player.GetJoined() == 0 ) then return end
+	if( GAMEMODE:GetState() != STATE_GAME ) then return end
+
 	if( self:GetStartTime() > 0 ) then
 
 		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
@@ -70,7 +61,7 @@ function ENT:Explode()
 	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
 	util.Effect( "Explosion", ed );
 
-	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_BROKEN );
+	GAMEMODE:DamageShip( self:GetSubsystem() );
 
 	self:Remove();
 

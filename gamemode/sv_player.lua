@@ -14,6 +14,7 @@ function GM:PlayerInitialSpawn( ply )
 
 	ply:SendPlayers();
 	ply:SendState();
+	ply:SendShipHealth();
 
 end
 
@@ -49,3 +50,11 @@ function meta:SendPlayers()
 
 end
 util.AddNetworkString( "nPlayers" );
+
+function meta:SendShipHealth()
+
+	net.Start( "nSetShipHealth" );
+		net.WriteUInt( GAMEMODE.ShipHealth, 4 );
+	net.Send( self );
+
+end

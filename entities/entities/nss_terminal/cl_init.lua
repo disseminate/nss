@@ -6,27 +6,28 @@ function ENT:Draw()
 
 	self:DrawModel();
 
+	if( #player.GetJoined() == 0 ) then return end
+	if( GAMEMODE:GetState() != STATE_GAME ) then return end
+
 	if( self:IsDamaged() ) then
 
 		local tl = self:GetExplodeDuration() - ( CurTime() - self:GetStartTime() );
 		local id = self:GetSubsystem();
 		local ss = GAMEMODE.Subsystems[id];
 
-		local fps = 1;
+		local fps = math.Clamp( 1 - ( CurTime() - self:GetStartTime() ) / self:GetExplodeDuration(), 0.01, 1 );
 
-		if( tl < 4 ) then
-			fps = 0.1;
-		elseif( tl < 10 ) then
-			fps = 0.2;
-		elseif( tl < 20 ) then
-			fps = 0.4;
-		elseif( tl < 40 ) then
-			fps = 0.7;
+		if( self.LightOn == nil ) then
+			self.LightOn = false;
+			self.NextLightToggle = CurTime();
 		end
 
-		local on = CurTime() % fps < ( fps / 2 );
+		if( self.NextLightToggle and CurTime() >= self.NextLightToggle ) then
+			self.NextLightToggle = CurTime() + fps;
+			self.LightOn = !self.LightOn;
+		end
 
-		if( on ) then
+		if( self.LightOn ) then
 
 			render.SetMaterial( self.SpriteMat );
 			render.DrawSprite( self:GetPos() + self:GetUp() * 48 + self:GetForward() * 4, 16, 16, Color( 255, 0, 0 ) );

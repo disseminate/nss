@@ -9,8 +9,10 @@ include( "sv_subsystems.lua" );
 include( "sv_state.lua" );
 
 AddCSLuaFile( "cl_binds.lua" );
+AddCSLuaFile( "cl_calcview.lua" );
 AddCSLuaFile( "cl_gui.lua" );
 AddCSLuaFile( "cl_hud.lua" );
+AddCSLuaFile( "cl_map.lua" );
 AddCSLuaFile( "cl_init.lua" );
 AddCSLuaFile( "cl_players.lua" );
 AddCSLuaFile( "cl_skin.lua" );

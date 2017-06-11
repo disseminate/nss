@@ -46,10 +46,24 @@ function surface.DrawProgressCircle( x, y, perc, radius )
 
 end
 
+function HUDApproachMap( key, val )
+
+	if( !GAMEMODE["HUDTween_" .. key] ) then
+		GAMEMODE["HUDTween_" .. key] = val;
+	else
+		GAMEMODE["HUDTween_" .. key] = math.Approach( GAMEMODE["HUDTween_" .. key], val, FrameTime() * 8 );
+	end
+
+	return GAMEMODE["HUDTween_" .. key];
+
+end
+
 function GM:HUDPaint()
 
 	if( !LocalPlayer().Joined ) then
 		self:HUDPaintNotJoined();
+	elseif( self.Lost ) then
+		self:HUDPaintLost();
 	else
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
@@ -60,6 +74,8 @@ end
 function GM:HUDPaintNotJoined()
 
 	if( !LocalPlayer().Joined ) then
+
+		surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
 		
 		surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
 		surface.DrawRect( 0, 0, ScrW(), 50 );
@@ -67,10 +83,43 @@ function GM:HUDPaintNotJoined()
 
 		surface.SetFont( "NSS Title 100" );
 		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-		surface.SetTextPos( 100, 100 );
-		surface.DrawText( "Need Some Space" );
+		
+		local titleText = "Need Some Space";
+		local w, h = surface.GetTextSize( titleText );
+		surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() / 2 - h / 2 );
+		surface.DrawText( titleText );
+
+		surface.SetFont( "NSS 32" );
+		
+		local text = "Press Space";
+		local w2, h2 = surface.GetTextSize( text );
+		surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 );
+		surface.DrawText( text );
 
 	end
+
+end
+
+function GM:HUDPaintLost()
+
+	surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
+	
+	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
+	surface.DrawRect( 0, 0, ScrW(), 50 );
+	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
+
+	local timeLeft = self:TimeLeftInState();
+
+	local text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
+	local col = self:GetSkin().COLOR_GRAY;
+
+	surface.SetFont( "NSS Title 48" );
+
+	local w, h = surface.GetTextSize( text );
+
+	surface.SetTextColor( col );
+	surface.SetTextPos( ScrW() / 2 - w / 2, 90 );
+	surface.DrawText( text );
 
 end
 
@@ -147,5 +196,15 @@ function GM:HUDPaintSubsystems()
 		n = n + 1;
 
 	end
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, 200, 10 );
+	surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
+
+	local hp = HUDApproachMap( "ShipHealth", self.ShipHealth );
+
+	local w0 = 200 - 4;
+	local w = w0 * ( hp / 5 );
+	surface.DrawRect( x + 2, y + 2, w, 10 - 4 );
 
 end

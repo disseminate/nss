@@ -1,3 +1,5 @@
+GM.ShipHealth = GM.ShipHealth or 5;
+
 function GM:SubsystemThink()
 
 	if( #player.GetJoined() == 0 ) then return end
@@ -12,6 +14,30 @@ function GM:SubsystemThink()
 
 end
 
+function GM:DamageShip( sys )
+
+	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
+
+	self.ShipHealth = self.ShipHealth - 1;
+
+	if( self.ShipHealth == 0 ) then
+		self:KillShip();
+	end
+
+	net.Start( "nSetShipHealth" );
+		net.WriteUInt( self.ShipHealth, 4 );
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nSetShipHealth" );
+
+function GM:KillShip()
+
+	self.Lost = true;
+	self:BroadcastState();
+
+end
+
 function GM:SetSubsystemState( id, state )
 
 	self.SubsystemStates[id] = state;
@@ -23,6 +49,20 @@ function GM:SetSubsystemState( id, state )
 
 end
 util.AddNetworkString( "nSetSubsystemState" );
+
+function GM:ResetSubsystems()
+
+	for k, v in pairs( self.SubsystemStates ) do
+
+		self:SetSubsystemState( k, SUBSYSTEM_STATE_GOOD );
+
+	end
+
+	net.Start( "nResetSubsystems" );
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nResetSubsystems" );
 
 function GM:GetUnaffectedSubsystems()
 

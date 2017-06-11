@@ -1,7 +1,7 @@
 local function nReceiveState( len )
 
-	local nt = net.ReadFloat();
-	GAMEMODE.StateCycleStart = nt;
+	GAMEMODE.StateCycleStart = net.ReadFloat();
+	GAMEMODE.Lost = net.ReadBool();
 
 end
 net.Receive( "nReceiveState", nReceiveState );

@@ -15,6 +15,8 @@ SKIN.COLOR_STATUS_GOOD = Color( 139, 255, 94 );
 SKIN.COLOR_STATUS_DANGER = Color( 255, 202, 0 );
 SKIN.COLOR_STATUS_DESTROYED = Color( 255, 60, 53 );
 
+SKIN.COLOR_HEALTH = Color( 255, 30, 30 );
+
 derma.DefineSkin( "NSS", "NSS Skin", SKIN );
 
 function GM:ForceDermaSkin()

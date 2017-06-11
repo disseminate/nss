@@ -8,6 +8,8 @@ function GM:PlayerBindPress( ply, bind, down )
 			net.Start( "nJoin" );
 			net.SendToServer();
 
+			return true;
+
 		end
 
 	end
