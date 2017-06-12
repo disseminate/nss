@@ -258,6 +258,10 @@ function GM:HUDPaintSubsystems()
 		surface.DrawRect( x + ( ( py - sh ) / 2 ), y + ( ( py - sh ) / 2 ), sh, sh );
 
 		local text = v.Acronym;
+		if( LocalPlayer():KeyDown( IN_SCORE ) ) then
+			text = v.Name;
+		end
+		
 		surface.SetFont( "NSS " .. fontSize );
 		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 		surface.SetTextPos( x + sh + 10, y + ( py - fontSize ) / 2 );
