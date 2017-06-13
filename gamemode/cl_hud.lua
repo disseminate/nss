@@ -67,6 +67,8 @@ function GM:HUDPaint()
 		self:HUDPaintLost();
 	elseif( self:GetState() == STATE_POSTGAME ) then
 		self:HUDPaintWon();
+	elseif( !LocalPlayer():Alive() ) then
+		self:HUDPaintDead();
 	else
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
@@ -100,6 +102,38 @@ function GM:HUDPaintNotJoined()
 		surface.DrawText( text );
 
 	end
+
+end
+
+function GM:HUDPaintDead()
+
+	surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
+	
+	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
+	surface.DrawRect( 0, 0, ScrW(), 50 );
+	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
+
+	surface.SetFont( "NSS Title 100" );
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	
+	local titleText = "You Died";
+	local w, h = surface.GetTextSize( titleText );
+	surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() / 2 - h / 2 );
+	surface.DrawText( titleText );
+
+	surface.SetFont( "NSS 32" );
+	
+	local dt = LocalPlayer().NextSpawnTime or 0;
+	local tl = math.ceil( math.max( dt - CurTime(), 0 ) );
+	local text;
+	if( tl == 0 ) then
+		text = "You can respawn.";
+	else
+		text = "You can respawn in " .. string.ToMinutesSeconds( tl ) .. ".";
+	end
+	local w2, h2 = surface.GetTextSize( text );
+	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 );
+	surface.DrawText( text );
 
 end
 
@@ -313,7 +347,7 @@ function GM:HUDPaintSubsystems()
 	surface.DrawRect( x, y, 200, 10 );
 	surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
 
-	local hp = HUDApproachMap( "ShipHealth", self.ShipHealth );
+	local hp = HUDApproachMap( "ShipHealth", self.ShipHealth, FrameTime() * 4 );
 
 	local w0 = 200 - 4;
 	local w = w0 * ( hp / 5 );

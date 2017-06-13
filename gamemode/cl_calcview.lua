@@ -11,6 +11,12 @@ function GM:CalcView( ply, origin, angles, fov, znear, zfar )
 			tab.origin = intro[1];
 			tab.angles = intro[2];
 
+		elseif( LocalPlayer().DeadThirdCam and !LocalPlayer():Alive() ) then
+
+			tab.origin = intro[1];
+			tab.angles = intro[2];
+			self.CamZoomStart = CurTime();
+
 		else
 
 			if( !self.CamZoomStart ) then

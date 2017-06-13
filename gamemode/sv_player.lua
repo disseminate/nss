@@ -68,3 +68,18 @@ function meta:SendShipHealth()
 	net.Send( self );
 
 end
+
+function GM:PlayerDeath( ply, inflictor, attacker )
+
+	self.BaseClass:PlayerDeath( ply, inflictor, attacker );
+	ply.NextSpawnTime = CurTime() + 60;
+
+	MsgN( inflictor );
+
+	net.Start( "nSetSpawnTime" );
+		net.WriteFloat( ply.NextSpawnTime );
+		net.WriteBool( true );
+	net.Send( ply );
+
+end
+util.AddNetworkString( "nSetSpawnTime" );
