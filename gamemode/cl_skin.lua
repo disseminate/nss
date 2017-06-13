@@ -23,6 +23,7 @@ SKIN.COLOR_WIN = Color( 50, 255, 100 );
 local png = "unlitgeneric noclamp";
 SKIN.ICON_AUDIO_ON = Material( "nss/icons/audio-on.png", png );
 SKIN.ICON_AUDIO_OFF = Material( "nss/icons/audio-off.png", png );
+SKIN.ICON_ARROW = Material( "nss/icons/arrow.png", png );
 
 derma.DefineSkin( "NSS", "NSS Skin", SKIN );
 

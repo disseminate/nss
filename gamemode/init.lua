@@ -3,6 +3,7 @@ include( "shared.lua" );
 include( "sh_player.lua" );
 include( "sh_state.lua" );
 include( "sh_subsystems.lua" );
+include( "sv_effects.lua" );
 include( "sv_player.lua" );
 include( "sv_think.lua" );
 include( "sv_subsystems.lua" );

@@ -18,6 +18,8 @@ function GM:DamageShip( sys )
 
 	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
 
+	ScreenShake( 3 );
+
 	if( self.Subsystems[sys].OnDestroyed ) then
 
 		self.Subsystems[sys].OnDestroyed();

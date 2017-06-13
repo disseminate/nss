@@ -25,23 +25,7 @@ tab.OnDestroyed = function()
 end;
 tab.Restore = function()
 
-	for _, v in pairs( ents.FindByName( "ship_light" ) ) do
-
-		v:Fire( "TurnOn" );
-
-	end
-
-	for _, v in pairs( ents.FindByName( "ship_spotlight" ) ) do
-
-		v:Fire( "LightOn" );
-
-	end
-
-	for _, v in pairs( ents.FindByName( "ship_light_prop" ) ) do
-
-		v:SetSkin( 0 );
-
-	end
+	-- handled by game.CleanUpMap()
 
 end;
 

@@ -7,3 +7,17 @@ function GM:GetSubsystemState( id )
 	return self.SubsystemStates[id];
 
 end
+
+function GM:GetSubsystemTerminal( id )
+
+	for _, v in pairs( ents.FindByClass( "nss_terminal" ) ) do
+
+		if( v:GetSubsystem() == id and v:GetStartTime() > 0 ) then
+			
+			return v;
+
+		end
+
+	end
+
+end

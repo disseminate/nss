@@ -46,14 +46,15 @@ function surface.DrawProgressCircle( x, y, perc, radius )
 
 end
 
-function HUDApproachMap( key, val )
+function HUDApproachMap( key, val, tween )
+	tween = tween or FrameTime();
 
 	if( !GAMEMODE["HUDTween_" .. key] ) then
 		GAMEMODE["HUDTween_" .. key] = val;
 	else
-		GAMEMODE["HUDTween_" .. key] = math.Approach( GAMEMODE["HUDTween_" .. key], val, FrameTime() * 8 );
+		GAMEMODE["HUDTween_" .. key] = GAMEMODE["HUDTween_" .. key] + ( val - GAMEMODE["HUDTween_" .. key] ) * tween;
 	end
-
+	
 	return GAMEMODE["HUDTween_" .. key];
 
 end
@@ -237,14 +238,21 @@ function GM:HUDPaintSubsystems()
 	local y = 40;
 
 	local py = 20;
+	local rw = 170;
 	local sh = 14;
 	local fontSize = 16;
+
+	if( LocalPlayer():KeyDown( IN_SCORE ) ) then
+		rw = 300;
+	end
+
+	local rowWidth = HUDApproachMap( "SubsystemRowWidth", rw, FrameTime() * 10 );
 
 	local n = 1;
 	for k, v in pairs( self.Subsystems ) do
 
 		surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
-		surface.DrawRect( x, y, 170, py );
+		surface.DrawRect( x, y, rowWidth, py );
 
 		local ssState = self:GetSubsystemState( k );
 
@@ -266,6 +274,27 @@ function GM:HUDPaintSubsystems()
 		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 		surface.SetTextPos( x + sh + 10, y + ( py - fontSize ) / 2 );
 		surface.DrawText( text );
+
+		if( ssState == SUBSYSTEM_STATE_DANGER ) then
+			local ent = self:GetSubsystemTerminal( k );
+
+			if( ent and ent:IsValid() ) then
+				local fwd = LocalPlayer():EyeAngles().y;
+				local diffPos = ( ent:GetPos() - LocalPlayer():EyePos() );
+				local tdir = diffPos:Angle().y;
+				local adist = math.AngleDifference( tdir, fwd );
+
+				surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+				surface.SetMaterial( self:GetSkin().ICON_ARROW );
+				surface.DrawTexturedRectRotated( x + rowWidth - 20 + 10 - 2, y + 10 - 2, 16, 16, adist + 90 );
+
+				local dist = math.ceil( diffPos:Length() * 19.05 / ( 10 * 100 ) );
+				local text = dist .. "m";
+				local w, _ = surface.GetTextSize( text );
+				surface.SetTextPos( x + rowWidth - 20 - w - 4, y + ( py - fontSize ) / 2 );
+				surface.DrawText( text );
+			end
+		end
 		
 		y = y + py + 10;
 		n = n + 1;
