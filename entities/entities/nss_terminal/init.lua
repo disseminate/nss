@@ -51,6 +51,19 @@ function ENT:Think()
 
 		end
 
+		if( !self.WarningSound ) then
+			local rf = RecipientFilter();
+			rf:AddAllPlayers();
+			self.WarningSound = CreateSound( self, Sound( "ambient/alarms/combine_bank_alarm_loop4.wav" ), rf );
+			self.WarningSound:SetSoundLevel( 90 );
+			self.WarningSound:PlayEx( 1, math.random( 90, 110 ) );
+		elseif( !self.WarningSound:IsPlaying() ) then
+			self.WarningSound:Play();
+		end
+
+	elseif( self.WarningSound ) then
+		self.WarningSound:Stop();
+		self.WarningSound = nil;
 	end
 
 end
