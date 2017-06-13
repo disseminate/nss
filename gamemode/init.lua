@@ -20,6 +20,7 @@ AddCSLuaFile( "cl_scoreboard.lua" );
 AddCSLuaFile( "cl_skin.lua" );
 AddCSLuaFile( "cl_state.lua" );
 AddCSLuaFile( "cl_subsystems.lua" );
+AddCSLuaFile( "cl_think.lua" );
 AddCSLuaFile( "sh_enum.lua" );
 AddCSLuaFile( "sh_player.lua" );
 AddCSLuaFile( "sh_state.lua" );

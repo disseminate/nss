@@ -26,14 +26,16 @@ end
 
 local matBlurScreen = Material( "pp/blurscreen" );
 
-function surface.BackgroundBlur( x, y, w, h )
+function surface.BackgroundBlur( x, y, w, h, a )
 
+	if( a == 0 ) then return end
+	
 	local Fraction = 1;
 
 	DisableClipping( true );
 
 	surface.SetMaterial( matBlurScreen );
-	surface.SetDrawColor( 255, 255, 255, 255 );
+	surface.SetDrawColor( 255, 255, 255, 255 * ( a or 1 ) );
 
 	for i=0.33, 1, 0.33 do
 		matBlurScreen:SetFloat( "$blur", 5 * i );

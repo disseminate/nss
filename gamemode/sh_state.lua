@@ -50,3 +50,15 @@ function GM:TimeLeftInState()
 	end
 
 end
+
+function GM:OnStateTransition( prev, state )
+
+	if( SERVER and prev == STATE_POSTGAME ) then
+		self:Reset();
+	end
+
+	if( CLIENT and state == STATE_POSTGAME ) then
+		self.OutroStart = CurTime();
+	end
+
+end

@@ -67,14 +67,6 @@ function GM:StateThink()
 
 end
 
-function GM:OnStateTransition( prev, state )
-
-	if( prev == STATE_POSTGAME ) then
-		self:Reset();
-	end
-
-end
-
 function GM:BroadcastState()
 
 	if( !self.StateCycleStart ) then return end
@@ -100,6 +92,13 @@ end
 
 function GM:OnReloaded()
 
+	self:BroadcastState();
+
+end
+
+function GM:WinShip()
+
+	self.StateCycleStart = CurTime() - STATE_TIMES[STATE_GAME] - STATE_TIMES[STATE_PREGAME] + 1;
 	self:BroadcastState();
 
 end

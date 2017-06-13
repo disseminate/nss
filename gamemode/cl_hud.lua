@@ -47,6 +47,22 @@ function surface.DrawProgressCircle( x, y, perc, radius )
 
 end
 
+function HUDHasMap( key )
+
+	if( GAMEMODE["HUDTween_" .. key] ) then
+		return true;
+	end
+
+	return false;
+
+end
+
+function HUDSetMap( key, val )
+
+	GAMEMODE["HUDTween_" .. key] = val;
+
+end
+
 function HUDApproachMap( key, val, tween )
 	tween = tween or FrameTime();
 
@@ -62,6 +78,18 @@ end
 
 function GM:HUDPaint()
 
+	if( self:GetState() != STATE_LOST ) then
+		HUDSetMap( "LoseX", -ScrW() );
+		HUDSetMap( "LoseX2", -ScrW() );
+		HUDSetMap( "LoseX3", -ScrW() );
+	end
+
+	if( self:GetState() != STATE_POSTGAME ) then
+		HUDSetMap( "WinX", -ScrW() );
+		HUDSetMap( "WinX2", -ScrW() );
+		HUDSetMap( "WinX3", -ScrW() );
+	end
+
 	if( !LocalPlayer().Joined ) then
 		self:HUDPaintNotJoined();
 	elseif( self:GetState() == STATE_LOST ) then
@@ -74,6 +102,9 @@ function GM:HUDPaint()
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
 		self:HUDPaintHealth();
+		self:HUDCinematicBars();
+
+		self.LostHUDTime = nil;
 	end
 
 end
@@ -160,59 +191,96 @@ function GM:HUDPaintDead()
 
 end
 
+function GM:HUDCinematicBars()
+
+	local disp = false;
+	if( self:GetState() == STATE_POSTGAME or self:GetState() == STATE_LOST ) then
+		disp = true;
+	end
+	
+	local h = 50;
+	local y = HUDApproachMap( "CinematicBars", disp and 0 or h, FrameTime() * 2 );
+
+	if( y > h - 0.1 ) then return end
+
+	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
+	surface.DrawRect( 0, -y, ScrW(), h );
+	surface.DrawRect( 0, ScrH() - h + y, ScrW(), h );
+
+end
+
 function GM:HUDPaintLost()
 
-	surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
-	
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, 0, ScrW(), 50 );
-	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
+	local a = 0;
+
+	if( !self.OutroStart ) then return end
+
+	local tSince = CurTime() - self.OutroStart;
+
+	if( tSince > 1.5 ) then
+		a = math.Clamp( tSince - 1.5, 0, 1 );
+			
+		surface.BackgroundBlur( 0, 0, ScrW(), ScrH(), a );
+
+		self:HUDCinematicBars();
+
+		surface.SetAlphaMultiplier( a );
+
+		local text = "Ship Lost";
+		local col = self:GetSkin().COLOR_LOSE;
+
+		surface.SetFont( "NSS Title 100" );
+
+		local w2, h2 = surface.GetTextSize( text );
+
+		local x = HUDApproachMap( "LoseX", ScrW() / 2 - w2 / 2, FrameTime() * 4 );
+
+		surface.SetTextColor( col );
+		surface.SetTextPos( x, 90 );
+		surface.DrawText( text );
 
 
-	local text = "Ship Lost";
-	local col = self:GetSkin().COLOR_LOSE;
+		local timeLeft = self:TimeLeftInState();
 
-	surface.SetFont( "NSS Title 100" );
+		local text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
+		local col = self:GetSkin().COLOR_GRAY;
 
-	local w2, h2 = surface.GetTextSize( text );
+		surface.SetFont( "NSS Title 48" );
 
-	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w2 / 2, 90 );
-	surface.DrawText( text );
+		local w, h = surface.GetTextSize( text );
 
+		local x = HUDApproachMap( "LoseX3", ScrW() / 2 - w / 2, FrameTime() * 2 );
 
-	local timeLeft = self:TimeLeftInState();
+		surface.SetTextColor( col );
+		surface.SetTextPos( x, ScrH() - 50 - h - 40 );
+		surface.DrawText( text );
 
-	local text = string.ToMinutesSeconds( math.floor( timeLeft ) + 1 );
-	local col = self:GetSkin().COLOR_GRAY;
+		local text = "Resetting in";
+		local col = self:GetSkin().COLOR_GRAY;
 
-	surface.SetFont( "NSS Title 48" );
+		surface.SetFont( "NSS 20" );
 
-	local w, h = surface.GetTextSize( text );
+		local w2, h2 = surface.GetTextSize( text );
 
-	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() - 50 - h - 40 );
-	surface.DrawText( text );
+		local x = HUDApproachMap( "LoseX2", ScrW() / 2 - w2 / 2, FrameTime() * 3 );
 
-	local text = "Resetting in";
-	local col = self:GetSkin().COLOR_GRAY;
+		surface.SetTextColor( col );
+		surface.SetTextPos( x, ScrH() - 50 - h - 40 - h2 - 20 );
+		surface.DrawText( text );
 
-	surface.SetFont( "NSS 20" );
+		surface.SetAlphaMultiplier( 1 );
 
-	local w2, h2 = surface.GetTextSize( text );
+	else
 
-	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() - 50 - h - 40 - h2 - 20 );
-	surface.DrawText( text );
+		self:HUDCinematicBars();
+
+	end
 
 end
 
 function GM:HUDPaintWon()
 
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, 0, ScrW(), 50 );
-	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
-
+	self:HUDCinematicBars();
 
 	local text = "Rescued";
 	local col = self:GetSkin().COLOR_WIN;
@@ -221,8 +289,10 @@ function GM:HUDPaintWon()
 
 	local w2, h2 = surface.GetTextSize( text );
 
+	local x = HUDApproachMap( "WinX", ScrW() / 2 - w2 / 2, FrameTime() * 4 );
+
 	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w2 / 2, 90 );
+	surface.SetTextPos( x, 90 );
 	surface.DrawText( text );
 
 
@@ -235,8 +305,10 @@ function GM:HUDPaintWon()
 
 	local w, h = surface.GetTextSize( text );
 
+	local x = HUDApproachMap( "WinX3", ScrW() / 2 - w / 2, FrameTime() * 2 );
+
 	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() - 50 - h - 40 );
+	surface.SetTextPos( x, ScrH() - 50 - h - 40 );
 	surface.DrawText( text );
 
 	local text = "Resetting in";
@@ -246,8 +318,10 @@ function GM:HUDPaintWon()
 
 	local w2, h2 = surface.GetTextSize( text );
 
+	local x = HUDApproachMap( "WinX2", ScrW() / 2 - w2 / 2, FrameTime() * 3 );
+
 	surface.SetTextColor( col );
-	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() - 50 - h - 40 - h2 - 20 );
+	surface.SetTextPos( x, ScrH() - 50 - h - 40 - h2 - 20 );
 	surface.DrawText( text );
 
 end
@@ -341,22 +415,42 @@ function GM:HUDPaintSubsystems()
 				local tdir = diffPos:Angle().y;
 				local adist = math.AngleDifference( tdir, fwd );
 
+				local xx = x + rowWidth - 20 + 10 - 2;
+
 				surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
 				surface.SetMaterial( self:GetSkin().ICON_ARROW );
-				surface.DrawTexturedRectRotated( x + rowWidth - 20 + 10 - 2, y + 10 - 2, 16, 16, adist + 90 );
+				surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, adist + 90 );
 
-				local dist = math.ceil( diffPos:Length() * 19.05 / ( 10 * 100 ) );
+				xx = xx - 16 - 4;
+
+				if( diffPos.z > 100 ) then
+					surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
+					surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 90 );
+				elseif( diffPos.z < -100 ) then
+					surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
+					surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 270 );
+				end
+
+				xx = xx - 16 - 30;
+
+				local dist = math.ceil( diffPos:Length() * 19.05 / ( 10 * 100 ) ) - 2;
 				local text = dist .. "m";
 				local w, _ = surface.GetTextSize( text );
-				surface.SetTextPos( x + rowWidth - 20 - w - 4, y + ( py - fontSize ) / 2 );
+				surface.SetTextPos( xx, y + ( py - fontSize ) / 2 );
 				surface.DrawText( text );
 				
-				local tr = math.ceil( ent:TimeRemaining() );
-				if( tr > 0 ) then
-					local text = tr .. "s";
+				local tr = ent:TimeRemaining();
+				local tt = ent:GetExplodeDuration();
+				if( math.ceil( tr ) > 0 ) then
+					local text = math.ceil( tr ) .. "s";
 					local w, _ = surface.GetTextSize( text );
-					surface.SetTextPos( x + rowWidth - 20 - w - 4 - 50, y + ( py - fontSize ) / 2 );
+					surface.SetTextPos( xx - 50, y + ( py - fontSize ) / 2 );
 					surface.DrawText( text );
+--[[
+					local perc = tr / tt;
+					surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
+					surface.DrawRect( x, y + py - 1, rowWidth * perc, 1 );
+					--]]
 				end
 			end
 		end
