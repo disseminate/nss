@@ -34,6 +34,12 @@ end
 
 function ENT:IsDamaged()
 
-	return self:GetExplodeDuration() > 0 and ( CurTime() - self:GetStartTime() ) < self:GetExplodeDuration();
+	return self:GetExplodeDuration() > 0 and self:TimeRemaining() > 0;
+
+end
+
+function ENT:TimeRemaining()
+	
+	return self:GetExplodeDuration() - ( CurTime() - self:GetStartTime() );
 
 end

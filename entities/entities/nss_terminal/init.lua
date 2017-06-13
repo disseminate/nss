@@ -84,3 +84,10 @@ function ENT:Use( ply )
 	end
 
 end
+
+function ENT:UpdateTransmitState()
+
+	if( GAMEMODE:GetState() != STATE_GAME ) then return TRANSMIT_PVS; end
+	return TRANSMIT_ALWAYS;
+
+end

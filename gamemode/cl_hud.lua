@@ -238,12 +238,12 @@ function GM:HUDPaintSubsystems()
 	local y = 40;
 
 	local py = 20;
-	local rw = 170;
+	local rw = 240;
 	local sh = 14;
 	local fontSize = 16;
 
 	if( LocalPlayer():KeyDown( IN_SCORE ) ) then
-		rw = 300;
+		rw = 350;
 	end
 
 	local rowWidth = HUDApproachMap( "SubsystemRowWidth", rw, FrameTime() * 10 );
@@ -293,6 +293,14 @@ function GM:HUDPaintSubsystems()
 				local w, _ = surface.GetTextSize( text );
 				surface.SetTextPos( x + rowWidth - 20 - w - 4, y + ( py - fontSize ) / 2 );
 				surface.DrawText( text );
+				
+				local tr = math.ceil( ent:TimeRemaining() );
+				if( tr > 0 ) then
+					local text = tr .. "s";
+					local w, _ = surface.GetTextSize( text );
+					surface.SetTextPos( x + rowWidth - 20 - w - 4 - 50, y + ( py - fontSize ) / 2 );
+					surface.DrawText( text );
+				end
 			end
 		end
 		
