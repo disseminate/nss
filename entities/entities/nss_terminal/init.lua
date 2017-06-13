@@ -46,8 +46,7 @@ function ENT:Think()
 
 		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
 			
-			self:Explode(); -- TODO
-			--self:ProblemSolve();
+			self:Explode();
 
 		end
 
@@ -68,6 +67,15 @@ function ENT:Think()
 
 end
 
+function ENT:OnRemove()
+
+	if( self.WarningSound ) then
+		self.WarningSound:Stop();
+		self.WarningSound = nil;
+	end
+
+end
+
 function ENT:Explode()
 
 	local ed = EffectData();
@@ -76,11 +84,9 @@ function ENT:Explode()
 
 	util.BlastDamage( game.GetWorld(), self, self:GetPos() + Vector( 0, 0, 8 ), 256, 80 );
 
-	self:ProblemSolve();
+	GAMEMODE:DamageShip( self:GetSubsystem() );
 
-	--GAMEMODE:DamageShip( self:GetSubsystem() );
-
-	--self:Remove();
+	self:Remove();
 
 end
 

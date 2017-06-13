@@ -1,5 +1,5 @@
 UnlitGeneric {
-	$basetexture "skybox/nss_1rt"
+	$basetexture "skybox/nss_1ft"
 	$nofog 1
 	$ignorez 1
 }
