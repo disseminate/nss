@@ -15,9 +15,11 @@ net.Receive( "nPlayers", nPlayers );
 local function nSetSpawnTime( len )
 
 	local len = net.ReadFloat();
+	local r = net.ReadUInt( 4 );
 	local cam = net.ReadBool();
 
 	LocalPlayer().NextSpawnTime = len;
+	LocalPlayer().DeadReason = r;
 	LocalPlayer().DeadThirdCam = cam;
 
 end

@@ -61,6 +61,8 @@ function ENT:Explode()
 	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
 	util.Effect( "Explosion", ed );
 
+	util.BlastDamage( game.GetWorld(), self, self:GetPos() + Vector( 0, 0, 8 ), 256, 80 );
+
 	self:ProblemSolve();
 
 	--GAMEMODE:DamageShip( self:GetSubsystem() );

@@ -74,11 +74,20 @@ function GM:PlayerDeath( ply, inflictor, attacker )
 	self.BaseClass:PlayerDeath( ply, inflictor, attacker );
 	ply.NextSpawnTime = CurTime() + 60;
 
-	MsgN( inflictor );
+	local r = 0;
+
+	local cam = false;
+	if( inflictor:GetClass() == "nss_func_space" ) then
+		cam = true;
+		r = 1;
+	elseif( inflictor:GetClass() == "nss_terminal" ) then
+		r = 2;
+	end
 
 	net.Start( "nSetSpawnTime" );
 		net.WriteFloat( ply.NextSpawnTime );
-		net.WriteBool( true );
+		net.WriteUInt( r, 4 );
+		net.WriteBool( cam );
 	net.Send( ply );
 
 end

@@ -4,7 +4,8 @@ GM.NoHUDDraw = {
 	"CHudCrosshair",
 	"CHudHealth",
 	"CHudSecondaryAmmo",
-	"CHudWeaponSelection"
+	"CHudWeaponSelection",
+	"CHudDamageIndicator"
 };
 
 function GM:HUDShouldDraw( element )
@@ -72,6 +73,7 @@ function GM:HUDPaint()
 	else
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
+		self:HUDPaintHealth();
 	end
 
 end
@@ -117,9 +119,30 @@ function GM:HUDPaintDead()
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 	
 	local titleText = "You Died";
+	local reasonText;
+	if( LocalPlayer().DeadReason == 1 ) then
+		reasonText = "You were sucked out of an airlock.";
+	elseif( LocalPlayer().DeadReason == 2 ) then
+		reasonText = "You couldn't repair a terminal in time.";
+	end
+
 	local w, h = surface.GetTextSize( titleText );
 	surface.SetTextPos( ScrW() / 2 - w / 2, ScrH() / 2 - h / 2 );
 	surface.DrawText( titleText );
+
+	surface.SetFont( "NSS 24" );
+
+	local hh = 0;
+
+	if( reasonText ) then
+
+		local w2, h2 = surface.GetTextSize( "(" .. reasonText .. ")" );
+		surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 );
+		surface.DrawText( "(" .. reasonText .. ")" );
+
+		hh = h2 + 40;
+
+	end
 
 	surface.SetFont( "NSS 32" );
 	
@@ -132,7 +155,7 @@ function GM:HUDPaintDead()
 		text = "You can respawn in " .. string.ToMinutesSeconds( tl ) .. ".";
 	end
 	local w2, h2 = surface.GetTextSize( text );
-	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 );
+	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 + hh );
 	surface.DrawText( text );
 
 end
@@ -352,5 +375,34 @@ function GM:HUDPaintSubsystems()
 	local w0 = 200 - 4;
 	local w = w0 * ( hp / 5 );
 	surface.DrawRect( x + 2, y + 2, w, 10 - 4 );
+
+end
+
+function GM:HUDPaintHealth()
+
+	local ha = 255;
+	if( LocalPlayer():Health() >= LocalPlayer():GetMaxHealth() ) then
+		ha = 0;
+	end
+	local a = HUDApproachMap( "SelfHealthAlpha", ha, FrameTime() * 20 );
+	surface.SetAlphaMultiplier( a );
+
+	local barh = 20;
+	local barw = 200;
+
+	local x = 40;
+	local y = ScrH() - 40 - barh;
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, barw, barh );
+	surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
+
+	local hp = HUDApproachMap( "SelfHealth", math.Clamp( LocalPlayer():Health(), 0, LocalPlayer():GetMaxHealth() ), FrameTime() * 10 );
+
+	local w0 = barw - 4;
+	local w = w0 * ( hp / LocalPlayer():GetMaxHealth() );
+	surface.DrawRect( x + 2, y + 2, w, barh - 4 );
+
+	surface.SetAlphaMultiplier( 1 );
 
 end
