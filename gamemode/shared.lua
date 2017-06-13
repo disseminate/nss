@@ -24,3 +24,24 @@ function RequireDir( dir )
 	return EXPORTS;
 
 end
+
+function ScreenShake( size )
+
+	local amp, freq, dur;
+	if( size == 1 ) then
+		amp = 2;
+		freq = 10;
+		dur = 1;
+	elseif( size == 2 ) then
+		amp = 4;
+		freq = 10;
+		dur = 2;
+	else
+		amp = 10;
+		freq = 10;
+		dur = 3;
+	end
+
+	util.ScreenShake( Vector(), amp, freq, dur, 32768 );
+
+end

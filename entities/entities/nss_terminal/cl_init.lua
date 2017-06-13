@@ -6,27 +6,28 @@ function ENT:Draw()
 
 	self:DrawModel();
 
-	if( self:GetExplodeTime() > 0 and CurTime() < self:GetExplodeTime() ) then
+	if( #player.GetJoined() == 0 ) then return end
+	if( GAMEMODE:GetState() != STATE_GAME ) then return end
 
-		local tl = self:GetExplodeTime() - CurTime();
+	if( self:IsDamaged() ) then
+
+		local tl = self:GetExplodeDuration() - ( CurTime() - self:GetStartTime() );
 		local id = self:GetSubsystem();
 		local ss = GAMEMODE.Subsystems[id];
 
-		local fps = 1;
+		local fps = math.Clamp( 1 - ( CurTime() - self:GetStartTime() ) / self:GetExplodeDuration(), 0.01, 1 );
 
-		if( tl < 4 ) then
-			fps = 0.1;
-		elseif( tl < 10 ) then
-			fps = 0.2;
-		elseif( tl < 20 ) then
-			fps = 0.4;
-		elseif( tl < 40 ) then
-			fps = 0.7;
+		if( self.LightOn == nil ) then
+			self.LightOn = false;
+			self.NextLightToggle = CurTime();
 		end
 
-		local on = CurTime() % fps < ( fps / 2 );
+		if( self.NextLightToggle and CurTime() >= self.NextLightToggle ) then
+			self.NextLightToggle = CurTime() + fps;
+			self.LightOn = !self.LightOn;
+		end
 
-		if( on ) then
+		if( self.LightOn ) then
 
 			render.SetMaterial( self.SpriteMat );
 			render.DrawSprite( self:GetPos() + self:GetUp() * 48 + self:GetForward() * 4, 16, 16, Color( 255, 0, 0 ) );
@@ -37,8 +38,10 @@ function ENT:Draw()
 		cang:RotateAroundAxis( self:GetUp(), 90 );
 		cang:RotateAroundAxis( self:GetRight(), -90 );
 
-		cam.Start3D2D( self:GetPos() + self:GetUp() * 80 + self:GetForward() * -20, cang, 0.25 );
-			surface.SetFont( "NSS Title 24" );
+		cam.Start3D2D( self:GetPos() + self:GetUp() * 90 + self:GetForward() * -20, cang, 0.125 );
+			surface.DrawProgressCircle( 0, 32, ( CurTime() - self:GetStartTime() ) / self:GetExplodeDuration(), 100 );
+
+			surface.SetFont( "NSS Title 32" );
 
 			local tAcro = ss.Acronym;
 			local tTime = math.ceil( tl );
@@ -52,7 +55,7 @@ function ENT:Draw()
 
 			y = y + h;
 
-			surface.SetFont( "NSS Title 48" );
+			surface.SetFont( "NSS Title 64" );
 			local w, h = surface.GetTextSize( tTime );
 			surface.SetTextPos( -w / 2, y );
 			surface.DrawText( tTime );

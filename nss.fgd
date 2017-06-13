@@ -3,3 +3,7 @@
 @PointClass base(Targetname, Angles) studio("models/props_combine/combine_interface001.mdl") = nss_terminal : "NSS Terminal"
 [
 ]
+
+@SolidClass base(Trigger) = nss_func_space : "Space" 
+[
+]

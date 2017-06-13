@@ -4,6 +4,10 @@ function GM:GetState()
 		return STATE_PREGAME;
 	end
 
+	if( self.Lost ) then
+		return STATE_LOST;
+	end
+
 	local t = ( CurTime() - self.StateCycleStart ) % ( STATE_TIMES[STATE_PREGAME] + STATE_TIMES[STATE_GAME] + STATE_TIMES[STATE_POSTGAME] );
 	
 	if( t < STATE_TIMES[STATE_PREGAME] ) then
@@ -20,6 +24,18 @@ function GM:TimeLeftInState()
 
 	if( !self.StateCycleStart ) then
 		return 0;
+	end
+
+	local state = self:GetState();
+
+	if( state == STATE_LOST ) then
+		if( !self.LoseResetTime ) then
+			self.LoseResetTime = CurTime();
+		end
+
+		return math.Clamp( 30 - ( CurTime() - self.LoseResetTime ), 0, 30 );
+	elseif( self.LoseResetTime ) then
+		self.LoseResetTime = nil;
 	end
 
 	local state = self:GetState();

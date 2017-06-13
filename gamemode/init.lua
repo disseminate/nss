@@ -1,17 +1,27 @@
 include( "sh_enum.lua" );
 include( "shared.lua" );
+include( "sh_player.lua" );
 include( "sh_state.lua" );
+include( "sh_subsystems.lua" );
+include( "sv_effects.lua" );
 include( "sv_player.lua" );
 include( "sv_think.lua" );
 include( "sv_subsystems.lua" );
 include( "sv_state.lua" );
 
+AddCSLuaFile( "cl_binds.lua" );
+AddCSLuaFile( "cl_calcview.lua" );
 AddCSLuaFile( "cl_gui.lua" );
 AddCSLuaFile( "cl_hud.lua" );
+AddCSLuaFile( "cl_map.lua" );
 AddCSLuaFile( "cl_init.lua" );
+AddCSLuaFile( "cl_players.lua" );
+AddCSLuaFile( "cl_scoreboard.lua" );
 AddCSLuaFile( "cl_skin.lua" );
 AddCSLuaFile( "cl_state.lua" );
 AddCSLuaFile( "cl_subsystems.lua" );
 AddCSLuaFile( "sh_enum.lua" );
+AddCSLuaFile( "sh_player.lua" );
 AddCSLuaFile( "sh_state.lua" );
+AddCSLuaFile( "sh_subsystems.lua" );
 AddCSLuaFile( "shared.lua" );
