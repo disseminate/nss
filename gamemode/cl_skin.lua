@@ -19,6 +19,7 @@ SKIN.COLOR_STATUS_DESTROYED = Color( 255, 60, 53 );
 SKIN.COLOR_HEALTH = Color( 255, 30, 30 );
 SKIN.COLOR_LOSE = Color( 200, 0, 0 );
 SKIN.COLOR_WIN = Color( 50, 255, 100 );
+SKIN.COLOR_TERMINALSOLVE = Color( 40, 160, 255 );
 
 local png = "unlitgeneric noclamp";
 SKIN.ICON_AUDIO_ON = Material( "nss/icons/audio-on.png", png );
@@ -26,6 +27,7 @@ SKIN.ICON_AUDIO_OFF = Material( "nss/icons/audio-off.png", png );
 SKIN.ICON_ARROW = Material( "nss/icons/arrow.png", png );
 SKIN.ICON_CHEVRON = Material( "nss/icons/chevron.png", png );
 SKIN.ICON_BAR = Material( "nss/icons/bar.png", png );
+SKIN.ICON_KEYCAP = Material( "nss/icons/keycap.png", png );
 
 derma.DefineSkin( "NSS", "NSS Skin", SKIN );
 

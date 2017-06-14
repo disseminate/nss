@@ -92,3 +92,9 @@ function GM:PlayerDeath( ply, inflictor, attacker )
 
 end
 util.AddNetworkString( "nSetSpawnTime" );
+
+function GM:PlayerShouldTakeDamage( ply, attacker )
+
+	return self:GetState() == STATE_GAME;
+
+end

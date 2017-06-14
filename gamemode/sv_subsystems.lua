@@ -115,3 +115,26 @@ function GM:DeploySubsystemFault()
 	end
 
 end
+
+function GM:StartTerminalSolve( ent, ply )
+
+	net.Start( "nStartTerminalSolve" );
+		net.WriteEntity( ent );
+		net.WriteUInt( math.random( TASK_MASH, TASK_ROW ), 5 );
+	net.Send( ply );
+
+end
+util.AddNetworkString( "nStartTerminalSolve" );
+
+local function nTerminalSolve( len, ply )
+
+	local e = net.ReadEntity();
+	if( !e or !e:IsValid() ) then return end
+
+	if( ply:GetPos():Distance( e:GetPos() ) > 100 ) then return end
+
+	e:ProblemSolve( ply );
+
+end
+net.Receive( "nTerminalSolve", nTerminalSolve );
+util.AddNetworkString( "nTerminalSolve" );

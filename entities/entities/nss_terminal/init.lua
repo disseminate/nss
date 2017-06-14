@@ -20,20 +20,26 @@ function ENT:SelectProblem( id )
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 5, 20 ) );
+	self:SetExplodeDuration( math.Rand( 300, 1200 ) );
 	self:SetStartTime( CurTime() );
 
 	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 
 end
 
-function ENT:ProblemSolve()
+function ENT:ProblemSolve( ply )
 
 	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
 
 	self:SetSubsystem( "" );
 	self:SetExplodeDuration( 0 );
 	self:SetStartTime( 0 );
+
+	self:EmitSound( Sound( "buttons/button5.wav" ) );
+
+	if( ply and ply:IsValid() ) then
+		ply:EmitSound( Sound( "ambient/machines/keyboard7_clicks_enter.wav" ) );
+	end
 
 end
 
@@ -84,9 +90,10 @@ function ENT:Explode()
 
 	util.BlastDamage( game.GetWorld(), self, self:GetPos() + Vector( 0, 0, 8 ), 256, 80 );
 
-	GAMEMODE:DamageShip( self:GetSubsystem() );
+	self:ProblemSolve();
+	--GAMEMODE:DamageShip( self:GetSubsystem() );
 
-	self:Remove();
+	--self:Remove();
 
 end
 
@@ -95,8 +102,8 @@ function ENT:Use( ply )
 	if( self:IsDamaged() ) then
 
 		-- todo: skill
-		self:ProblemSolve();
-		self:EmitSound( Sound( "buttons/button5.wav" ) );
+		GAMEMODE:StartTerminalSolve( self, ply );
+		--self:ProblemSolve();
 
 	else
 
