@@ -93,6 +93,8 @@ function GM:TerminalSolveThink()
 
 		if( !self.TerminalSolveEnt or !self.TerminalSolveEnt:IsValid() ) then
 			self:ClearTerminalSolve();
+		elseif( !self.TerminalSolveEnt:IsDamaged() ) then
+			self:ClearTerminalSolve();
 		elseif( self.TerminalSolveEnt:GetPos():Distance( LocalPlayer():GetPos() ) > 100 ) then
 			self:ClearTerminalSolve();
 		end
