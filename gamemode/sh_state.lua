@@ -33,7 +33,7 @@ function GM:TimeLeftInState()
 			self.LoseResetTime = CurTime();
 		end
 
-		return math.Clamp( 3000 - ( CurTime() - self.LoseResetTime ), 0, 3000 );
+		return math.Clamp( 30 - ( CurTime() - self.LoseResetTime ), 0, 30 );
 	elseif( self.LoseResetTime ) then
 		self.LoseResetTime = nil;
 	end

@@ -12,6 +12,38 @@ function GM:SubsystemThink()
 
 	end
 
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self:SubsystemBroken( k ) and v.DestroyedThink ) then
+
+			v.DestroyedThink();
+
+		end
+
+	end
+
+	if( self:SubsystemBroken( "vacuum" ) and self:SubsystemBroken( "airlock" ) ) then
+
+		for _, v in pairs( player.GetAll() ) do
+
+			local vel = Vector();
+			
+			for _, n in pairs( ents.FindByClass( "nss_func_space" ) ) do
+
+				local a, b = n:GetRotatedAABB( n:OBBMins(), n:OBBMaxs() );
+				local pos = ( n:GetPos() + ( a + b ) / 2 );
+
+				local s = ( pos - v:GetPos() );
+				vel = vel + s:GetNormal() * ( 1 / math.pow( v:GetPos():DistToSqr( pos ), 1.5 ) ) * 1e8;
+				
+			end
+
+			v:SetVelocity( vel );
+
+		end
+
+	end
+
 end
 
 function GM:DamageShip( sys )
@@ -42,7 +74,7 @@ util.AddNetworkString( "nSetShipHealth" );
 function GM:KillShip()
 
 	self.Lost = true;
-	
+
 	for _, v in pairs( player.GetAll() ) do
 		v:BroadcastStats();
 	end

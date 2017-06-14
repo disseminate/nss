@@ -21,7 +21,7 @@ function ENT:SelectProblem( id )
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 300, 1200 ) );
+	self:SetExplodeDuration( math.Rand( 30, 120 ) );
 	self:SetStartTime( CurTime() );
 	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 
@@ -92,10 +92,9 @@ function ENT:Explode()
 
 	util.BlastDamage( game.GetWorld(), self, self:GetPos() + Vector( 0, 0, 8 ), 256, 80 );
 
-	self:ProblemSolve();
-	--GAMEMODE:DamageShip( self:GetSubsystem() );
+	GAMEMODE:DamageShip( self:GetSubsystem() );
 
-	--self:Remove();
+	self:Remove();
 
 end
 

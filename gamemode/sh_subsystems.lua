@@ -8,6 +8,12 @@ function GM:GetSubsystemState( id )
 
 end
 
+function GM:SubsystemBroken( id )
+
+	return self:GetSubsystemState( id ) == SUBSYSTEM_STATE_BROKEN;
+
+end
+
 function GM:GetSubsystemTerminal( id )
 
 	for _, v in pairs( ents.FindByClass( "nss_terminal" ) ) do

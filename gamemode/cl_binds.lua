@@ -15,3 +15,9 @@ function GM:PlayerBindPress( ply, bind, down )
 	end
 
 end
+
+function GM:ChatText( idx, name, text, type )
+
+	if( type == "servermsg" ) then return true end
+
+end
