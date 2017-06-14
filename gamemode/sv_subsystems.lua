@@ -120,7 +120,6 @@ function GM:StartTerminalSolve( ent, ply )
 
 	net.Start( "nStartTerminalSolve" );
 		net.WriteEntity( ent );
-		net.WriteUInt( math.random( TASK_MASH, TASK_ROW ), 5 );
 	net.Send( ply );
 
 end

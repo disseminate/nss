@@ -80,7 +80,9 @@ end
 local function nStartTerminalSolve( len )
 
 	local ent = net.ReadEntity();
-	local mode = net.ReadUInt( 5 );
+	if( !ent or !ent:IsValid() ) then return end
+	
+	local mode = ent:GetTerminalSolveMode();
 
 	GAMEMODE:MakeTerminalSolve( ent, mode );
 

@@ -10,6 +10,7 @@ function ENT:SelectRandomProblem()
 	self:SetSubsystem( id );
 	self:SetExplodeDuration( math.Rand( 30, 120 ) );
 	self:SetStartTime( CurTime() );
+	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 
 	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 
@@ -22,6 +23,7 @@ function ENT:SelectProblem( id )
 	self:SetSubsystem( id );
 	self:SetExplodeDuration( math.Rand( 300, 1200 ) );
 	self:SetStartTime( CurTime() );
+	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 
 	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 

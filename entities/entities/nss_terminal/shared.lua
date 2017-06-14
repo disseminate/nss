@@ -29,6 +29,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "Subsystem" );
 	self:NetworkVar( "Float", 0, "ExplodeDuration" );
 	self:NetworkVar( "Float", 1, "StartTime" );
+	self:NetworkVar( "Int", 0, "TerminalSolveMode" );
 
 end
 
