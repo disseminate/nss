@@ -28,6 +28,7 @@ function GM:Reset()
 	for _, v in pairs( player.GetAll() ) do
 
 		v:Spawn();
+		v:ResetAllStats();
 
 	end
 
@@ -99,6 +100,11 @@ end
 function GM:WinShip()
 
 	self.StateCycleStart = CurTime() - STATE_TIMES[STATE_GAME] - STATE_TIMES[STATE_PREGAME] + 1;
+
+	for _, v in pairs( player.GetAll() ) do
+		v:BroadcastStats();
+	end
+
 	self:BroadcastState();
 
 end

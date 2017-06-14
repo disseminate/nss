@@ -103,9 +103,7 @@ function ENT:Use( ply )
 
 	if( self:IsDamaged() ) then
 
-		-- todo: skill
 		GAMEMODE:StartTerminalSolve( self, ply );
-		--self:ProblemSolve();
 
 	else
 

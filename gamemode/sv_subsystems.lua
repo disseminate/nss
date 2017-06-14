@@ -42,6 +42,10 @@ util.AddNetworkString( "nSetShipHealth" );
 function GM:KillShip()
 
 	self.Lost = true;
+	
+	for _, v in pairs( player.GetAll() ) do
+		v:BroadcastStats();
+	end
 	self:BroadcastState();
 
 end
@@ -119,8 +123,9 @@ end
 function GM:StartTerminalSolve( ent, ply )
 
 	net.Start( "nStartTerminalSolve" );
+		net.WriteEntity( ply );
 		net.WriteEntity( ent );
-	net.Send( ply );
+	net.Broadcast();
 
 end
 util.AddNetworkString( "nStartTerminalSolve" );
@@ -133,6 +138,8 @@ local function nTerminalSolve( len, ply )
 	if( ply:GetPos():Distance( e:GetPos() ) > 100 ) then return end
 
 	e:ProblemSolve( ply );
+
+	ply:AddToStat( STAT_TERMINALS, 1 );
 
 end
 net.Receive( "nTerminalSolve", nTerminalSolve );

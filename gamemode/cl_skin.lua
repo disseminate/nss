@@ -21,6 +21,10 @@ SKIN.COLOR_LOSE = Color( 200, 0, 0 );
 SKIN.COLOR_WIN = Color( 50, 255, 100 );
 SKIN.COLOR_TERMINALSOLVE = Color( 40, 160, 255 );
 
+SKIN.COLOR_GOLD = Color( 201, 137, 16 );
+SKIN.COLOR_SILVER = Color( 168, 168, 168 );
+SKIN.COLOR_BRONZE = Color( 150, 90, 56 );
+
 local png = "unlitgeneric noclamp";
 SKIN.ICON_AUDIO_ON = Material( "nss/icons/audio-on.png", png );
 SKIN.ICON_AUDIO_OFF = Material( "nss/icons/audio-off.png", png );

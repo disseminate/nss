@@ -1,7 +1,9 @@
 include( "sh_enum.lua" );
 include( "shared.lua" );
+include( "sh_anim.lua" );
 include( "sh_player.lua" );
 include( "sh_state.lua" );
+include( "sh_stats.lua" );
 include( "sh_subsystems.lua" );
 include( "cl_binds.lua" );
 include( "cl_calcview.lua" );

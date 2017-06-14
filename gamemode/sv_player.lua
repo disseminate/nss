@@ -15,6 +15,7 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendPlayers();
 	ply:SendState();
 	ply:SendShipHealth();
+	ply:ResetAllStats();
 
 	for k, v in pairs( self.Subsystems ) do
 
@@ -98,3 +99,23 @@ function GM:PlayerShouldTakeDamage( ply, attacker )
 	return self:GetState() == STATE_GAME;
 
 end
+
+function GM:ScalePlayerDamage( ply, hg, dmg )
+
+	ply:AddToStat( STAT_DMG, dmg:GetDamage() );
+
+	return self.BaseClass:ScalePlayerDamage( ply, hg, dmg );
+
+end
+
+function meta:BroadcastStats()
+
+	net.Start( "nBroadcastStats" );
+		net.WriteEntity( self );
+		for i = STAT_TERMINALS, STAT_DMG do
+			net.WriteUInt( self:GetStat( i ), 16 );
+		end
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nBroadcastStats" );

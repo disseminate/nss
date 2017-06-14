@@ -90,6 +90,12 @@ function GM:HUDPaint()
 		HUDSetMap( "WinX3", -ScrW() );
 	end
 
+	if( self:GetState() == STATE_GAME ) then
+		HUDSetMap( "StatsY", -ScrH() );
+		HUDSetMap( "StatsY2", -ScrH() );
+		HUDSetMap( "StatsY3", -ScrH() );
+	end
+
 	if( !LocalPlayer().Joined ) then
 		self:HUDPaintNotJoined();
 	elseif( self:GetState() == STATE_LOST ) then
@@ -269,6 +275,8 @@ function GM:HUDPaintLost()
 		surface.SetTextPos( x, ScrH() - 50 - h - 40 - h2 - 20 );
 		surface.DrawText( text );
 
+		self:HUDPaintStats( tSince - 1.5 );
+
 		surface.SetAlphaMultiplier( 1 );
 
 	else
@@ -324,6 +332,100 @@ function GM:HUDPaintWon()
 	surface.SetTextColor( col );
 	surface.SetTextPos( x, ScrH() - 50 - h - 40 - h2 - 20 );
 	surface.DrawText( text );
+
+	local tSince = CurTime() - self.OutroStart;
+
+	self:HUDPaintStats( tSince);
+
+end
+
+function GM:HUDPaintStats( ct ) -- ct starts at 0
+
+	if( ct < 0 ) then return end
+
+	local colw = 300;
+	local pad = 40;
+
+	local x = ScrW() / 2 - ( colw / 2 ) - pad - colw;
+	local y = HUDApproachMap( "StatsY", 240, FrameTime() * 4 );
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+
+	surface.SetFont( "NSS 32" );
+	surface.SetTextPos( x + 20, y + 20 );
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	surface.DrawText( "Most Damage Taken" );
+
+	local plTab = player.GetAll();
+	table.sort( plTab, function( a, b ) return a:GetStat( STAT_DMG ) > b:GetStat( STAT_DMG ); end );
+
+	local function drawPlayerList( tab, stat, x, y )
+
+		local _y = y + 20 + 20 + 30;
+		
+		for i = 1, math.min( #tab, 10 ) do
+			local dy = 0;
+			if( i == 1 ) then
+				surface.SetFont( "NSS 30" );
+				surface.SetTextColor( self:GetSkin().COLOR_GOLD );
+				dy = 10;
+			elseif( i == 2 ) then
+				surface.SetFont( "NSS 26" );
+				surface.SetTextColor( self:GetSkin().COLOR_SILVER );
+				dy = 6;
+			elseif( i == 3 ) then
+				surface.SetFont( "NSS 24" );
+				surface.SetTextColor( self:GetSkin().COLOR_BRONZE );
+				dy = 4;
+			else
+				surface.SetFont( "NSS 20" );
+				surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+			end
+			local _w, _ = surface.GetTextSize( "" .. tab[i]:GetStat( stat ) );
+			surface.SetTextPos( x + 20, _y );
+			surface.DrawText( tab[i]:Nick() );
+
+			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+			surface.SetTextPos( x + colw - _w - 20, _y );
+			surface.DrawText( "" .. tab[i]:GetStat( stat ) );
+
+			_y = _y + 30 + dy;
+		end
+
+	end;
+
+	drawPlayerList( plTab, STAT_DMG, x, y );
+
+	local x = ScrW() / 2 - ( colw / 2 );
+	local y = HUDApproachMap( "StatsY2", 240, FrameTime() * 3 );
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+
+	surface.SetFont( "NSS 32" );
+	surface.SetTextPos( x + 20, y + 20 );
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	surface.DrawText( "Most Terminals Fixed" );
+
+	local plTab = player.GetAll();
+	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) > b:GetStat( STAT_TERMINALS ); end );
+	drawPlayerList( plTab, STAT_TERMINALS, x, y );
+
+	local x = ScrW() / 2 + ( colw / 2 ) + pad;
+	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+	
+	surface.SetFont( "NSS 32" );
+	surface.SetTextPos( x + 20, y + 20 );
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	surface.DrawText( "Most Useless" );
+
+	local plTab = player.GetAll();
+	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) < b:GetStat( STAT_TERMINALS ); end );
+	drawPlayerList( plTab, STAT_TERMINALS, x, y );
 
 end
 
@@ -504,7 +606,7 @@ end
 
 function GM:HUDPaintSubsystemSolve()
 
-	if( self.TerminalSolveActive ) then
+	if( LocalPlayer().TerminalSolveActive ) then
 
 		local prog = HUDApproachMap( "TerminalSolveW", math.EaseInOut( self.TerminalSolveProgress, 0, 1 ), FrameTime() * 20 );
 
@@ -519,7 +621,7 @@ function GM:HUDPaintSubsystemSolve()
 		surface.DrawRect( ScrW() / 2 - ( barw - 4 ) * 0.5, y + 2, prog * ( barw - 4 ) * 0.5, barh - 4 );
 		surface.DrawRect( ScrW() / 2 + ( barw - 4 ) * 0.5 * ( 1 - prog ), y + 2, prog * ( barw - 4 ) * 0.5, barh - 4 );
 		
-		if( self.TerminalSolveMode == TASK_MASH ) then
+		if( LocalPlayer().TerminalSolveMode == TASK_MASH ) then
 			
 			local kw = HUDApproachMap( "KeyCapW", math.floor( CurTime() * 2 ) % 2 == 0 and 120 or 100, FrameTime() * 4 );
 
@@ -533,7 +635,7 @@ function GM:HUDPaintSubsystemSolve()
 			surface.SetTextPos( kx + 24, ky + 16 );
 			surface.DrawText( "1" );
 
-		elseif( self.TerminalSolveMode == TASK_ALTERNATE ) then
+		elseif( LocalPlayer().TerminalSolveMode == TASK_ALTERNATE ) then
 
 			if( !self.NextTerminalSolveKey ) then
 				self.NextTerminalSolveKey = KEY_1;
@@ -560,7 +662,7 @@ function GM:HUDPaintSubsystemSolve()
 			surface.SetTextPos( k2x + 24, k2y + 16 );
 			surface.DrawText( "2" );
 
-		elseif( self.TerminalSolveMode == TASK_ROW ) then
+		elseif( LocalPlayer().TerminalSolveMode == TASK_ROW ) then
 
 			if( !self.NextTerminalSolveKey ) then
 				self.NextTerminalSolveKey = KEY_1;

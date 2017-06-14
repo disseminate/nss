@@ -40,11 +40,11 @@ function GM:CalcView( ply, origin, angles, fov, znear, zfar )
 
 				else
 
-					if( self.TerminalSolveActive ) then
+					if( ply.TerminalSolveActive ) then
 
-						if( self.TerminalSolveEnt and self.TerminalSolveEnt:IsValid() ) then
+						if( ply.TerminalSolveEnt and ply.TerminalSolveEnt:IsValid() ) then
 
-							local ang = ( self.TerminalSolveEnt:GetPos() - ply:EyePos() ):Angle();
+							local ang = ( ply.TerminalSolveEnt:GetPos() - ply:EyePos() ):Angle();
 							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Forward() * -40;
 							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Right() * -40;
 							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Up() * 30;
@@ -75,7 +75,7 @@ function GM:ShouldDrawLocalPlayer( ply )
 	if( !LocalPlayer().Joined ) then return true end
 	if( self.CamZoomStart and CurTime() - self.CamZoomStart <= 1 ) then return true end
 	if( self:GetState() == STATE_LOST ) then return true end
-	if( self.TerminalSolveActive ) then return true end
+	if( ply.TerminalSolveActive ) then return true end
 	
 	return self.BaseClass:ShouldDrawLocalPlayer( ply );
 

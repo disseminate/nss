@@ -25,20 +25,35 @@ local function nSetSpawnTime( len )
 end
 net.Receive( "nSetSpawnTime", nSetSpawnTime );
 
+local function nBroadcastStats( len )
+
+	local ply = net.ReadEntity();
+
+	for i = STAT_TERMINALS, STAT_DMG do
+		local n = net.ReadUInt( 16 );
+		ply:SetStat( i, n );
+	end
+
+end
+net.Receive( "nBroadcastStats", nBroadcastStats );
+
 function GM:PlayerButtonDown( ply, i )
 
-	if( self.TerminalSolveActive ) then
+	if( ply.TerminalSolveActive ) then
 
-		if( self.TerminalSolveMode == TASK_MASH ) then
+		local g = ACT_GMOD_GESTURE_RANGE_FRENZY;
+
+		if( ply.TerminalSolveMode == TASK_MASH ) then
 
 			if( i == KEY_1 ) then
 
 				self:TerminalIncrement( 0.2 );
+				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
 			end
 
-		elseif( self.TerminalSolveMode == TASK_ALTERNATE ) then
+		elseif( ply.TerminalSolveMode == TASK_ALTERNATE ) then
 
 			if( !self.NextTerminalSolveKey ) then
 				self.NextTerminalSolveKey = KEY_1;
@@ -47,6 +62,7 @@ function GM:PlayerButtonDown( ply, i )
 			if( i == self.NextTerminalSolveKey ) then
 
 				self:TerminalIncrement( 0.4 );
+				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
 				if( self.NextTerminalSolveKey == KEY_1 ) then
@@ -57,7 +73,7 @@ function GM:PlayerButtonDown( ply, i )
 
 			end
 
-		elseif( self.TerminalSolveMode == TASK_ROW ) then
+		elseif( ply.TerminalSolveMode == TASK_ROW ) then
 
 			if( !self.NextTerminalSolveKey ) then
 				self.NextTerminalSolveKey = KEY_1;
@@ -66,6 +82,7 @@ function GM:PlayerButtonDown( ply, i )
 			if( i == self.NextTerminalSolveKey ) then
 
 				self:TerminalIncrement();
+				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
 				if( self.NextTerminalSolveKey == KEY_1 ) then
