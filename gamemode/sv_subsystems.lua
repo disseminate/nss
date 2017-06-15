@@ -46,7 +46,7 @@ function GM:SubsystemThink()
 				local pos = ( n:GetPos() + ( a + b ) / 2 );
 
 				local s = ( pos - v:GetPos() );
-				vel = vel + s:GetNormal() * ( 1 / math.pow( v:GetPos():DistToSqr( pos ), 1.5 ) ) * 1e8;
+				vel = vel + s:GetNormal() * ( 1 / math.pow( v:GetPos():DistToSqr( pos ), 1.5 ) ) * 1.5e8;
 				
 			end
 

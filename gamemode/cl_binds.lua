@@ -14,6 +14,8 @@ function GM:PlayerBindPress( ply, bind, down )
 
 	end
 
+	return self.BaseClass:PlayerBindPress( ply, bind, down );
+
 end
 
 function GM:ChatText( idx, name, text, type )

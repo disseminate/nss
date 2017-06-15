@@ -138,7 +138,7 @@ function GM:HUDPaintNotJoined()
 		
 		local text = "Press Space";
 		local w2, h2 = surface.GetTextSize( text );
-		surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 );
+		surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() - 90 - h / 2 );
 		surface.DrawText( text );
 
 	end

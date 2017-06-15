@@ -31,6 +31,20 @@ function GM:PlayerInitialSpawn( ply )
 
 end
 
+function GM:PlayerSpawn( ply )
+
+	player_manager.SetPlayerClass( ply, "nss" );
+
+	ply:UnSpectate();
+
+	ply:SetupHands();
+
+	player_manager.OnPlayerSpawn( ply );
+	player_manager.RunClass( ply, "Spawn" );
+	hook.Call( "PlayerSetModel", GAMEMODE, ply );
+
+end
+
 local function nJoin( len, ply )
 
 	if( !ply.Joined ) then
@@ -121,3 +135,9 @@ function meta:BroadcastStats()
 
 end
 util.AddNetworkString( "nBroadcastStats" );
+
+function GM:GetFallDamage( ply, speed )
+
+	return 0;
+
+end

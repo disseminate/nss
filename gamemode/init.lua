@@ -1,6 +1,7 @@
 include( "sh_enum.lua" );
 include( "shared.lua" );
 include( "sh_anim.lua" );
+include( "sh_class.lua" );
 include( "sh_player.lua" );
 include( "sh_state.lua" );
 include( "sh_stats.lua" );
@@ -25,6 +26,7 @@ AddCSLuaFile( "cl_state.lua" );
 AddCSLuaFile( "cl_subsystems.lua" );
 AddCSLuaFile( "cl_think.lua" );
 AddCSLuaFile( "sh_anim.lua" );
+AddCSLuaFile( "sh_class.lua" );
 AddCSLuaFile( "sh_enum.lua" );
 AddCSLuaFile( "sh_player.lua" );
 AddCSLuaFile( "sh_state.lua" );
