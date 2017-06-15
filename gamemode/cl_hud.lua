@@ -279,8 +279,27 @@ function GM:HUDPaintLost()
 
 		surface.SetAlphaMultiplier( 1 );
 
+		if( !self.ExplosionFXTime ) then
+			self.ExplosionFXTime = CurTime();
+			surface.PlaySound( Sound( "ambient/explosions/explode_" .. math.random( 2, 6 ) .. ".wav" ) );
+		end
+
+		if( CurTime() - self.ExplosionFXTime < 2 ) then
+			if( CurTime() - self.ExplosionFXTime < 1 ) then
+
+			elseif( CurTime() - self.ExplosionFXTime < 2 ) then
+				surface.SetAlphaMultiplier( 1 - ( CurTime() - self.ExplosionFXTime - 1 ) );
+			end
+
+			surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+			surface.DrawRect( 0, 0, ScrW(), ScrH() );
+
+			surface.SetAlphaMultiplier( 1 );
+		end
+
 	else
 
+		self.ExplosionFXTime = nil;
 		self:HUDCinematicBars();
 
 	end
@@ -333,9 +352,12 @@ function GM:HUDPaintWon()
 	surface.SetTextPos( x, ScrH() - 50 - h - 40 - h2 - 20 );
 	surface.DrawText( text );
 
-	local tSince = CurTime() - self.OutroStart;
+	if( self.OutroStart ) then
 
-	self:HUDPaintStats( tSince);
+		local tSince = CurTime() - self.OutroStart;
+		self:HUDPaintStats( tSince );
+
+	end
 
 end
 

@@ -5,10 +5,9 @@ function GM:GetNextDamageTime()
 	if( #player.GetJoined() == 0 ) then return 1e10; end
 	if( self:GetState() != STATE_GAME ) then return 1e10; end
 
-	local tmul = 0;
-	local tleft = 1 - ( self:TimeLeftInState() / STATE_TIMES[STATE_GAME] );
+	local tmul = 1 - ( self:TimeLeftInState() / STATE_TIMES[STATE_GAME] );
 
-	return math.Rand( 25 - tmul * 10, 40 - tmul * 10 ) / #player.GetJoined();
+	return math.Rand( 15 - tmul * 10, 30 - tmul * 10 ) / #player.GetJoined();
 
 end
 
