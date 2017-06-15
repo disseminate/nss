@@ -4,7 +4,7 @@ function player.GetJoined()
 
 	for _, v in pairs( player.GetAll() ) do
 
-		if( v.Joined ) then
+		if( v.Joined or v:IsBot() ) then
 
 			table.insert( tab, v );
 
@@ -54,5 +54,13 @@ function GM:SetupMove( ply, mv, cmd )
 	if( ply:GetRunSpeed() != run ) then
 		ply:SetRunSpeed( run );
 	end
+
+end
+
+function GM:ShouldCollide( e1, e2 )
+
+	if( e1:IsPlayer() and e2:IsPlayer() ) then return false end
+
+	return self.BaseClass:ShouldCollide( e1, e2 );
 
 end

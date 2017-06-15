@@ -1,5 +1,17 @@
 GM.ShipHealth = GM.ShipHealth or 5;
 
+function GM:GetNextDamageTime()
+
+	if( #player.GetJoined() == 0 ) then return 1e10; end
+	if( self:GetState() != STATE_GAME ) then return 1e10; end
+
+	local tmul = 0;
+	local tleft = 1 - ( self:TimeLeftInState() / STATE_TIMES[STATE_GAME] );
+
+	return math.Rand( 25 - tmul * 10, 40 - tmul * 10 ) / #player.GetJoined();
+
+end
+
 function GM:SubsystemThink()
 
 	if( #player.GetJoined() == 0 ) then return end
@@ -7,7 +19,7 @@ function GM:SubsystemThink()
 
 	if( !self.NextDamage or CurTime() >= self.NextDamage ) then
 
-		self.NextDamage = CurTime() + math.Rand( 1, 4 );
+		self.NextDamage = CurTime() + self:GetNextDamageTime();
 		self:DeploySubsystemFault();
 
 	end

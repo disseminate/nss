@@ -16,6 +16,14 @@ function GM:PostDraw2DSkyBox()
 
 end
 
+function GM:PrePlayerDraw( ply )
+
+	if( !ply:IsBot() ) then
+		if( !ply.Joined ) then return true end
+	end
+
+end
+
 function GM:SetSkybox( sky )
 
 	local textures = { "bk", "dn", "ft", "lf", "rt", "up" };

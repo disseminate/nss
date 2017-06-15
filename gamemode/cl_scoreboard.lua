@@ -35,7 +35,7 @@ function GM:ScoreboardShow()
 
 			for _, v in pairs( player.GetAll() ) do
 
-				if( !self.PlayerRows[v:SteamID()] or !self.PlayerRows[v:SteamID()]:IsValid() ) then
+				if( !self.PlayerRows[v:UserID()] or !self.PlayerRows[v:UserID()]:IsValid() ) then
 
 					local row = GAMEMODE:CreatePanel( self, TOP, 0, 40 ):DockMarginInline( 0, 0, 0, 10 );
 					row:SetPaintBackgroundEnabled( true );
@@ -89,7 +89,7 @@ function GM:ScoreboardShow()
 
 					end
 
-					self.PlayerRows[v:SteamID()] = row;
+					self.PlayerRows[v:UserID()] = row;
 
 				end
 

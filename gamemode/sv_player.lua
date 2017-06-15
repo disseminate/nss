@@ -17,6 +17,8 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendShipHealth();
 	ply:ResetAllStats();
 
+	ply:SetCustomCollisionCheck( true );
+
 	for k, v in pairs( self.Subsystems ) do
 
 		if( self.SubsystemStates[k] == SUBSYSTEM_STATE_BROKEN and v.OnDestroyedPlayerJoin ) then
@@ -73,7 +75,7 @@ end
 function GM:PlayerDeath( ply, inflictor, attacker )
 
 	self.BaseClass:PlayerDeath( ply, inflictor, attacker );
-	ply.NextSpawnTime = CurTime() + 60;
+	ply.NextSpawnTime = CurTime() + 20;
 
 	local r = 0;
 

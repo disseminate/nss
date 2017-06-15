@@ -355,7 +355,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-	surface.DrawText( "Most Damage Taken" );
+	surface.DrawText( "Damage Taken" );
 
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_DMG ) > b:GetStat( STAT_DMG ); end );
@@ -406,7 +406,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-	surface.DrawText( "Most Terminals Fixed" );
+	surface.DrawText( "Terminals Fixed" );
 
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) > b:GetStat( STAT_TERMINALS ); end );

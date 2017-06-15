@@ -5,14 +5,7 @@ include( "shared.lua" );
 function ENT:SelectRandomProblem()
 	
 	local id = table.Random( table.GetKeys( GAMEMODE.Subsystems ) );
-	local ss = GAMEMODE.Subsystems[id];
-
-	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 30, 120 ) );
-	self:SetStartTime( CurTime() );
-	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
-
-	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
+	self:SelectProblem( id );
 
 end
 
@@ -21,7 +14,7 @@ function ENT:SelectProblem( id )
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 30, 120 ) );
+	self:SetExplodeDuration( math.Rand( 25, 55 ) );
 	self:SetStartTime( CurTime() );
 	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 

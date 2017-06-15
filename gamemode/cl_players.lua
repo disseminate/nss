@@ -47,7 +47,7 @@ function GM:PlayerButtonDown( ply, i )
 
 			if( i == KEY_1 ) then
 
-				self:TerminalIncrement( 0.2 );
+				self:TerminalIncrement( 0.4 );
 				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
@@ -61,7 +61,7 @@ function GM:PlayerButtonDown( ply, i )
 
 			if( i == self.NextTerminalSolveKey ) then
 
-				self:TerminalIncrement( 0.4 );
+				self:TerminalIncrement( 0.7 );
 				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
