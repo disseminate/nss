@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Warp";
 tab.Acronym = "WRP";
+tab.Teams = { TEAM_ENG, TEAM_PRO, TEAM_OFF };
 
 local mat;
 if( CLIENT ) then

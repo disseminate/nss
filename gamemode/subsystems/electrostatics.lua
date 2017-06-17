@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Anti-Electrostatics";
 tab.Acronym = "FRI";
+tab.Teams = { TEAM_PRO };
 
 tab.OnDestroyed = function()
 

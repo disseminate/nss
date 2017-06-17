@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Engine";
 tab.Acronym = "ENG";
+tab.Teams = { TEAM_ENG, TEAM_PRO, TEAM_OFF };
 
 tab.DestroyedThink = function()
 
