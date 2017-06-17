@@ -78,6 +78,10 @@ function GM:ScoreboardShow()
 
 						end
 
+						if( self.Name:GetTextColor() != team.GetColor( self.Player:Team() ) ) then
+							self.Name:SetTextColor( team.GetColor( self.Player:Team() ) );
+						end
+
 						if( self.Ping:GetText() != self.Player:Ping() ) then
 
 							self.Ping:SetText( self.Player:Ping() );

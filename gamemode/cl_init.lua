@@ -17,4 +17,5 @@ include( "cl_scoreboard.lua" );
 include( "cl_skin.lua" );
 include( "cl_state.lua" );
 include( "cl_subsystems.lua" );
+include( "cl_teams.lua" );
 include( "cl_think.lua" );

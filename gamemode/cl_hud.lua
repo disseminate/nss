@@ -531,51 +531,66 @@ function GM:HUDPaintSubsystems()
 		surface.SetTextPos( x + sh + 10, y + ( py - fontSize ) / 2 );
 		surface.DrawText( text );
 
+		local _w, _ = surface.GetTextSize( text );
+		local xInd = x + sh + 10 + _w + 10;
+
 		if( ssState == SUBSYSTEM_STATE_DANGER ) then
 			local ent = self:GetSubsystemTerminal( k );
 
 			if( ent and ent:IsValid() ) then
-				local fwd = LocalPlayer():EyeAngles().y;
-				local diffPos = ( ent:GetPos() - LocalPlayer():EyePos() );
-				local tdir = diffPos:Angle().y;
-				local adist = math.AngleDifference( tdir, fwd );
 
-				local xx = x + rowWidth - 20 + 10 - 2;
-
-				surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-				surface.SetMaterial( self:GetSkin().ICON_ARROW );
-				surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, adist + 90 );
-
-				xx = xx - 16 - 4;
-
-				if( diffPos.z > 100 ) then
-					surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
-					surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 90 );
-				elseif( diffPos.z < -100 ) then
-					surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
-					surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 270 );
+				for _, v in pairs( v.Teams ) do
+					if( ent:GetNeedsTeam( v ) ) then
+						surface.SetDrawColor( team.GetColor( v ) );
+						surface.DrawRect( xInd, y + 7, 6, 6 );
+						xInd = xInd + 6 + 4;
+					end
 				end
 
-				xx = xx - 16 - 30;
+				if( ent:GetNeedsTeam( LocalPlayer():Team() ) ) then
 
-				local dist = math.ceil( diffPos:Length() * 19.05 / ( 10 * 100 ) ) - 2;
-				local text = dist .. "m";
-				local w, _ = surface.GetTextSize( text );
-				surface.SetTextPos( xx, y + ( py - fontSize ) / 2 );
-				surface.DrawText( text );
-				
-				local tr = ent:TimeRemaining();
-				local tt = ent:GetExplodeDuration();
-				if( math.ceil( tr ) > 0 ) then
-					local text = math.ceil( tr ) .. "s";
+					local fwd = LocalPlayer():EyeAngles().y;
+					local diffPos = ( ent:GetPos() - LocalPlayer():EyePos() );
+					local tdir = diffPos:Angle().y;
+					local adist = math.AngleDifference( tdir, fwd );
+
+					local xx = x + rowWidth - 20 + 10 - 2;
+
+					surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+					surface.SetMaterial( self:GetSkin().ICON_ARROW );
+					surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, adist + 90 );
+
+					xx = xx - 16 - 4;
+
+					if( diffPos.z > 100 ) then
+						surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
+						surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 90 );
+					elseif( diffPos.z < -100 ) then
+						surface.SetMaterial( self:GetSkin().ICON_CHEVRON );
+						surface.DrawTexturedRectRotated( xx, y + 10 - 2, 16, 16, 270 );
+					end
+
+					xx = xx - 16 - 30;
+
+					local dist = math.ceil( diffPos:Length() * 19.05 / ( 10 * 100 ) ) - 2;
+					local text = dist .. "m";
 					local w, _ = surface.GetTextSize( text );
-					surface.SetTextPos( xx - 50, y + ( py - fontSize ) / 2 );
+					surface.SetTextPos( xx, y + ( py - fontSize ) / 2 );
 					surface.DrawText( text );
---[[
-					local perc = tr / tt;
-					surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
-					surface.DrawRect( x, y + py - 1, rowWidth * perc, 1 );
-					--]]
+					
+					local tr = ent:TimeRemaining();
+					local tt = ent:GetExplodeDuration();
+					if( math.ceil( tr ) > 0 ) then
+						local text = math.ceil( tr ) .. "s";
+						local w, _ = surface.GetTextSize( text );
+						surface.SetTextPos( xx - 50, y + ( py - fontSize ) / 2 );
+						surface.DrawText( text );
+	--[[
+						local perc = tr / tt;
+						surface.SetDrawColor( self:GetSkin().COLOR_HEALTH );
+						surface.DrawRect( x, y + py - 1, rowWidth * perc, 1 );
+						--]]
+					end
 				end
 			end
 		end

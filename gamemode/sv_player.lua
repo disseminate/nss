@@ -33,24 +33,6 @@ function GM:PlayerInitialSpawn( ply )
 
 end
 
-function meta:SetTeamAuto()
-
-	local eng = #team.GetPlayers( TEAM_ENG );
-	local pro = #team.GetPlayers( TEAM_PRO );
-	local off = #team.GetPlayers( TEAM_OFF );
-
-	local lowest = TEAM_ENG;
-	if( pro < eng ) then
-		lowest = TEAM_PRO;
-	end
-	if( off < eng and off < pro ) then
-		lowest = TEAM_OFF;
-	end
-
-	self:SetTeam( lowest );
-
-end
-
 function GM:PlayerSpawn( ply )
 
 	player_manager.SetPlayerClass( ply, "nss" );

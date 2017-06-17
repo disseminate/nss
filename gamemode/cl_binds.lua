@@ -12,6 +12,21 @@ function GM:PlayerBindPress( ply, bind, down )
 
 		end
 
+		if( bind == "gm_showteam" and LocalPlayer().Joined ) then
+
+			if( self:GetState() != STATE_GAME ) then
+
+				self:ChangeTeamDialogue();
+				return true;
+
+			else
+		
+				chat.AddText( Color( 255, 255, 255 ), "You can't change your team during the game!" );
+
+			end
+
+		end
+
 	end
 
 	return self.BaseClass:PlayerBindPress( ply, bind, down );

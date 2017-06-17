@@ -8,6 +8,7 @@ SKIN.GwenTexture	= Material( "gwenskin/GModDefault.png" )
 SKIN.COLOR_WHITE = Color( 255, 255, 255 );
 SKIN.COLOR_GRAY = Color( 255, 255, 255, 150 );
 SKIN.COLOR_WHITE_TRANS = Color( 255, 255, 255, 100 );
+SKIN.COLOR_GLASS_LIGHT = Color( 0, 0, 0, 80 );
 SKIN.COLOR_GLASS = Color( 0, 0, 0, 150 );
 SKIN.COLOR_GLASS_DARK = Color( 0, 0, 0, 170 );
 SKIN.COLOR_BLACK = Color( 0, 0, 0, 255 );
@@ -32,6 +33,59 @@ SKIN.ICON_ARROW = Material( "nss/icons/arrow.png", png );
 SKIN.ICON_CHEVRON = Material( "nss/icons/chevron.png", png );
 SKIN.ICON_BAR = Material( "nss/icons/bar.png", png );
 SKIN.ICON_KEYCAP = Material( "nss/icons/keycap.png", png );
+SKIN.ICON_CLOSE = Material( "nss/icons/close.png", png );
+
+function SKIN:PaintFrame( panel, w, h )
+
+	surface.SetDrawColor( self.COLOR_GLASS );
+	surface.DrawRect( 0, 0, w, h );
+	surface.DrawRect( 0, 0, w, 24 );
+
+end
+
+function SKIN:PaintButton( panel, w, h )
+
+	if( panel.BackgroundColor ) then
+
+		if( panel:IsDown() ) then
+
+			surface.SetDrawColor( panel.DarkBackgroundColor );
+			surface.DrawRect( 0, 0, w, h );
+
+		elseif( panel:IsHovered() ) then
+
+			surface.SetDrawColor( panel.LightBackgroundColor );
+			surface.DrawRect( 0, 0, w, h );
+
+		else
+			
+			surface.SetDrawColor( panel.BackgroundColor );
+			surface.DrawRect( 0, 0, w, h );
+
+		end
+
+	else
+		
+		if( panel:IsDown() ) then
+
+			surface.SetDrawColor( self.COLOR_GLASS_DARK );
+			surface.DrawRect( 0, 0, w, h );
+
+		elseif( panel:IsHovered() ) then
+
+			surface.SetDrawColor( self.COLOR_GLASS_LIGHT );
+			surface.DrawRect( 0, 0, w, h );
+
+		else
+			
+			surface.SetDrawColor( self.COLOR_GLASS_DARK );
+			surface.DrawRect( 0, 0, w, h );
+
+		end
+
+	end
+
+end
 
 derma.DefineSkin( "NSS", "NSS Skin", SKIN );
 

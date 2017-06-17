@@ -30,7 +30,7 @@ end
 
 function ENT:ProblemSolve( ply )
 
-	if( self:GetNeedsTeam( ply:Team() ) ) then
+	if( ply and ply:IsValid() and self:GetNeedsTeam( ply:Team() ) ) then
 		self:SetNeedsTeam( ply:Team(), false );
 	end
 

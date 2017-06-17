@@ -7,7 +7,7 @@ function GM:GetNextDamageTime()
 
 	local tmul = 1 - ( self:TimeLeftInState() / STATE_TIMES[STATE_GAME] );
 
-	return math.Rand( 15 - tmul * 10, 30 - tmul * 10 ) / #player.GetJoined();
+	return math.Rand( 15 - tmul * 10, 30 - tmul * 10 ) / ( #player.GetJoined() / 2 ); -- / 2 for team balance sake
 
 end
 
@@ -119,14 +119,23 @@ function GM:ResetSubsystems()
 end
 util.AddNetworkString( "nResetSubsystems" );
 
-function GM:GetUnaffectedSubsystems()
+function GM:GetUnaffectedSubsystems( teamTab )
 
 	local tab = { };
 	for k, v in pairs( self.Subsystems ) do
 
 		if( self:GetSubsystemState( k ) == SUBSYSTEM_STATE_GOOD ) then
 
-			table.insert( tab, k );
+			local teamsGood = true;
+			for _, n in pairs( v.Teams ) do
+				if( !table.HasValue( teamTab, n ) ) then
+					teamsGood = false;
+				end
+			end
+
+			if( teamsGood ) then
+				table.insert( tab, k );
+			end
 
 		end
 
@@ -150,7 +159,12 @@ function GM:DeploySubsystemFault()
 
 	end
 
-	local ssTab = self:GetUnaffectedSubsystems();
+	local teamTab = { };
+	if( #team.GetPlayers( TEAM_ENG ) > 0 ) then table.insert( teamTab, TEAM_ENG ); end
+	if( #team.GetPlayers( TEAM_PRO ) > 0 ) then table.insert( teamTab, TEAM_PRO ); end
+	if( #team.GetPlayers( TEAM_OFF ) > 0 ) then table.insert( teamTab, TEAM_OFF ); end
+
+	local ssTab = self:GetUnaffectedSubsystems( teamTab );
 
 	local t = table.Random( tab );
 	local ss = table.Random( ssTab );

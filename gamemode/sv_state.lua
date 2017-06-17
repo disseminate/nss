@@ -32,6 +32,10 @@ function GM:Reset()
 
 	end
 
+	if( self:AreTeamsUnbalanced() ) then
+		self:RebalanceTeams();
+	end
+
 	for k, v in pairs( self.Subsystems ) do
 
 		if( v.Restore ) then
