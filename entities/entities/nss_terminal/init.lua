@@ -18,17 +18,39 @@ function ENT:SelectProblem( id )
 	self:SetStartTime( CurTime() );
 	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 
+	for i = 1, 3 do
+		if( table.HasValue( ss.Teams, i ) ) then
+			self:SetNeedsTeam( i, true );
+		end
+	end
+
 	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 
 end
 
 function ENT:ProblemSolve( ply )
 
-	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
+	if( self:GetNeedsTeam( ply:Team() ) ) then
+		self:SetNeedsTeam( ply:Team(), false );
+	end
 
-	self:SetSubsystem( "" );
-	self:SetExplodeDuration( 0 );
-	self:SetStartTime( 0 );
+	local solved = true;
+	for i = 1, 3 do
+		if( self:GetNeedsTeam( i ) ) then
+			solved = false;
+			break;
+		end
+	end
+
+	if( solved ) then
+		
+		GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
+
+		self:SetSubsystem( "" );
+		self:SetExplodeDuration( 0 );
+		self:SetStartTime( 0 );
+
+	end
 
 	self:EmitSound( Sound( "buttons/button5.wav" ) );
 
@@ -93,7 +115,7 @@ end
 
 function ENT:Use( ply )
 
-	if( self:IsDamaged() ) then
+	if( self:IsDamaged() and self:GetNeedsTeam( ply:Team() ) ) then
 
 		GAMEMODE:StartTerminalSolve( self, ply );
 

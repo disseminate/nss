@@ -31,6 +31,22 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Float", 1, "StartTime" );
 	self:NetworkVar( "Int", 0, "TerminalSolveMode" );
 
+	self:NetworkVar( "Bool", 0, "NeedsTeam1" ); -- teams
+	self:NetworkVar( "Bool", 1, "NeedsTeam2" );
+	self:NetworkVar( "Bool", 2, "NeedsTeam3" );
+
+end
+
+function ENT:SetNeedsTeam( team, val )
+
+	return self["SetNeedsTeam" .. team]( self, val );
+
+end
+
+function ENT:GetNeedsTeam( team )
+
+	return self["GetNeedsTeam" .. team]( self );
+
 end
 
 function ENT:IsDamaged()
