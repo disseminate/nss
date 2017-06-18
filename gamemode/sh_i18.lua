@@ -9,7 +9,12 @@ end
 function I18( str, ... )
 
 	local tabReplace = { ... };
-	local s = GAMEMODE.Language[str] or str;
+	local s;
+	if( GAMEMODE ) then
+		s = GAMEMODE.Language[str] or str;
+	elseif( GM ) then
+		s = GM.Language[str] or str;
+	end
 
 	for i = 1, 9 do
 
