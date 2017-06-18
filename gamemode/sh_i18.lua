@@ -1,7 +1,9 @@
 GM.Languages = RequireDir( "i18" );
 
-if( system.GetCountry() and GM.Languages[system.GetCountry()] ) then
-	GM.Language = GM.Languages[system.GetCountry()];
+local l = GetConVarString( "gmod_language" );
+
+if( l and GM.Languages[l] ) then
+	GM.Language = GM.Languages[l];
 else
 	GM.Language = GM.Languages["en"];
 end
