@@ -10,6 +10,7 @@ local function nChangeTeam( len, ply )
 	if( GAMEMODE:CanChangeTeam( ply:Team(), targ ) ) then
 
 		ply:SetTeam( targ );
+		ply:SetColorToTeam();
 
 		net.Start( "nChangedTeam" );
 			net.WriteUInt( targ, 4 );
@@ -104,6 +105,8 @@ function GM:RebalanceTeams()
 	for _, v in pairs( player.GetAll() ) do
 
 		v:SetTeamAuto( true );
+		v:SetColorToTeam();
+
 		net.Start( "nSetTeamAutoRebalance" );
 			net.WriteUInt( v:Team(), 4 );
 		net.Send( v );

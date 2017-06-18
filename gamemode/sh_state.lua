@@ -61,4 +61,10 @@ function GM:OnStateTransition( prev, state )
 		self.OutroStart = CurTime();
 	end
 
+	if( SERVER and state == STATE_POSTGAME ) then
+		for _, v in pairs( player.GetAll() ) do
+			v:BroadcastStats();
+		end
+	end
+
 end

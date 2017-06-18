@@ -28,9 +28,10 @@ net.Receive( "nSetSpawnTime", nSetSpawnTime );
 local function nBroadcastStats( len )
 
 	local ply = net.ReadEntity();
-
+	MsgN( ply )
 	for i = STAT_TERMINALS, STAT_DMG do
 		local n = net.ReadUInt( 16 );
+		MsgN( i .. " - " .. n );
 		ply:SetStat( i, n );
 	end
 

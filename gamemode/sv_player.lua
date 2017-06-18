@@ -45,6 +45,15 @@ function GM:PlayerSpawn( ply )
 	player_manager.RunClass( ply, "Spawn" );
 	hook.Call( "PlayerSetModel", GAMEMODE, ply );
 
+	ply:SetColorToTeam();
+
+end
+
+function meta:SetColorToTeam()
+
+	local col = team.GetColor( self:Team() );
+	self:SetPlayerColor( Vector( col.r / 255, col.g / 255, col.b / 255 ) );
+
 end
 
 local function nJoin( len, ply )
@@ -53,6 +62,7 @@ local function nJoin( len, ply )
 		ply.Joined = true;
 
 		ply:SetTeamAuto();
+		ply:SetColorToTeam();
 
 		net.Start( "nJoin" );
 			net.WriteEntity( ply );
