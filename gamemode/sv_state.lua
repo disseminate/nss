@@ -32,6 +32,10 @@ function GM:Reset()
 
 	end
 
+	for k, v in pairs( team.GetAllTeams() ) do
+		team.SetScore( k, 0 );
+	end
+
 	if( self:AreTeamsUnbalanced() ) then
 		self:RebalanceTeams();
 	end

@@ -197,6 +197,7 @@ local function nTerminalSolve( len, ply )
 	e:ProblemSolve( ply );
 
 	ply:AddToStat( STAT_TERMINALS, 1 );
+	team.SetScore( ply:Team(), team.GetScore( ply:Team() ) + 1 );
 
 end
 net.Receive( "nTerminalSolve", nTerminalSolve );

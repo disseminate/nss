@@ -13,6 +13,7 @@ EXPORTS["en"] = {
 	["stat_damage"] = "Damage Taken",
 	["stat_terminals"] = "Terminals Fixed",
 	["stat_useless"] = "Most Useless",
+	["stat_team"] = "Best Team",
 
 	["scoreboard_subtitle"] = "By disseminate",
 
