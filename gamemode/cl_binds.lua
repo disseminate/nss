@@ -21,7 +21,7 @@ function GM:PlayerBindPress( ply, bind, down )
 
 			else
 		
-				chat.AddText( Color( 255, 255, 255 ), "You can't change your team during the game!" );
+				chat.AddText( Color( 255, 255, 255 ), I18( "no_change_team_ingame" ) );
 
 			end
 

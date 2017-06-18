@@ -136,7 +136,7 @@ function GM:HUDPaintNotJoined()
 
 		surface.SetFont( "NSS 32" );
 		
-		local text = "Press Space";
+		local text = I18( "press_space" );
 		local w2, h2 = surface.GetTextSize( text );
 		surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() - 90 - h / 2 );
 		surface.DrawText( text );
@@ -156,12 +156,12 @@ function GM:HUDPaintDead()
 	surface.SetFont( "NSS Title 100" );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 	
-	local titleText = "You Died";
+	local titleText = I18( "you_died" );
 	local reasonText;
 	if( LocalPlayer().DeadReason == 1 ) then
-		reasonText = "You were sucked out of an airlock.";
+		reasonText = I18( "death_airlock" );
 	elseif( LocalPlayer().DeadReason == 2 ) then
-		reasonText = "You couldn't repair a terminal in time.";
+		reasonText = I18( "death_terminal_explosion" );
 	end
 
 	local w, h = surface.GetTextSize( titleText );
@@ -188,9 +188,9 @@ function GM:HUDPaintDead()
 	local tl = math.ceil( math.max( dt - CurTime(), 0 ) );
 	local text;
 	if( tl == 0 ) then
-		text = "You can respawn.";
+		text = I18( "can_respawn" );
 	else
-		text = "You can respawn in " .. string.ToMinutesSeconds( tl ) .. ".";
+		text = I18( "can_respawn_in", tl );
 	end
 	local w2, h2 = surface.GetTextSize( text );
 	surface.SetTextPos( ScrW() / 2 - w2 / 2, ScrH() / 2 + h / 2 + hh );
@@ -233,7 +233,7 @@ function GM:HUDPaintLost()
 
 		surface.SetAlphaMultiplier( a );
 
-		local text = "Ship Lost";
+		local text = I18( "lose_title" );
 		local col = self:GetSkin().COLOR_LOSE;
 
 		surface.SetFont( "NSS Title 100" );
@@ -262,7 +262,7 @@ function GM:HUDPaintLost()
 		surface.SetTextPos( x, ScrH() - 50 - h - 40 );
 		surface.DrawText( text );
 
-		local text = "Resetting in";
+		local text = I18( "resetting" );
 		local col = self:GetSkin().COLOR_GRAY;
 
 		surface.SetFont( "NSS 20" );
@@ -310,7 +310,7 @@ function GM:HUDPaintWon()
 
 	self:HUDCinematicBars();
 
-	local text = "Rescued";
+	local text = I18( "success_title" );
 	local col = self:GetSkin().COLOR_WIN;
 
 	surface.SetFont( "NSS Title 100" );
@@ -339,7 +339,7 @@ function GM:HUDPaintWon()
 	surface.SetTextPos( x, ScrH() - 50 - h - 40 );
 	surface.DrawText( text );
 
-	local text = "Resetting in";
+	local text = I18( "resetting" );
 	local col = self:GetSkin().COLOR_GRAY;
 
 	surface.SetFont( "NSS 20" );
@@ -377,7 +377,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-	surface.DrawText( "Damage Taken" );
+	surface.DrawText( I18( "stat_damage" ) );
 
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_DMG ) > b:GetStat( STAT_DMG ); end );
@@ -428,7 +428,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-	surface.DrawText( "Terminals Fixed" );
+	surface.DrawText( I18( "stat_terminals" ) );
 
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) > b:GetStat( STAT_TERMINALS ); end );
@@ -443,7 +443,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-	surface.DrawText( "Most Useless" );
+	surface.DrawText( I18( "stat_useless" ) );
 
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) < b:GetStat( STAT_TERMINALS ); end );

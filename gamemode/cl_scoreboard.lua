@@ -14,7 +14,7 @@ function GM:ScoreboardShow()
 		self.Scoreboard:SetKeyboardInputEnabled( false );
 
 		self:CreateLabel( self.Scoreboard, TOP, "Need Some Space", "NSS Title 32", 8 ):DockMarginUniform();
-		self:CreateLabel( self.Scoreboard, TOP, "By disseminate", "NSS 16", 8 ):DockMarginInline( 0, 0, 0, 10 );
+		self:CreateLabel( self.Scoreboard, TOP, I18( "scoreboard_subtitle" ), "NSS 16", 8 ):DockMarginInline( 0, 0, 0, 10 );
 
 		local list = self:CreateScrollPanel( self.Scoreboard, FILL ):DockMarginInline( 10, 0, 10, 10 );
 		list.Players = { };
