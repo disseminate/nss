@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Airlock Controllers";
 tab.Acronym = "ALC";
+tab.Teams = { TEAM_ENG, TEAM_PRO };
 
 tab.OnDestroyed = function()
 

@@ -28,7 +28,12 @@ function GM:Reset()
 	for _, v in pairs( player.GetAll() ) do
 
 		v:Spawn();
+		v:ResetAllStats();
 
+	end
+
+	if( self:AreTeamsUnbalanced() ) then
+		self:RebalanceTeams();
 	end
 
 	for k, v in pairs( self.Subsystems ) do
@@ -67,14 +72,6 @@ function GM:StateThink()
 
 end
 
-function GM:OnStateTransition( prev, state )
-
-	if( prev == STATE_POSTGAME ) then
-		self:Reset();
-	end
-
-end
-
 function GM:BroadcastState()
 
 	if( !self.StateCycleStart ) then return end
@@ -99,6 +96,18 @@ function meta:SendState()
 end
 
 function GM:OnReloaded()
+
+	self:BroadcastState();
+
+end
+
+function GM:WinShip()
+
+	self.StateCycleStart = CurTime() - STATE_TIMES[STATE_GAME] - STATE_TIMES[STATE_PREGAME] + 1;
+
+	for _, v in pairs( player.GetAll() ) do
+		v:BroadcastStats();
+	end
 
 	self:BroadcastState();
 

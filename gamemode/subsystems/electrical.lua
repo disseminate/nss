@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Electrical";
 tab.Acronym = "ELE";
+tab.Teams = { TEAM_ENG };
 
 tab.OnDestroyed = function()
 

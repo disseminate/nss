@@ -15,6 +15,11 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendPlayers();
 	ply:SendState();
 	ply:SendShipHealth();
+	ply:ResetAllStats();
+
+	ply:SetTeam( TEAM_UNJOINED );
+
+	ply:SetCustomCollisionCheck( true );
 
 	for k, v in pairs( self.Subsystems ) do
 
@@ -28,10 +33,26 @@ function GM:PlayerInitialSpawn( ply )
 
 end
 
+function GM:PlayerSpawn( ply )
+
+	player_manager.SetPlayerClass( ply, "nss" );
+
+	ply:UnSpectate();
+
+	ply:SetupHands();
+
+	player_manager.OnPlayerSpawn( ply );
+	player_manager.RunClass( ply, "Spawn" );
+	hook.Call( "PlayerSetModel", GAMEMODE, ply );
+
+end
+
 local function nJoin( len, ply )
 
 	if( !ply.Joined ) then
 		ply.Joined = true;
+
+		ply:SetTeamAuto();
 
 		net.Start( "nJoin" );
 			net.WriteEntity( ply );
@@ -66,5 +87,61 @@ function meta:SendShipHealth()
 	net.Start( "nSetShipHealth" );
 		net.WriteUInt( GAMEMODE.ShipHealth, 4 );
 	net.Send( self );
+
+end
+
+function GM:PlayerDeath( ply, inflictor, attacker )
+
+	self.BaseClass:PlayerDeath( ply, inflictor, attacker );
+	ply.NextSpawnTime = CurTime() + 20;
+
+	local r = 0;
+
+	local cam = false;
+	if( inflictor:GetClass() == "nss_func_space" ) then
+		cam = true;
+		r = 1;
+	elseif( inflictor:GetClass() == "nss_terminal" ) then
+		r = 2;
+	end
+
+	net.Start( "nSetSpawnTime" );
+		net.WriteFloat( ply.NextSpawnTime );
+		net.WriteUInt( r, 4 );
+		net.WriteBool( cam );
+	net.Send( ply );
+
+end
+util.AddNetworkString( "nSetSpawnTime" );
+
+function GM:PlayerShouldTakeDamage( ply, attacker )
+
+	return self:GetState() == STATE_GAME;
+
+end
+
+function GM:ScalePlayerDamage( ply, hg, dmg )
+
+	ply:AddToStat( STAT_DMG, dmg:GetDamage() );
+
+	return self.BaseClass:ScalePlayerDamage( ply, hg, dmg );
+
+end
+
+function meta:BroadcastStats()
+
+	net.Start( "nBroadcastStats" );
+		net.WriteEntity( self );
+		for i = STAT_TERMINALS, STAT_DMG do
+			net.WriteUInt( self:GetStat( i ), 16 );
+		end
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nBroadcastStats" );
+
+function GM:GetFallDamage( ply, speed )
+
+	return 0;
 
 end

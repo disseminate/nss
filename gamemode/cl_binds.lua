@@ -12,6 +12,29 @@ function GM:PlayerBindPress( ply, bind, down )
 
 		end
 
+		if( bind == "gm_showteam" and LocalPlayer().Joined ) then
+
+			if( self:GetState() != STATE_GAME ) then
+
+				self:ChangeTeamDialogue();
+				return true;
+
+			else
+		
+				chat.AddText( Color( 255, 255, 255 ), I18( "no_change_team_ingame" ) );
+
+			end
+
+		end
+
 	end
+
+	return self.BaseClass:PlayerBindPress( ply, bind, down );
+
+end
+
+function GM:ChatText( idx, name, text, type )
+
+	if( type == "servermsg" ) then return true end
 
 end

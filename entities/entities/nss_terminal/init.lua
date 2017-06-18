@@ -5,13 +5,7 @@ include( "shared.lua" );
 function ENT:SelectRandomProblem()
 	
 	local id = table.Random( table.GetKeys( GAMEMODE.Subsystems ) );
-	local ss = GAMEMODE.Subsystems[id];
-
-	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 30, 120 ) );
-	self:SetStartTime( CurTime() );
-
-	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
+	self:SelectProblem( id );
 
 end
 
@@ -20,20 +14,49 @@ function ENT:SelectProblem( id )
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 5, 20 ) );
+	self:SetExplodeDuration( math.Rand( 25, 55 ) );
 	self:SetStartTime( CurTime() );
+	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
+
+	for i = 1, 3 do
+		if( table.HasValue( ss.Teams, i ) ) then
+			self:SetNeedsTeam( i, true );
+		end
+	end
 
 	self:EmitSound( Sound( "npc/attack_helicopter/aheli_damaged_alarm1.wav" ) );
 
 end
 
-function ENT:ProblemSolve()
+function ENT:ProblemSolve( ply )
 
-	GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
+	if( ply and ply:IsValid() and self:GetNeedsTeam( ply:Team() ) ) then
+		self:SetNeedsTeam( ply:Team(), false );
+	end
 
-	self:SetSubsystem( "" );
-	self:SetExplodeDuration( 0 );
-	self:SetStartTime( 0 );
+	local solved = true;
+	for i = 1, 3 do
+		if( self:GetNeedsTeam( i ) ) then
+			solved = false;
+			break;
+		end
+	end
+
+	if( solved ) then
+		
+		GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
+
+		self:SetSubsystem( "" );
+		self:SetExplodeDuration( 0 );
+		self:SetStartTime( 0 );
+
+	end
+
+	self:EmitSound( Sound( "buttons/button5.wav" ) );
+
+	if( ply and ply:IsValid() ) then
+		ply:EmitSound( Sound( "ambient/machines/keyboard7_clicks_enter.wav" ) );
+	end
 
 end
 
@@ -46,11 +69,32 @@ function ENT:Think()
 
 		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
 			
-			self:Explode(); -- TODO
-			--self:ProblemSolve();
+			self:Explode();
 
 		end
 
+		if( !self.WarningSound ) then
+			local rf = RecipientFilter();
+			rf:AddAllPlayers();
+			self.WarningSound = CreateSound( self, Sound( "ambient/alarms/combine_bank_alarm_loop4.wav" ), rf );
+			self.WarningSound:SetSoundLevel( 90 );
+			self.WarningSound:PlayEx( 1, math.random( 90, 110 ) );
+		elseif( !self.WarningSound:IsPlaying() ) then
+			self.WarningSound:Play();
+		end
+
+	elseif( self.WarningSound ) then
+		self.WarningSound:Stop();
+		self.WarningSound = nil;
+	end
+
+end
+
+function ENT:OnRemove()
+
+	if( self.WarningSound ) then
+		self.WarningSound:Stop();
+		self.WarningSound = nil;
 	end
 
 end
@@ -61,21 +105,19 @@ function ENT:Explode()
 	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
 	util.Effect( "Explosion", ed );
 
-	self:ProblemSolve();
+	util.BlastDamage( game.GetWorld(), self, self:GetPos() + Vector( 0, 0, 8 ), 256, 80 );
 
-	--GAMEMODE:DamageShip( self:GetSubsystem() );
+	GAMEMODE:DamageShip( self:GetSubsystem() );
 
-	--self:Remove();
+	self:Remove();
 
 end
 
 function ENT:Use( ply )
 
-	if( self:IsDamaged() ) then
+	if( self:IsDamaged() and self:GetNeedsTeam( ply:Team() ) ) then
 
-		-- todo: skill
-		self:ProblemSolve();
-		self:EmitSound( Sound( "buttons/button5.wav" ) );
+		GAMEMODE:StartTerminalSolve( self, ply );
 
 	else
 
@@ -87,7 +129,6 @@ end
 
 function ENT:UpdateTransmitState()
 
-	if( GAMEMODE:GetState() != STATE_GAME ) then return TRANSMIT_PVS; end
 	return TRANSMIT_ALWAYS;
 
 end

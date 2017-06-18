@@ -6,22 +6,59 @@ function GM:CalcView( ply, origin, angles, fov, znear, zfar )
 
 	if( intro ) then
 		
-		if( !LocalPlayer().Joined or self:GetState() == STATE_LOST ) then
+		if( !LocalPlayer().Joined ) then
 			
 			tab.origin = intro[1];
 			tab.angles = intro[2];
 
+		elseif( LocalPlayer().DeadThirdCam and !LocalPlayer():Alive() ) then
+
+			tab.origin = intro[1];
+			tab.angles = intro[2];
+			self.CamZoomStart = CurTime();
+
 		else
 
-			if( !self.CamZoomStart ) then
+			if( self:GetState() == STATE_LOST and self.OutroStart ) then
+			
+				local perc = math.EaseInOut( math.Clamp( CurTime() - self.OutroStart, 0, 2 ) / 2, 0, 1 );
+				tab.origin = LerpVector( perc, origin, intro[1] );
+				tab.angles = LerpAngle( perc, angles, intro[2] );
 				self.CamZoomStart = CurTime();
-			end
+				
+			else
 
-			local perc = math.EaseInOut( math.Clamp( CurTime() - self.CamZoomStart, 0, 1 ), 0, 1 );
-			if( perc < 1 ) then
+				if( !self.CamZoomStart ) then
+					self.CamZoomStart = CurTime();
+				end
 
-				tab.origin = LerpVector( perc, intro[1], origin );
-				tab.angles = LerpAngle( perc, intro[2], angles );
+				local perc = math.EaseInOut( math.Clamp( CurTime() - self.CamZoomStart, 0, 1 ), 0, 1 );
+				if( perc < 1 ) then
+
+					tab.origin = LerpVector( perc, intro[1], origin );
+					tab.angles = LerpAngle( perc, intro[2], angles );
+
+				else
+
+					if( ply.TerminalSolveActive ) then
+
+						if( ply.TerminalSolveEnt and ply.TerminalSolveEnt:IsValid() ) then
+
+							local ang = ( ply.TerminalSolveEnt:GetPos() - ply:EyePos() ):Angle();
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Forward() * -40;
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Right() * -40;
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Up() * 30;
+
+							tab.angles = ( ply:EyePos() - tab.origin ):Angle();
+
+							tab.angles:RotateAroundAxis( tab.angles:Forward(), math.sin( CurTime() * 1 ) * 0.5 );
+							tab.angles:RotateAroundAxis( tab.angles:Right(), math.cos( CurTime() * 1 ) * 0.5 );
+
+						end
+
+					end
+
+				end
 
 			end
 
@@ -38,6 +75,7 @@ function GM:ShouldDrawLocalPlayer( ply )
 	if( !LocalPlayer().Joined ) then return true end
 	if( self.CamZoomStart and CurTime() - self.CamZoomStart <= 1 ) then return true end
 	if( self:GetState() == STATE_LOST ) then return true end
+	if( ply.TerminalSolveActive ) then return true end
 	
 	return self.BaseClass:ShouldDrawLocalPlayer( ply );
 

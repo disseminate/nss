@@ -4,7 +4,7 @@ function player.GetJoined()
 
 	for _, v in pairs( player.GetAll() ) do
 
-		if( v.Joined ) then
+		if( v.Joined or v:IsBot() ) then
 
 			table.insert( tab, v );
 
@@ -27,5 +27,40 @@ function GM:StartCommand( ply, cmd )
 		cmd:ClearButtons();
 		cmd:ClearMovement();
 	end
+
+end
+
+function GM:SetupMove( ply, mv, cmd )
+
+	local mul = 1;
+
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self.SubsystemStates[k] == SUBSYSTEM_STATE_BROKEN and v.DestroyedPlayerSpeed ) then
+
+			mul = mul * v.DestroyedPlayerSpeed( ply );
+
+		end
+
+	end
+
+	local run = mul * 400;
+	local walk = mul * 200;
+
+	if( ply:GetWalkSpeed() != walk ) then
+		ply:SetWalkSpeed( walk );
+	end
+
+	if( ply:GetRunSpeed() != run ) then
+		ply:SetRunSpeed( run );
+	end
+
+end
+
+function GM:ShouldCollide( e1, e2 )
+
+	if( e1:IsPlayer() and e2:IsPlayer() ) then return false end
+
+	return self.BaseClass:ShouldCollide( e1, e2 );
 
 end

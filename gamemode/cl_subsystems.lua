@@ -40,3 +40,96 @@ local function nSetShipHealth( len )
 
 end
 net.Receive( "nSetShipHealth", nSetShipHealth );
+
+function GM:SubsystemThink()
+
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self:SubsystemBroken( k ) and v.DestroyedThink ) then
+
+			v.DestroyedThink();
+
+		end
+
+	end
+
+end
+
+function GM:MakeTerminalSolve( ply, ent, mode )
+
+	ply.TerminalSolveActive = true;
+	ply.TerminalSolveEnt = ent;
+	ply.TerminalSolveMode = mode;
+	if( ply == LocalPlayer() ) then
+		self.NextTerminalSolveKey = KEY_1;
+
+		self.TerminalSolveProgress = 0;
+	end
+
+end
+
+function GM:TerminalIncrement( mul )
+
+	local add = math.Rand( 0.02, 0.1 ) * ( mul or 1 );
+	if( self:SubsystemBroken( "terminal" ) ) then
+		add = add * 0.8;
+	end
+
+	self.TerminalSolveProgress = self.TerminalSolveProgress + add;
+	if( self.TerminalSolveProgress >= 1 ) then
+		if( LocalPlayer().TerminalSolveEnt and LocalPlayer().TerminalSolveEnt:IsValid() ) then
+			net.Start( "nTerminalSolve" );
+				net.WriteEntity( LocalPlayer().TerminalSolveEnt );
+			net.SendToServer();
+		end
+
+		self:ClearTerminalSolve( LocalPlayer() );
+	end
+
+end
+
+function GM:ClearTerminalSolve( ply )
+	
+	ply.TerminalSolveActive = false;
+	ply.TerminalSolveEnt = nil;
+	ply.TerminalSolveMode = nil;
+
+	if( ply == LocalPlayer() ) then
+		self.TerminalSolveProgress = nil;
+	end
+
+end
+
+local function nStartTerminalSolve( len )
+
+	local ply = net.ReadEntity();
+	local ent = net.ReadEntity();
+
+	if( !ent or !ent:IsValid() ) then return end
+	
+	local mode = ent:GetTerminalSolveMode();
+
+	GAMEMODE:MakeTerminalSolve( ply, ent, mode );
+
+end
+net.Receive( "nStartTerminalSolve", nStartTerminalSolve );
+
+function GM:TerminalSolveThink()
+
+	for _, v in pairs( player.GetAll() ) do
+		
+		if( v.TerminalSolveActive ) then
+
+			if( !v.TerminalSolveEnt or !v.TerminalSolveEnt:IsValid() ) then
+				self:ClearTerminalSolve( v );
+			elseif( !v.TerminalSolveEnt:IsDamaged() ) then
+				self:ClearTerminalSolve( v );
+			elseif( v.TerminalSolveEnt:GetPos():Distance( v:GetPos() ) > 100 ) then
+				self:ClearTerminalSolve( v );
+			end
+
+		end
+
+	end
+
+end

@@ -1,5 +1,16 @@
 GM.ShipHealth = GM.ShipHealth or 5;
 
+function GM:GetNextDamageTime()
+
+	if( #player.GetJoined() == 0 ) then return 1e10; end
+	if( self:GetState() != STATE_GAME ) then return 1e10; end
+
+	local tmul = 1 - ( self:TimeLeftInState() / STATE_TIMES[STATE_GAME] );
+
+	return math.Rand( 15 - tmul * 10, 30 - tmul * 10 ) / ( #player.GetJoined() / 2 ); -- / 2 for team balance sake
+
+end
+
 function GM:SubsystemThink()
 
 	if( #player.GetJoined() == 0 ) then return end
@@ -7,8 +18,40 @@ function GM:SubsystemThink()
 
 	if( !self.NextDamage or CurTime() >= self.NextDamage ) then
 
-		self.NextDamage = CurTime() + math.Rand( 1, 4 );
+		self.NextDamage = CurTime() + self:GetNextDamageTime();
 		self:DeploySubsystemFault();
+
+	end
+
+	for k, v in pairs( self.Subsystems ) do
+
+		if( self:SubsystemBroken( k ) and v.DestroyedThink ) then
+
+			v.DestroyedThink();
+
+		end
+
+	end
+
+	if( self:SubsystemBroken( "vacuum" ) and self:SubsystemBroken( "airlock" ) ) then
+
+		for _, v in pairs( player.GetAll() ) do
+
+			local vel = Vector();
+			
+			for _, n in pairs( ents.FindByClass( "nss_func_space" ) ) do
+
+				local a, b = n:GetRotatedAABB( n:OBBMins(), n:OBBMaxs() );
+				local pos = ( n:GetPos() + ( a + b ) / 2 );
+
+				local s = ( pos - v:GetPos() );
+				vel = vel + s:GetNormal() * ( 1 / math.pow( v:GetPos():DistToSqr( pos ), 1.5 ) ) * 1.5e8;
+				
+			end
+
+			v:SetVelocity( vel );
+
+		end
 
 	end
 
@@ -42,6 +85,10 @@ util.AddNetworkString( "nSetShipHealth" );
 function GM:KillShip()
 
 	self.Lost = true;
+
+	for _, v in pairs( player.GetAll() ) do
+		v:BroadcastStats();
+	end
 	self:BroadcastState();
 
 end
@@ -72,14 +119,23 @@ function GM:ResetSubsystems()
 end
 util.AddNetworkString( "nResetSubsystems" );
 
-function GM:GetUnaffectedSubsystems()
+function GM:GetUnaffectedSubsystems( teamTab )
 
 	local tab = { };
 	for k, v in pairs( self.Subsystems ) do
 
 		if( self:GetSubsystemState( k ) == SUBSYSTEM_STATE_GOOD ) then
 
-			table.insert( tab, k );
+			local teamsGood = true;
+			for _, n in pairs( v.Teams ) do
+				if( !table.HasValue( teamTab, n ) ) then
+					teamsGood = false;
+				end
+			end
+
+			if( teamsGood ) then
+				table.insert( tab, k );
+			end
 
 		end
 
@@ -103,7 +159,12 @@ function GM:DeploySubsystemFault()
 
 	end
 
-	local ssTab = self:GetUnaffectedSubsystems();
+	local teamTab = { };
+	if( #team.GetPlayers( TEAM_ENG ) > 0 ) then table.insert( teamTab, TEAM_ENG ); end
+	if( #team.GetPlayers( TEAM_PRO ) > 0 ) then table.insert( teamTab, TEAM_PRO ); end
+	if( #team.GetPlayers( TEAM_OFF ) > 0 ) then table.insert( teamTab, TEAM_OFF ); end
+
+	local ssTab = self:GetUnaffectedSubsystems( teamTab );
 
 	local t = table.Random( tab );
 	local ss = table.Random( ssTab );
@@ -115,3 +176,28 @@ function GM:DeploySubsystemFault()
 	end
 
 end
+
+function GM:StartTerminalSolve( ent, ply )
+
+	net.Start( "nStartTerminalSolve" );
+		net.WriteEntity( ply );
+		net.WriteEntity( ent );
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nStartTerminalSolve" );
+
+local function nTerminalSolve( len, ply )
+
+	local e = net.ReadEntity();
+	if( !e or !e:IsValid() ) then return end
+
+	if( ply:GetPos():Distance( e:GetPos() ) > 100 ) then return end
+
+	e:ProblemSolve( ply );
+
+	ply:AddToStat( STAT_TERMINALS, 1 );
+
+end
+net.Receive( "nTerminalSolve", nTerminalSolve );
+util.AddNetworkString( "nTerminalSolve" );

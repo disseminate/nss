@@ -3,6 +3,10 @@ local function nReceiveState( len )
 	GAMEMODE.StateCycleStart = net.ReadFloat();
 	GAMEMODE.Lost = net.ReadBool();
 
+	if( GAMEMODE.Lost ) then
+		GAMEMODE.OutroStart = CurTime();
+	end
+
 end
 net.Receive( "nReceiveState", nReceiveState );
 
@@ -13,3 +17,16 @@ local function nJoin( len )
 
 end
 net.Receive( "nJoin", nJoin );
+
+function GM:StateThink()
+	
+	if( #player.GetJoined() == 0 ) then return end
+
+	if( self:GetState() != self.CacheState ) then
+
+		self:OnStateTransition( self.CacheState, self:GetState() );
+		self.CacheState = self:GetState();
+		
+	end
+
+end

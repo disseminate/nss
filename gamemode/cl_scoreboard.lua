@@ -14,7 +14,7 @@ function GM:ScoreboardShow()
 		self.Scoreboard:SetKeyboardInputEnabled( false );
 
 		self:CreateLabel( self.Scoreboard, TOP, "Need Some Space", "NSS Title 32", 8 ):DockMarginUniform();
-		self:CreateLabel( self.Scoreboard, TOP, "By disseminate", "NSS 16", 8 ):DockMarginInline( 0, 0, 0, 10 );
+		self:CreateLabel( self.Scoreboard, TOP, I18( "scoreboard_subtitle" ), "NSS 16", 8 ):DockMarginInline( 0, 0, 0, 10 );
 
 		local list = self:CreateScrollPanel( self.Scoreboard, FILL ):DockMarginInline( 10, 0, 10, 10 );
 		list.Players = { };
@@ -35,7 +35,7 @@ function GM:ScoreboardShow()
 
 			for _, v in pairs( player.GetAll() ) do
 
-				if( !self.PlayerRows[v:SteamID()] or !self.PlayerRows[v:SteamID()]:IsValid() ) then
+				if( !self.PlayerRows[v:UserID()] or !self.PlayerRows[v:UserID()]:IsValid() ) then
 
 					local row = GAMEMODE:CreatePanel( self, TOP, 0, 40 ):DockMarginInline( 0, 0, 0, 10 );
 					row:SetPaintBackgroundEnabled( true );
@@ -78,6 +78,10 @@ function GM:ScoreboardShow()
 
 						end
 
+						if( self.Name:GetTextColor() != team.GetColor( self.Player:Team() ) ) then
+							self.Name:SetTextColor( team.GetColor( self.Player:Team() ) );
+						end
+
 						if( self.Ping:GetText() != self.Player:Ping() ) then
 
 							self.Ping:SetText( self.Player:Ping() );
@@ -89,7 +93,7 @@ function GM:ScoreboardShow()
 
 					end
 
-					self.PlayerRows[v:SteamID()] = row;
+					self.PlayerRows[v:UserID()] = row;
 
 				end
 

@@ -4,6 +4,10 @@
 [
 ]
 
+@PointClass base(Targetname) iconsprite("editor/info_target.vmt") = nss_explosion_fx : "Ship Explosion Sprite Location"
+[
+]
+
 @SolidClass base(Trigger) = nss_func_space : "Space" 
 [
 ]
