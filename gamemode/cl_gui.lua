@@ -252,3 +252,14 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 	return n;
 
 end
+
+function GM:CreateSpawnIcon( p, dock, w, h, mdl )
+
+	local n = vgui.Create( "SpawnIcon", p );
+	n:Dock( dock );
+	n:SetSize( w, h );
+	n:SetModel( mdl );
+	
+	return n;
+
+end

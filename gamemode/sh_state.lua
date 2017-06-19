@@ -67,4 +67,12 @@ function GM:OnStateTransition( prev, state )
 		end
 	end
 
+	if( CLIENT ) then
+		if( state == STATE_GAME or state == STATE_PREGAME ) then
+			self:ShowItemPanel();
+		else
+			self:HideItemPanel();
+		end
+	end
+
 end

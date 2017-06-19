@@ -45,3 +45,9 @@ function ScreenShake( size )
 	util.ScreenShake( Vector(), amp, freq, dur, 32768 );
 
 end
+
+function MaxUIntBits( n )
+
+	return math.floor( math.log( n, 2 ) ) + 1;
+
+end

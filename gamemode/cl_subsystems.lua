@@ -57,6 +57,8 @@ end
 
 function GM:MakeTerminalSolve( ply, ent, mode )
 
+	self:HideItemPanel();
+
 	ply.TerminalSolveActive = true;
 	ply.TerminalSolveEnt = ent;
 	ply.TerminalSolveMode = mode;
@@ -83,6 +85,8 @@ function GM:TerminalIncrement( mul )
 			net.SendToServer();
 		end
 
+		LocalPlayer().NextItemThrow = CurTime() + 1;
+
 		self:ClearTerminalSolve( LocalPlayer() );
 	end
 
@@ -90,6 +94,8 @@ end
 
 function GM:ClearTerminalSolve( ply )
 	
+	self:ShowItemPanel();
+
 	ply.TerminalSolveActive = false;
 	ply.TerminalSolveEnt = nil;
 	ply.TerminalSolveMode = nil;

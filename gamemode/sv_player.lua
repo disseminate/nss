@@ -63,6 +63,7 @@ local function nJoin( len, ply )
 
 		ply:SetTeamAuto();
 		ply:SetColorToTeam();
+		ply:ClearInventory();
 
 		net.Start( "nJoin" );
 			net.WriteEntity( ply );

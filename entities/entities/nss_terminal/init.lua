@@ -56,6 +56,30 @@ function ENT:ProblemSolve( ply )
 
 	if( ply and ply:IsValid() ) then
 		ply:EmitSound( Sound( "ambient/machines/keyboard7_clicks_enter.wav" ) );
+
+		self:CreateRandomItem( ply );
+	end
+
+end
+
+function ENT:CreateRandomItem( ply )
+
+	local key = table.Random( table.GetKeys( GAMEMODE.Items ) );
+
+	if( ply:InvHasSpace() ) then
+
+		local id = ply:AddItem( key );
+		ply:SendInventoryID( id );
+
+	else
+
+		local i = ents.Create( "nss_item" );
+		i:SetItem( key );
+		i:SetPos( ply:GetPos() + Vector( 0, 0, 32 ) );
+		i:SetAngles( Angle( math.Rand( -180, 180 ), math.Rand( -180, 180 ), math.Rand( -180, 180 ) ) );
+		i:Spawn();
+		i:Activate();
+
 	end
 
 end

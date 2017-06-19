@@ -29,6 +29,7 @@ function GM:Reset()
 
 		v:Spawn();
 		v:ResetAllStats();
+		v:ClearInventory();
 
 	end
 
