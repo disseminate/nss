@@ -62,9 +62,9 @@ function GM:UpdateItemHUD()
 
 	if( !LocalPlayer().Inventory ) then return end
 
-	local padding = 10;
+	local padding = 6;
 	local w = 64;
-	local h = 64;
+	local h = w;
 
 	if( !self.ItemPanel or !self.ItemPanel:IsValid() ) then
 
