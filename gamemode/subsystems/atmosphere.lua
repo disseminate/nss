@@ -20,13 +20,16 @@ tab.DestroyedThink = function()
 			net.Start( "nEmitExplosionSound" );
 			net.Broadcast();
 
-			for _, v in pairs( player.GetAll() ) do
+			local tab = player.GetAll();
+			table.Merge( tab, ents.FindByClass( "nss_item" ) );
+
+			for _, v in pairs( tab ) do
 
 				if( v:OnGround() ) then
 
 					local a = math.Rand( 0, 2 * math.pi );
 
-					v:SetVelocity( Vector( math.cos( a ) * math.Rand( 0, 500 ), math.sin( a ) * math.Rand( 0, 500 ), math.Rand( 100, 300 ) ) );
+					v:SetVelocity( Vector( math.cos( a ) * math.Rand( 0, 1000 ), math.sin( a ) * math.Rand( 0, 1000 ), math.Rand( 100, 600 ) ) );
 
 				end
 
