@@ -1,0 +1,8 @@
+UnlitGeneric
+{
+	$basetexture "nss/icons/no"
+	$translucent 1
+	$transparent 1
+	$alpha 0.3
+	$color "[1 0 0]"
+}

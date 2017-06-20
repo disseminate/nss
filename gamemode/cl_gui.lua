@@ -245,7 +245,7 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 
 	function n:Paint( w, h )
 
-		local dim = 16;
+		local dim = 24;
 		local x = ( w - dim ) / 2;
 		local y = ( h - dim ) / 2;
 
@@ -271,8 +271,9 @@ function GM:CreateSpawnIcon( p, dock, w, h, mdl, tt )
 	function n:PaintOver( w, h )
 
 		if( self:GetDisabled() ) then
-			surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DISABLED );
-			surface.DrawRect( 0, 0, w, h );
+			surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+			surface.SetMaterial( self:GetSkin().ICON_NO );
+			surface.DrawTexturedRect( 16, 16, w - 32, h - 32 );
 		else
 
 			if( self.OverlayFade > 0 ) then
