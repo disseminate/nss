@@ -25,9 +25,78 @@ function GM:SubsystemThink()
 
 	for k, v in pairs( self.Subsystems ) do
 
-		if( self:SubsystemBroken( k ) and v.DestroyedThink ) then
+		if( self:SubsystemBroken( k ) ) then
+			
+			if( v.DestroyedThink ) then
 
-			v.DestroyedThink();
+				v.DestroyedThink();
+
+			end
+
+			if( v.ASS ) then
+
+				for _, ply in pairs( player.GetAll() ) do
+
+					if( ply:Alive() and ply.Joined ) then
+						
+						if( !ply.NextASS ) then
+							ply.NextASS = CurTime();
+						end
+
+						if( CurTime() >= ply.NextASS ) then
+							ply.NextASS = CurTime() + 1;
+
+							local md = false;
+							for _, n in pairs( ents.FindByClass( "nss_ass" ) ) do
+
+								if( n:GetPos():Distance( ply:GetPos() ) < 256 ) then
+
+									md = true;
+									break;
+
+								end
+
+							end
+
+							if( !md and ply.Powerup != "spacesuit" ) then
+								
+								local dmgamt = math.random( 1, 5 );
+
+								local dmg = DamageInfo();
+								dmg:SetAttacker( game.GetWorld() );
+								dmg:SetInflictor( game.GetWorld() );
+								dmg:SetDamage( dmgamt );
+								dmg:SetDamageType( v.DamageType );
+								ply:TakeDamageInfo( dmg );
+
+								if( !ply.ASSDamage ) then
+									ply.ASSDamage = 0;
+								end
+								ply.ASSDamage = math.min( ply.ASSDamage + dmgamt, 100 );
+
+							else
+
+								if( ply.ASSDamage > 0 ) then
+
+									local amt = math.min( ply.ASSDamage, 5 );
+									ply:SetHealth( ply:Health() + amt );
+									ply.ASSDamage = ply.ASSDamage - amt;
+
+								end
+
+							end
+							
+						end
+
+					else
+
+						ply.ASSDamage = nil;
+
+					end
+
+				end
+
+			end
 
 		end
 
@@ -58,7 +127,7 @@ function GM:SubsystemThink()
 end
 
 function GM:DamageShip( sys )
-
+	
 	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
 
 	ScreenShake( 3 );

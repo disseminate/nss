@@ -27,3 +27,27 @@ function GM:GetSubsystemTerminal( id )
 	end
 
 end
+
+function GM:ASSMul()
+
+	local count = 0;
+
+	for k, v in pairs( self.Subsystems ) do
+
+		if( v.ASS and self:GetSubsystemState( k ) == SUBSYSTEM_STATE_BROKEN ) then
+
+			count = count + 1;
+
+		end
+
+	end
+
+	return count;
+
+end
+
+function GM:ASSTriggered() -- hehe
+
+	return self:ASSMul() > 0;
+
+end

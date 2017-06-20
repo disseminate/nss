@@ -12,6 +12,10 @@
 [
 ]
 
+@PointClass base(Targetname, Angles) studio("models/props_c17/gaspipes006a.mdl") = nss_ass: "Atmospheric Systems Stabilizer"
+[
+]
+
 @SolidClass base(Trigger) = nss_func_space : "Space" 
 [
 ]
