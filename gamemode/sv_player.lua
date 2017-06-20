@@ -60,6 +60,16 @@ function GM:PlayerSpawn( ply )
 
 	ply:SetColorToTeam();
 
+	if( ply:IsBot() and !ply.Joined ) then
+
+		ply.Joined = true;
+
+		ply:SetTeamAuto();
+		ply:SetColorToTeam();
+		ply:ClearInventory();
+
+	end
+
 end
 
 function meta:SetColorToTeam()
@@ -171,5 +181,13 @@ util.AddNetworkString( "nBroadcastStats" );
 function GM:GetFallDamage( ply, speed )
 
 	return 0;
+
+end
+
+function GM:PlayerSwitchFlashlight( ply, enabled )
+
+	if( enabled and !ply.Joined ) then return false end
+
+	return true;
 
 end

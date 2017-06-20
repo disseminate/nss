@@ -14,7 +14,7 @@ function ENT:SelectProblem( id )
 	local ss = GAMEMODE.Subsystems[id];
 
 	self:SetSubsystem( id );
-	self:SetExplodeDuration( math.Rand( 25, 55 ) );
+	self:SetExplodeDuration( math.Rand( 35, 75 ) );
 	self:SetStartTime( CurTime() );
 	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
 

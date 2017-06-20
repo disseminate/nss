@@ -135,3 +135,17 @@ function GM:PlayerButtonDown( ply, i )
 	end
 
 end
+
+function GM:NetworkEntityCreated( ent )
+
+	if( ent and ent:IsValid() ) then
+
+		if( ent:IsPlayer() and ent:IsBot() ) then
+
+			ent.Joined = true;
+
+		end
+
+	end
+
+end

@@ -4,7 +4,7 @@ function player.GetJoined()
 
 	for _, v in pairs( player.GetAll() ) do
 
-		if( v.Joined or v:IsBot() ) then
+		if( v.Joined ) then
 
 			table.insert( tab, v );
 

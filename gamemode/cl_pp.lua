@@ -18,9 +18,7 @@ end
 
 function GM:PrePlayerDraw( ply )
 
-	if( !ply:IsBot() ) then
-		if( !ply.Joined ) then return true end
-	end
+	if( !ply.Joined ) then return true end
 
 end
 

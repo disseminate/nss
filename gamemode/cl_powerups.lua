@@ -162,7 +162,7 @@ function GM:OpenWorkbench( ent )
 						GAMEMODE.Powerups[SelectedPowerup].OnCreate( LocalPlayer() );
 					end
 
-					chat.AddText( I18( "you_created" ) .. " ", Color( 255, 0, 0 ), GAMEMODE.Powerups[SelectedPowerup].Name, Color( 255, 255, 255 ), "." );
+					chat.AddText( Color( 255, 255, 255 ), I18( "you_created" ) .. " ", Color( 255, 0, 0 ), GAMEMODE.Powerups[SelectedPowerup].Name, Color( 255, 255, 255 ), "." );
 
 				end
 
