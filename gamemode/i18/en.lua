@@ -13,6 +13,7 @@ EXPORTS["en"] = {
 	["stat_damage"] = "Damage Taken",
 	["stat_terminals"] = "Terminals Fixed",
 	["stat_useless"] = "Most Useless",
+	["stat_team"] = "Best Team",
 
 	["scoreboard_subtitle"] = "By disseminate",
 
@@ -35,4 +36,9 @@ EXPORTS["en"] = {
 	["team_engineers_desc"] = "Fix engine- and mechanics-related problems.",
 	["team_programmers_desc"] = "On-the-fly hotfixes and patches for drivers gone bad.",
 	["team_officers_desc"] = "Coordination, honor, and drive are this team's forte.",
+
+	["workbench"] = "Workbench",
+	["create"] = "Create",
+	["required_items"] = "Required Items",
+	["you_created"] = "You've created",
 };

@@ -29,7 +29,12 @@ function GM:Reset()
 
 		v:Spawn();
 		v:ResetAllStats();
+		v:ClearInventory();
 
+	end
+
+	for k, v in pairs( team.GetAllTeams() ) do
+		team.SetScore( k, 0 );
 	end
 
 	if( self:AreTeamsUnbalanced() ) then

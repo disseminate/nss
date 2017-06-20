@@ -3,7 +3,7 @@ ENT.Type = "anim";
 
 function ENT:Initialize()
 
-	self:SetModel( "models/props_combine/combine_interface00" .. math.random( 1, 3 ) .. ".mdl" );
+	self:SetModel( "models/props_combine/combine_interface00" .. ( ( self:EntIndex() % 3 ) + 1 ) .. ".mdl" );
 
 	self:PhysicsInit( SOLID_VPHYSICS );
 	self:SetMoveType( MOVETYPE_VPHYSICS );

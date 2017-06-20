@@ -33,6 +33,7 @@ end
 function GM:SetupMove( ply, mv, cmd )
 
 	local mul = 1;
+	local jmul = 1;
 
 	for k, v in pairs( self.Subsystems ) do
 
@@ -42,10 +43,63 @@ function GM:SetupMove( ply, mv, cmd )
 
 		end
 
+		if( self.SubsystemStates[k] == SUBSYSTEM_STATE_BROKEN and v.DestroyedPlayerJump ) then
+
+			mul = mul * v.DestroyedPlayerJump( ply );
+
+		end
+
+	end
+
+	for k, v in pairs( self.Powerups ) do
+
+		if( k == ply.Powerup ) then
+
+			if( v.JumpMul ) then
+
+				jmul = jmul * v.JumpMul;
+
+			end
+
+			if( v.SpeedMul ) then
+
+				mul = mul * v.SpeedMul;
+
+			end
+
+			if( v.OnJump ) then
+
+				if( mv:KeyPressed( IN_JUMP ) and ply:OnGround() ) then
+
+					if( !ply.NextJump ) then ply.NextJump = CurTime(); end
+					if( CurTime() >= ply.NextJump ) then
+						
+						ply.NextJump = CurTime() + 0.1;
+						v.OnJump( ply );
+
+					end
+
+				end
+
+			end
+
+			if( v.MouseDown ) then
+
+				if( mv:KeyDown( IN_ATTACK ) ) then
+
+					v.MouseDown( ply, mv, cmd );
+
+				end
+
+			end
+
+		end
+
 	end
 
 	local run = mul * 400;
 	local walk = mul * 200;
+	local jump = jmul * 200;
 
 	if( ply:GetWalkSpeed() != walk ) then
 		ply:SetWalkSpeed( walk );
@@ -53,6 +107,10 @@ function GM:SetupMove( ply, mv, cmd )
 
 	if( ply:GetRunSpeed() != run ) then
 		ply:SetRunSpeed( run );
+	end
+
+	if( ply:GetJumpPower() != jump ) then
+		ply:SetJumpPower( jump );
 	end
 
 end

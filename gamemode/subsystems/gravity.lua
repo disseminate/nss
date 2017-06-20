@@ -7,7 +7,11 @@ tab.OnDestroyed = function()
 
 	for _, v in pairs( player.GetAll() ) do
 
-		v:SetGravity( 0.2 );
+		if( v.Powerup != "gravitygenerator" ) then
+			
+			v:SetGravity( 0.2 );
+
+		end
 
 	end
 

@@ -28,7 +28,6 @@ net.Receive( "nSetSpawnTime", nSetSpawnTime );
 local function nBroadcastStats( len )
 
 	local ply = net.ReadEntity();
-
 	for i = STAT_TERMINALS, STAT_DMG do
 		local n = net.ReadUInt( 16 );
 		ply:SetStat( i, n );
@@ -93,6 +92,40 @@ function GM:PlayerButtonDown( ply, i )
 					self.NextTerminalSolveKey = KEY_4;
 				else
 					self.NextTerminalSolveKey = KEY_1;
+				end
+
+			end
+
+		end
+
+	else
+
+		if( IsFirstTimePredicted() ) then
+
+			ply:CheckInventory();
+
+			if( !ply.Workbench ) then
+
+				if( !ply.NextItemThrow or ( ply.NextItemThrow and CurTime() >= ply.NextItemThrow ) ) then
+					
+					if( i >= KEY_1 and i <= KEY_6 ) then
+
+						local n = i - KEY_1 + 1;
+
+						if( ply.Inventory[n] ) then
+
+							net.Start( "nDropInventory" );
+								net.WriteUInt( n, MaxUIntBits( 6 ) );
+							net.SendToServer();
+
+							ply.Inventory[n] = nil;
+
+							self:UpdateItemHUD();
+
+						end
+
+					end
+
 				end
 
 			end

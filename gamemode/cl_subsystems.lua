@@ -57,6 +57,8 @@ end
 
 function GM:MakeTerminalSolve( ply, ent, mode )
 
+	self:HideItemPanel();
+
 	ply.TerminalSolveActive = true;
 	ply.TerminalSolveEnt = ent;
 	ply.TerminalSolveMode = mode;
@@ -74,6 +76,10 @@ function GM:TerminalIncrement( mul )
 	if( self:SubsystemBroken( "terminal" ) ) then
 		add = add * 0.8;
 	end
+	
+	if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].FaultMul ) then
+		add = add * self.Powerups[LocalPlayer().Powerup].FaultMul;
+	end
 
 	self.TerminalSolveProgress = self.TerminalSolveProgress + add;
 	if( self.TerminalSolveProgress >= 1 ) then
@@ -83,6 +89,8 @@ function GM:TerminalIncrement( mul )
 			net.SendToServer();
 		end
 
+		LocalPlayer().NextItemThrow = CurTime() + 1;
+
 		self:ClearTerminalSolve( LocalPlayer() );
 	end
 
@@ -90,6 +98,8 @@ end
 
 function GM:ClearTerminalSolve( ply )
 	
+	self:ShowItemPanel();
+
 	ply.TerminalSolveActive = false;
 	ply.TerminalSolveEnt = nil;
 	ply.TerminalSolveMode = nil;

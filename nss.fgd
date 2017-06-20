@@ -8,6 +8,10 @@
 [
 ]
 
+@PointClass base(Targetname, Angles) studio("models/props_wasteland/controlroom_desk001b.mdl") = nss_workbench : "Workbench"
+[
+]
+
 @SolidClass base(Trigger) = nss_func_space : "Space" 
 [
 ]

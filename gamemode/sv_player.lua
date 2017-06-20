@@ -31,6 +31,19 @@ function GM:PlayerInitialSpawn( ply )
 
 	end
 
+	for _, v in pairs( player.GetAll() ) do
+
+		if( v.Powerup ) then
+
+			net.Start( "nSetPowerup" );
+				net.WriteEntity( v );
+				net.WriteString( v.Powerup );
+			net.Send( ply );
+
+		end
+
+	end
+
 end
 
 function GM:PlayerSpawn( ply )
@@ -45,6 +58,15 @@ function GM:PlayerSpawn( ply )
 	player_manager.RunClass( ply, "Spawn" );
 	hook.Call( "PlayerSetModel", GAMEMODE, ply );
 
+	ply:SetColorToTeam();
+
+end
+
+function meta:SetColorToTeam()
+
+	local col = team.GetColor( self:Team() );
+	self:SetPlayerColor( Vector( col.r / 255, col.g / 255, col.b / 255 ) );
+
 end
 
 local function nJoin( len, ply )
@@ -53,6 +75,8 @@ local function nJoin( len, ply )
 		ply.Joined = true;
 
 		ply:SetTeamAuto();
+		ply:SetColorToTeam();
+		ply:ClearInventory();
 
 		net.Start( "nJoin" );
 			net.WriteEntity( ply );
@@ -121,6 +145,10 @@ function GM:PlayerShouldTakeDamage( ply, attacker )
 end
 
 function GM:ScalePlayerDamage( ply, hg, dmg )
+
+	if( ply.Powerup and self.Powerups[ply.Powerup].DamageMul ) then
+		dmg:ScaleDamage( self.Powerups[ply.Powerup].DamageMul );
+	end
 
 	ply:AddToStat( STAT_DMG, dmg:GetDamage() );
 

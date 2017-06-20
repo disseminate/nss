@@ -1,0 +1,6 @@
+UnlitGeneric
+{
+	$basetexture "nss/icons/keycap"
+	$translucent 1
+	$transparent 1
+}

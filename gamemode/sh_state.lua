@@ -61,4 +61,29 @@ function GM:OnStateTransition( prev, state )
 		self.OutroStart = CurTime();
 	end
 
+	if( SERVER and state == STATE_POSTGAME ) then
+		for _, v in pairs( player.GetAll() ) do
+			v:BroadcastStats();
+		end
+	end
+
+	if( CLIENT ) then
+		if( state == STATE_GAME or state == STATE_PREGAME ) then
+			self:ShowItemPanel();
+		else
+			self:HideItemPanel();
+			for _, v in pairs( player.GetAll() ) do
+				self:ClearWorkbench( v );
+			end
+		end
+	end
+
+	if( state == STATE_PREGAME ) then
+		
+		for _, v in pairs( player.GetAll() ) do
+			v.Powerup = nil;
+		end
+
+	end
+
 end

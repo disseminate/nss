@@ -1,6 +1,6 @@
 GM.Languages = RequireDir( "i18" );
 
-local l = GetConVarString( "gmod_language" );
+local l = GetConVar( "gmod_language" ):GetString();
 
 if( l and GM.Languages[l] ) then
 	GM.Language = GM.Languages[l];

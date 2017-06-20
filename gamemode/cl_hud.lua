@@ -15,7 +15,7 @@ function GM:HUDShouldDraw( element )
 
 end
 
-function surface.DrawProgressCircle( x, y, perc, radius )
+function surface.DrawProgressCircle( x, y, perc, radius, bgCol )
 
 	perc = math.Clamp( perc, 0, 1 );
 	
@@ -37,12 +37,14 @@ function surface.DrawProgressCircle( x, y, perc, radius )
 
 		table.insert( v, { x = x + x1, y = y + y1 } );
 
-		if( perc1 <= perc ) then
+		if( perc1 <= perc and perc > 0 ) then
 			surface.DrawLine( x + x1, y + y1, x + x2, y + y2 );
 		end
 	end
+
+	bgCol = bgCol or GAMEMODE:GetSkin().COLOR_GLASS;
 	
-	surface.SetDrawColor( GAMEMODE:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( bgCol );
 	surface.DrawPoly( v );
 
 end
@@ -105,11 +107,17 @@ function GM:HUDPaint()
 	elseif( !LocalPlayer():Alive() ) then
 		self:HUDPaintDead();
 	else
+		self:HUDPaintItems();
+
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
 		self:HUDPaintHealth();
 		self:HUDPaintSubsystemSolve();
 		self:HUDCinematicBars();
+
+		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
+			self.Powerups[LocalPlayer().Powerup].DrawHUD();
+		end
 
 		self.LostHUDTime = nil;
 	end
@@ -365,14 +373,16 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 
 	if( ct < 0 ) then return end
 
-	local colw = 300;
+	local colw = 250;
 	local pad = 40;
 
-	local x = ScrW() / 2 - ( colw / 2 ) - pad - colw;
+	local x = ScrW() / 2 - ( pad / 2 ) - colw - pad - colw;
 	local y = HUDApproachMap( "StatsY", 240, FrameTime() * 4 );
 
+	local colh = math.min( ScrH() * 0.5, ScrH() - y - 200 );
+
 	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
-	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
@@ -385,8 +395,9 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local function drawPlayerList( tab, stat, x, y )
 
 		local _y = y + 20 + 20 + 30;
-		
-		for i = 1, math.min( #tab, 10 ) do
+
+		local i = 1;
+		while( tab[i] and ( _y - y ) < colh - 30 ) do
 			local dy = 0;
 			if( i == 1 ) then
 				surface.SetFont( "NSS 30" );
@@ -413,17 +424,50 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 			surface.DrawText( "" .. tab[i]:GetStat( stat ) );
 
 			_y = _y + 30 + dy;
+			i = i + 1;
+		end
+
+	end;
+
+	local function drawTeamList( tab, x, y )
+
+		local _y = y + 20 + 20 + 30;
+		for i = 1, math.min( #tab, 10 ) do
+			local dy = 0;
+			surface.SetTextColor( team.GetColor( tab[i] ) );
+			if( i == 1 ) then
+				surface.SetFont( "NSS 30" );
+				dy = 10;
+			elseif( i == 2 ) then
+				surface.SetFont( "NSS 26" );
+				dy = 6;
+			elseif( i == 3 ) then
+				surface.SetFont( "NSS 24" );
+				dy = 4;
+			else
+				surface.SetFont( "NSS 20" );
+			end
+
+			local _w, _ = surface.GetTextSize( "" .. team.GetScore( tab[i] ) );
+			surface.SetTextPos( x + 20, _y );
+			surface.DrawText( team.GetName( tab[i] ) );
+
+			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+			surface.SetTextPos( x + colw - _w - 20, _y );
+			surface.DrawText( "" .. team.GetScore( tab[i] ) );
+
+			_y = _y + 30 + dy;
 		end
 
 	end;
 
 	drawPlayerList( plTab, STAT_DMG, x, y );
 
-	local x = ScrW() / 2 - ( colw / 2 );
+	local x = ScrW() / 2 - ( pad / 2 ) - colw;
 	local y = HUDApproachMap( "StatsY2", 240, FrameTime() * 3 );
 
 	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
-	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
@@ -434,11 +478,11 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) > b:GetStat( STAT_TERMINALS ); end );
 	drawPlayerList( plTab, STAT_TERMINALS, x, y );
 
-	local x = ScrW() / 2 + ( colw / 2 ) + pad;
+	local x = ScrW() / 2 + ( pad / 2 );
 	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
 
 	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
-	surface.DrawRect( x, y, colw, ScrH() * 0.5 );
+	surface.DrawRect( x, y, colw, colh );
 	
 	surface.SetFont( "NSS 32" );
 	surface.SetTextPos( x + 20, y + 20 );
@@ -448,6 +492,68 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local plTab = player.GetAll();
 	table.sort( plTab, function( a, b ) return a:GetStat( STAT_TERMINALS ) < b:GetStat( STAT_TERMINALS ); end );
 	drawPlayerList( plTab, STAT_TERMINALS, x, y );
+
+	local x = ScrW() / 2 + ( pad / 2 ) + colw + pad;
+	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
+
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.DrawRect( x, y, colw, colh );
+	
+	surface.SetFont( "NSS 32" );
+	surface.SetTextPos( x + 20, y + 20 );
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	surface.DrawText( I18( "stat_team" ) );
+
+	local teamTab = { TEAM_ENG, TEAM_PRO, TEAM_OFF };
+	table.sort( teamTab, function( a, b ) return team.GetScore( a ) > team.GetScore( b ); end );
+	drawTeamList( teamTab, x, y );
+
+end
+
+function GM:HUDPaintItems()
+
+	surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+
+	for _, v in pairs( ents.FindByClass( "nss_item" ) ) do
+
+		local p = v:GetPos();
+
+		local dist = LocalPlayer():GetPos():Distance( p );
+
+		if( dist < 1000 ) then
+
+			local amul = 1;
+			if( dist >= 700 ) then
+
+				amul = 1 - ( ( dist - 700 ) / 300 );
+
+			end
+
+			surface.SetAlphaMultiplier( amul );
+			
+			local r = v:GetPos() + Vector( v:BoundingRadius(), v:BoundingRadius(), v:BoundingRadius() );
+			
+			local pp = p:ToScreen();
+			local pr = r:ToScreen();
+			local rad = math.sqrt( math.pow( pp.x - pr.x, 2 ) + math.pow( pp.y - pr.y, 2 ) ) / 2;
+
+			local p = math.Clamp( ( v:GetDieTime() - CurTime() ) / 15, 0, 1 );
+			
+			surface.DrawProgressCircle( pp.x, pp.y, p, rad )
+
+			local t = self.Items[v:GetItem()].Name;
+
+			surface.SetFont( "NSS 20" );
+			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+			local w, h = surface.GetTextSize( t );
+			surface.SetTextPos( pp.x - w / 2, pp.y + ( rad * 1.3 ) );
+			surface.DrawText( t );
+
+			surface.SetAlphaMultiplier( 1 );
+
+		end
+
+	end
 
 end
 
