@@ -122,6 +122,8 @@ function GM:PlayerButtonDown( ply, i )
 
 							self:UpdateItemHUD();
 
+							self:SetHint( "inv_throw" );
+
 						end
 
 					end

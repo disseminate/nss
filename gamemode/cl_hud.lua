@@ -119,6 +119,8 @@ function GM:HUDPaint()
 			self.Powerups[LocalPlayer().Powerup].DrawHUD();
 		end
 
+		self:HUDPaintHints();
+
 		self.LostHUDTime = nil;
 	end
 
@@ -851,6 +853,21 @@ function GM:HUDPaintSubsystemSolve()
 	else
 
 		HUDSetMap( "TerminalSolveW", 0 );
+
+	end
+
+end
+
+function GM:HUDPaintHints()
+
+	LocalPlayer():CheckInventory();
+
+	if( !self:Hint( "inv_throw" ) and table.Count( LocalPlayer().Inventory ) > 0 ) then
+
+		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+		surface.SetTextPos( ScrW() / 2 + 230, ScrH() - 32 - 20 + 3 );
+		surface.SetFont( "NSS 20" );
+		surface.DrawText( "Press a number to throw inventory!" );
 
 	end
 
