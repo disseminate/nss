@@ -38,3 +38,47 @@ function GM:SetSkybox( sky )
 	end
 
 end
+
+function GM:SetupWorldFog()
+
+	if( self:GetState() != STATE_LOSE and LocalPlayer().JOINED ) then
+
+		if( self:ASSTriggered() ) then
+
+			if( !self.FogStart ) then
+				self.FogStart = CurTime();
+			end
+
+			local max = 0.1;
+			if( self:SubsystemBroken( "electrical" ) ) then
+				max = 0.07;
+			end
+			local d = math.Clamp( max * ( CurTime() - self.FogStart ) / 3, 0, max );
+
+			render.FogMode( MATERIAL_FOG_LINEAR );
+			render.FogStart( 128 );
+			render.FogEnd( 4096 );
+			render.FogMaxDensity( d );
+			render.FogColor( 200, 220, 255 );
+
+		else
+
+			self.FogStart = nil;
+
+		end
+
+		return true;
+
+	else
+
+		self.FogStart = nil;
+
+	end
+
+end
+
+function GM:SetupSkyboxFog()
+
+	return self:SetupWorldFog();
+
+end
