@@ -45,9 +45,13 @@ function GM:SubsystemThink()
 
 	for k, v in pairs( self.Subsystems ) do
 
-		if( self:SubsystemBroken( k ) and v.DestroyedThink ) then
+		if( self:SubsystemBroken( k ) ) then
+			
+			if( v.DestroyedThink ) then
 
-			v.DestroyedThink();
+				v.DestroyedThink();
+
+			end
 
 		end
 
