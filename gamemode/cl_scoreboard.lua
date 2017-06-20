@@ -107,6 +107,6 @@ end
 
 function GM:ScoreboardHide()
 
-	self.Scoreboard:FadeOut();
+	self.Scoreboard:FadeOut( true );
 
 end

@@ -76,6 +76,10 @@ function GM:TerminalIncrement( mul )
 	if( self:SubsystemBroken( "terminal" ) ) then
 		add = add * 0.8;
 	end
+	
+	if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].FaultMul ) then
+		add = add * self.Powerups[LocalPlayer().Powerup].FaultMul;
+	end
 
 	self.TerminalSolveProgress = self.TerminalSolveProgress + add;
 	if( self.TerminalSolveProgress >= 1 ) then

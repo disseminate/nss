@@ -72,7 +72,18 @@ function GM:OnStateTransition( prev, state )
 			self:ShowItemPanel();
 		else
 			self:HideItemPanel();
+			for _, v in pairs( player.GetAll() ) do
+				self:ClearWorkbench( v );
+			end
 		end
+	end
+
+	if( state == STATE_PREGAME ) then
+		
+		for _, v in pairs( player.GetAll() ) do
+			v.Powerup = nil;
+		end
+
 	end
 
 end

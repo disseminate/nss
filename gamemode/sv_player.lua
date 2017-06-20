@@ -31,6 +31,19 @@ function GM:PlayerInitialSpawn( ply )
 
 	end
 
+	for _, v in pairs( player.GetAll() ) do
+
+		if( v.Powerup ) then
+
+			net.Start( "nSetPowerup" );
+				net.WriteEntity( v );
+				net.WriteString( v.Powerup );
+			net.Send( ply );
+
+		end
+
+	end
+
 end
 
 function GM:PlayerSpawn( ply )
@@ -132,6 +145,10 @@ function GM:PlayerShouldTakeDamage( ply, attacker )
 end
 
 function GM:ScalePlayerDamage( ply, hg, dmg )
+
+	if( ply.Powerup and self.Powerups[ply.Powerup].DamageMul ) then
+		dmg:ScaleDamage( self.Powerups[ply.Powerup].DamageMul );
+	end
 
 	ply:AddToStat( STAT_DMG, dmg:GetDamage() );
 

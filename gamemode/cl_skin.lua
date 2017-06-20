@@ -11,6 +11,7 @@ SKIN.COLOR_WHITE_TRANS = Color( 255, 255, 255, 100 );
 SKIN.COLOR_GLASS_LIGHT = Color( 0, 0, 0, 80 );
 SKIN.COLOR_GLASS = Color( 0, 0, 0, 150 );
 SKIN.COLOR_GLASS_DARK = Color( 0, 0, 0, 170 );
+SKIN.COLOR_GLASS_DISABLED = Color( 255, 255, 255, 6 );
 SKIN.COLOR_BLACK = Color( 0, 0, 0, 255 );
 
 SKIN.COLOR_STATUS_GOOD = Color( 139, 255, 94 );
@@ -47,7 +48,12 @@ function SKIN:PaintButton( panel, w, h )
 
 	if( panel.BackgroundColor ) then
 
-		if( panel:IsDown() ) then
+		if( panel:GetDisabled() ) then
+
+			surface.SetDrawColor( self.COLOR_GLASS_DISABLED );
+			surface.DrawRect( 0, 0, w, h );
+
+		elseif( panel:IsDown() ) then
 
 			surface.SetDrawColor( panel.DarkBackgroundColor );
 			surface.DrawRect( 0, 0, w, h );
@@ -66,7 +72,12 @@ function SKIN:PaintButton( panel, w, h )
 
 	else
 		
-		if( panel:IsDown() ) then
+		if( panel:GetDisabled() ) then
+
+			surface.SetDrawColor( self.COLOR_GLASS_DISABLED );
+			surface.DrawRect( 0, 0, w, h );
+
+		elseif( panel:IsDown() ) then
 
 			surface.SetDrawColor( self.COLOR_GLASS_DARK );
 			surface.DrawRect( 0, 0, w, h );
@@ -83,6 +94,20 @@ function SKIN:PaintButton( panel, w, h )
 
 		end
 
+	end
+
+end
+
+function SKIN:PaintTooltip( panel, w, h )
+
+	surface.SetDrawColor( self.COLOR_GLASS_DARK );
+	surface.DrawRect( 0, 0, w, h );
+
+	if( !panel._SetUp ) then
+		panel._SetUp = true;
+
+		panel:SetFont( "NSS 16" );
+		panel:SetTextColor( self.COLOR_WHITE );
 	end
 
 end

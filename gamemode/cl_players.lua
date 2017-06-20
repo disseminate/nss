@@ -104,21 +104,25 @@ function GM:PlayerButtonDown( ply, i )
 
 			ply:CheckInventory();
 
-			if( !ply.NextItemThrow or ( ply.NextItemThrow and CurTime() >= ply.NextItemThrow ) ) then
-				
-				if( i >= KEY_1 and i <= KEY_6 ) then
+			if( !ply.Workbench ) then
 
-					local n = i - KEY_1 + 1;
+				if( !ply.NextItemThrow or ( ply.NextItemThrow and CurTime() >= ply.NextItemThrow ) ) then
+					
+					if( i >= KEY_1 and i <= KEY_6 ) then
 
-					if( ply.Inventory[n] ) then
+						local n = i - KEY_1 + 1;
 
-						net.Start( "nDropInventory" );
-							net.WriteUInt( n, MaxUIntBits( 6 ) );
-						net.SendToServer();
+						if( ply.Inventory[n] ) then
 
-						ply.Inventory[n] = nil;
+							net.Start( "nDropInventory" );
+								net.WriteUInt( n, MaxUIntBits( 6 ) );
+							net.SendToServer();
 
-						self:UpdateItemHUD();
+							ply.Inventory[n] = nil;
+
+							self:UpdateItemHUD();
+
+						end
 
 					end
 

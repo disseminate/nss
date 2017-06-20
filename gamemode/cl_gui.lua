@@ -77,11 +77,11 @@ function meta:FadeIn()
 
 end
 
-function meta:FadeOut( close )
+function meta:FadeOut( noclose )
 
 	self:AlphaTo( 0, 0.1, 0, function()
 		
-		if( close ) then
+		if( !noclose ) then
 			
 			self:Remove();
 			
@@ -116,6 +116,7 @@ function GM:CreateFrame( title, w, h )
 	n:MakePopup();
 	n:FadeIn();
 	n:DockPadding( 0, 24, 0, 0 );
+	n:SetKeyboardInputEnabled( false );
 
 	function n:ShowCloseButton() end
 	function n:PerformLayout()
@@ -134,6 +135,10 @@ function GM:CreateFrame( title, w, h )
 
 	local closeBut = self:CreateIconButton( n, NODOCK, 24, 24, self:GetSkin().ICON_CLOSE, function()
 		n:FadeOut();
+
+		if( n.OnClose ) then
+			n.OnClose();
+		end
 	end );
 	closeBut:SetPos( w - 24, 0 );
 
@@ -183,10 +188,13 @@ function GM:CreateLabel( p, dock, text, font, align )
 
 end
 
-function GM:CreateScrollPanel( p, dock )
+function GM:CreateScrollPanel( p, dock, w, h )
 
 	local n = vgui.Create( "DScrollPanel", p );
 	n:Dock( dock );
+	if( w and h ) then
+		n:SetSize( w, h );
+	end
 
 	return n;
 
@@ -253,12 +261,33 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 
 end
 
-function GM:CreateSpawnIcon( p, dock, w, h, mdl )
+function GM:CreateSpawnIcon( p, dock, w, h, mdl, tt )
 
 	local n = vgui.Create( "SpawnIcon", p );
 	n:Dock( dock );
 	n:SetSize( w, h );
 	n:SetModel( mdl );
+
+	function n:PaintOver( w, h )
+
+		if( self:GetDisabled() ) then
+			surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DISABLED );
+			surface.DrawRect( 0, 0, w, h );
+		else
+
+			if( self.OverlayFade > 0 ) then
+				
+				surface.SetAlphaMultiplier( self.OverlayFade / 255 );
+					surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+					surface.DrawOutlinedRect( 0, 0, w, h );
+				surface.SetAlphaMultiplier( 1 );
+
+			end
+			
+		end
+	end
+
+	n:SetTooltip( tt or "" );
 	
 	return n;
 

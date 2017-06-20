@@ -32,7 +32,6 @@ net.Receive( "nChangeTeamError", nChangeTeamError );
 function GM:ChangeTeamDialogue()
 
 	local f = self:CreateFrame( I18( "team_choose_title" ), 750, 400 );
-	f:SetKeyboardInputEnabled( false );
 	f:SetBackgroundBlur( true );
 
 	local leftPan = self:CreatePanel( f, LEFT, 250, 0 );

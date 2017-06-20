@@ -96,3 +96,52 @@ local function nDropInventory( len, ply )
 end
 net.Receive( "nDropInventory", nDropInventory );
 util.AddNetworkString( "nDropInventory" );
+
+local function nCreatePowerup( len, ply )
+
+	ply:CheckInventory();
+
+	if( GAMEMODE:GetState() != STATE_GAME ) then return end
+
+	local powerup = net.ReadString();
+	if( !GAMEMODE.Powerups[powerup] ) then return end
+
+	local wb = net.ReadEntity();
+	if( !wb or !wb:IsValid() or wb:GetClass() != "nss_workbench" ) then return end
+	local d = ply:GetPos():Distance( wb:GetPos() );
+	if( d > 100 ) then return end
+
+	local used = { };
+	
+	for _, v in pairs( GAMEMODE.Powerups[powerup].Ingredients ) do
+
+		local k = ply:HasItem( v, used );
+		if( !k ) then return end
+
+		used[k] = true;
+
+	end
+
+	for k, _ in pairs( used ) do
+
+		ply.Inventory[k] = nil;
+
+	end
+
+	ply:EmitSound( Sound( "buttons/combine_button" .. math.random( 1, 3 ) .. ".wav" ) );
+
+	ply.Powerup = powerup;
+
+	net.Start( "nSetPowerup" );
+		net.WriteEntity( ply );
+		net.WriteString( powerup );
+	net.Broadcast();
+
+	if( GAMEMODE.Powerups[powerup].OnCreate ) then
+		GAMEMODE.Powerups[powerup].OnCreate( ply );
+	end
+
+end
+net.Receive( "nCreatePowerup", nCreatePowerup );
+util.AddNetworkString( "nCreatePowerup" );
+util.AddNetworkString( "nSetPowerup" );

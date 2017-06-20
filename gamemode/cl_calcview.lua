@@ -56,6 +56,22 @@ function GM:CalcView( ply, origin, angles, fov, znear, zfar )
 
 						end
 
+					elseif( ply.Workbench ) then
+
+						if( ply.WorkbenchEnt and ply.WorkbenchEnt:IsValid() ) then
+
+							local ang = ( ply.WorkbenchEnt:GetPos() - ply:EyePos() ):Angle();
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Forward() * -40;
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Right() * -40;
+							tab.origin = tab.origin + Angle( 0, ang.y, 0 ):Up() * 30;
+
+							tab.angles = ( ply:EyePos() - tab.origin ):Angle();
+
+							tab.angles:RotateAroundAxis( tab.angles:Forward(), math.sin( CurTime() * 1 ) * 0.5 );
+							tab.angles:RotateAroundAxis( tab.angles:Right(), math.cos( CurTime() * 1 ) * 0.5 );
+
+						end
+
 					end
 
 				end
@@ -76,6 +92,7 @@ function GM:ShouldDrawLocalPlayer( ply )
 	if( self.CamZoomStart and CurTime() - self.CamZoomStart <= 1 ) then return true end
 	if( self:GetState() == STATE_LOST ) then return true end
 	if( ply.TerminalSolveActive ) then return true end
+	if( ply.Workbench ) then return true end
 	
 	return self.BaseClass:ShouldDrawLocalPlayer( ply );
 

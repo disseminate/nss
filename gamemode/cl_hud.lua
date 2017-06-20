@@ -115,6 +115,10 @@ function GM:HUDPaint()
 		self:HUDPaintSubsystemSolve();
 		self:HUDCinematicBars();
 
+		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
+			self.Powerups[LocalPlayer().Powerup].DrawHUD();
+		end
+
 		self.LostHUDTime = nil;
 	end
 
