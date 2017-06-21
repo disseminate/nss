@@ -169,6 +169,7 @@ function GM:OpenWorkbench( ent )
 			end
 
 		end );
+		bCraft:SetBackgroundColor( team.GetColor( LocalPlayer():Team() ) );
 
 	d:SetVisible( false );
 

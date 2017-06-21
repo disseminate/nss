@@ -113,6 +113,7 @@ function GM:HUDPaint()
 		self:HUDPaintSubsystems();
 		self:HUDPaintHealth();
 		self:HUDPaintSubsystemSolve();
+		self:HUDPaintPowerup();
 		self:HUDCinematicBars();
 
 		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
@@ -853,6 +854,23 @@ function GM:HUDPaintSubsystemSolve()
 	else
 
 		HUDSetMap( "TerminalSolveW", 0 );
+
+	end
+
+end
+
+function GM:HUDPaintPowerup()
+
+	if( LocalPlayer().Powerup and LocalPlayer().Powerup != "" ) then
+
+		surface.SetFont( "NSS 24" );
+		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+		local t = self.Powerups[LocalPlayer().Powerup].Name;
+		local w, h = surface.GetTextSize( t );
+		surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+		surface.DrawRect( ScrW() - 40 - w - 12, ScrH() - 40 - h - 12, w + 12, h + 12 );
+		surface.SetTextPos( ScrW() - 40 - w - 6, ScrH() - 40 - h - 6 );
+		surface.DrawText( t );
 
 	end
 

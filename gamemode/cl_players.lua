@@ -151,3 +151,13 @@ function GM:NetworkEntityCreated( ent )
 	end
 
 end
+
+local function nSetGesture( len )
+
+	local ent = net.ReadEntity();
+	local g = net.ReadUInt( 12 );
+
+	ent:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
+
+end
+net.Receive( "nSetGesture", nSetGesture );
