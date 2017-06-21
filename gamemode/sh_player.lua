@@ -134,8 +134,8 @@ function GM:PlayerButtonDown( ply, i )
 			if( i == KEY_1 ) then
 
 				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement( 0.5 );
-				else
+					self:TerminalIncrement();
+				elseif( SERVER ) then
 					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
 
 					net.Start( "nSetGestureTyping" );
@@ -156,7 +156,7 @@ function GM:PlayerButtonDown( ply, i )
 			if( i == self.NextTerminalSolveKey ) then
 
 				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement( 0.7 );
+					self:TerminalIncrement( 0.8 );
 				end
 
 				if( self.NextTerminalSolveKey == KEY_1 ) then
@@ -187,7 +187,7 @@ function GM:PlayerButtonDown( ply, i )
 			if( i == self.NextTerminalSolveKey ) then
 
 				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement();
+					self:TerminalIncrement( 0.6 );
 				end
 
 				if( self.NextTerminalSolveKey == KEY_1 ) then

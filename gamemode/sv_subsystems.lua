@@ -128,12 +128,20 @@ function GM:SubsystemThink()
 		
 		if( v.TerminalSolveActive ) then
 
-			if( !v.TerminalSolveEnt or !v.TerminalSolveEnt:IsValid() ) then
+			if( !v:Alive() ) then
+
 				self:ClearTerminalSolve( v );
-			elseif( !v.TerminalSolveEnt:IsDamaged() ) then
-				self:ClearTerminalSolve( v );
-			elseif( v.TerminalSolveEnt:GetPos():Distance( v:GetPos() ) > 100 ) then
-				self:ClearTerminalSolve( v );
+
+			else
+				
+				if( !v.TerminalSolveEnt or !v.TerminalSolveEnt:IsValid() ) then
+					self:ClearTerminalSolve( v );
+				elseif( !v.TerminalSolveEnt:IsDamaged() ) then
+					self:ClearTerminalSolve( v );
+				elseif( v.TerminalSolveEnt:GetPos():Distance( v:GetPos() ) > 100 ) then
+					self:ClearTerminalSolve( v );
+				end
+
 			end
 
 		end
