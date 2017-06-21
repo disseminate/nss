@@ -125,6 +125,10 @@ function GM:HUDPaint()
 		self.LostHUDTime = nil;
 	end
 
+	if( LocalPlayer().Joined ) then
+		self:HUDDrawVersion();
+	end
+
 end
 
 function GM:HUDPaintNotJoined()
@@ -888,5 +892,24 @@ function GM:HUDPaintHints()
 		surface.DrawText( "Press a number to throw inventory!" );
 
 	end
+
+end
+
+function GM:HUDDrawVersion()
+
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE_TRANS );
+	surface.SetFont( "NSS 16" );
+	local y = 40;
+	local t = "Need Some Space β";
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
+
+	y = y + h;
+	surface.SetFont( "NSS 14" );
+	local t = "Subject to change.";
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
 
 end
