@@ -191,3 +191,5 @@ function GM:PlayerSwitchFlashlight( ply, enabled )
 	return true;
 
 end
+
+util.AddNetworkString( "nSetGestureTyping" );

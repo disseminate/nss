@@ -59,3 +59,12 @@ local function nSetGesture( len )
 
 end
 net.Receive( "nSetGesture", nSetGesture );
+
+local function nSetGestureTyping( len )
+
+	local ent = net.ReadEntity();
+
+	ent:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_GMOD_GESTURE_RANGE_FRENZY, true );
+
+end
+net.Receive( "nSetGestureTyping", nSetGestureTyping );

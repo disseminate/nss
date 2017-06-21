@@ -124,7 +124,7 @@ function GM:ShouldCollide( e1, e2 )
 end
 
 function GM:PlayerButtonDown( ply, i )
-
+	
 	if( ply.TerminalSolveActive ) then
 
 		local g = ACT_GMOD_GESTURE_RANGE_FRENZY;
@@ -133,10 +133,14 @@ function GM:PlayerButtonDown( ply, i )
 
 			if( i == KEY_1 ) then
 
-				if( CLIENT ) then
-					self:TerminalIncrement( 0.4 );
+				if( CLIENT and IsFirstTimePredicted() ) then
+					self:TerminalIncrement( 0.5 );
 				else
 					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
+
+					net.Start( "nSetGestureTyping" );
+						net.WriteEntity( ply );
+					net.SendOmit( ply );
 				end
 
 				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
@@ -151,7 +155,7 @@ function GM:PlayerButtonDown( ply, i )
 
 			if( i == self.NextTerminalSolveKey ) then
 
-				if( CLIENT ) then
+				if( CLIENT and IsFirstTimePredicted() ) then
 					self:TerminalIncrement( 0.7 );
 				end
 
@@ -167,6 +171,10 @@ function GM:PlayerButtonDown( ply, i )
 				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				if( SERVER ) then
 					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
+
+					net.Start( "nSetGestureTyping" );
+						net.WriteEntity( ply );
+					net.SendOmit( ply );
 				end
 			end
 
@@ -178,7 +186,7 @@ function GM:PlayerButtonDown( ply, i )
 
 			if( i == self.NextTerminalSolveKey ) then
 
-				if( CLIENT ) then
+				if( CLIENT and IsFirstTimePredicted() ) then
 					self:TerminalIncrement();
 				end
 
@@ -198,6 +206,10 @@ function GM:PlayerButtonDown( ply, i )
 				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
 				if( SERVER ) then
 					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
+
+					net.Start( "nSetGestureTyping" );
+						net.WriteEntity( ply );
+					net.SendOmit( ply );
 				end
 			end
 
