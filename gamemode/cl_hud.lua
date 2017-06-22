@@ -108,6 +108,7 @@ function GM:HUDPaint()
 		self:HUDPaintDead();
 	else
 		self:HUDPaintItems();
+		self:HUDPaintPlayers();
 
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
@@ -558,6 +559,83 @@ function GM:HUDPaintItems()
 			surface.DrawText( t );
 
 			surface.SetAlphaMultiplier( 1 );
+
+		end
+
+	end
+
+end
+
+function GM:HUDPaintPlayers()
+
+	local padding = 6;
+
+	for _, v in pairs( player.GetAll() ) do
+
+		local p = v:GetPos();
+
+		local dist = LocalPlayer():GetPos():Distance( p );
+
+		if( dist < 1000 ) then
+
+			local amul = 1;
+			if( dist >= 700 ) then
+
+				amul = 1 - ( ( dist - 700 ) / 300 );
+
+			end
+
+			surface.SetAlphaMultiplier( amul );
+			
+			local r = v:EyePos() + Vector( 0, 0, 10 );
+			local pr = r:ToScreen();
+			
+			local t = v:Nick();
+
+			surface.SetFont( "NSS 18" );
+			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+			local w, h = surface.GetTextSize( t );
+
+			local wSpace = 10;
+
+			w = w + wSpace;
+
+			local x = pr.x - w / 2;
+			local y = pr.y - h / 2 - 48;
+
+			local drawHealth = false;
+			if( v:Health() < v:GetMaxHealth() ) then
+				drawHealth = true;
+			end
+
+			local hAdd = 0;
+			if( drawHealth ) then
+				hAdd = 14 + padding;
+			end
+
+			surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARK );
+			surface.DrawRect( x - padding, y - padding, w + padding * 2, h + padding * 2 + hAdd );
+
+			surface.SetDrawColor( team.GetColor( v:Team() ) );
+			surface.DrawRect( x + w - wSpace + ( wSpace / 2 - 4 / 2 + padding / 2 ), y + h / 2 - 4 / 2, 4, 4 );
+
+			surface.SetTextPos( x, y );
+			surface.DrawText( t );
+
+			y = y + h + padding;
+
+			if( drawHealth ) then
+
+				local t = v:Health() .. "%";
+				surface.SetFont( "NSS 14" );
+				surface.SetTextColor( self:GetSkin().COLOR_HEALTH );
+				local w, h = surface.GetTextSize( t );
+				surface.SetTextPos( pr.x - w / 2, y );
+				surface.DrawText( t );
+
+				surface.SetAlphaMultiplier( 1 );
+
+			end
 
 		end
 
