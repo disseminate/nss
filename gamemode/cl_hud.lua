@@ -633,9 +633,9 @@ function GM:HUDPaintPlayers()
 				surface.SetTextPos( pr.x - w / 2, y );
 				surface.DrawText( t );
 
-				surface.SetAlphaMultiplier( 1 );
-
 			end
+
+			surface.SetAlphaMultiplier( 1 );
 
 		end
 
