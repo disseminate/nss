@@ -368,7 +368,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 
 	local colh = math.min( ScrH() * 0.5, ScrH() - y - 200 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARK );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
