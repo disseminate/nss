@@ -453,7 +453,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 - ( pad / 2 ) - colw;
 	local y = HUDApproachMap( "StatsY2", 240, FrameTime() * 3 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
@@ -468,7 +468,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 + ( pad / 2 );
 	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 	
 	surface.SetFont( "NSS 32" );
@@ -483,7 +483,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 + ( pad / 2 ) + colw + pad;
 	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 	
 	surface.SetFont( "NSS 32" );
