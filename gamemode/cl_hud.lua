@@ -65,6 +65,12 @@ function HUDSetMap( key, val )
 
 end
 
+function HUDGetMap( key, default )
+
+	return GAMEMODE["HUDTween_" .. key] or default;
+
+end
+
 function HUDApproachMap( key, val, tween )
 	tween = tween or FrameTime();
 
@@ -115,7 +121,6 @@ function GM:HUDPaint()
 		self:HUDPaintHealth();
 		self:HUDPaintSubsystemSolve();
 		self:HUDPaintPowerup();
-		self:HUDCinematicBars();
 
 		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
 			self.Powerups[LocalPlayer().Powerup].DrawHUD();
@@ -164,10 +169,6 @@ end
 function GM:HUDPaintDead()
 
 	surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
-	
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, 0, ScrW(), 50 );
-	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
 
 	surface.SetFont( "NSS Title 100" );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
@@ -214,24 +215,6 @@ function GM:HUDPaintDead()
 
 end
 
-function GM:HUDCinematicBars()
-
-	local disp = false;
-	if( self:GetState() == STATE_POSTGAME or self:GetState() == STATE_LOST ) then
-		disp = true;
-	end
-	
-	local h = 50;
-	local y = HUDApproachMap( "CinematicBars", disp and 0 or h, FrameTime() * 2 );
-
-	if( y > h - 0.1 ) then return end
-
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, -y, ScrW(), h );
-	surface.DrawRect( 0, ScrH() - h + y, ScrW(), h );
-
-end
-
 function GM:HUDPaintLost()
 
 	local a = 0;
@@ -244,8 +227,6 @@ function GM:HUDPaintLost()
 		a = math.Clamp( tSince - 1.5, 0, 1 );
 			
 		surface.BackgroundBlur( 0, 0, ScrW(), ScrH(), a );
-
-		self:HUDCinematicBars();
 
 		surface.SetAlphaMultiplier( a );
 
@@ -298,7 +279,6 @@ function GM:HUDPaintLost()
 		if( !self.ExplosionFXTime ) then
 			self.ExplosionFXTime = CurTime();
 			surface.PlaySound( Sound( "ambient/explosions/explode_" .. math.random( 2, 6 ) .. ".wav" ) );
-			surface.PlaySound( Sound( "nss/nss_round_lose.wav" ) );
 		end
 
 		if( CurTime() - self.ExplosionFXTime < 2 ) then
@@ -317,15 +297,12 @@ function GM:HUDPaintLost()
 	else
 
 		self.ExplosionFXTime = nil;
-		self:HUDCinematicBars();
 
 	end
 
 end
 
 function GM:HUDPaintWon()
-
-	self:HUDCinematicBars();
 
 	local text = I18( "success_title" );
 	local col = self:GetSkin().COLOR_WIN;
@@ -572,70 +549,74 @@ function GM:HUDPaintPlayers()
 
 	for _, v in pairs( player.GetAll() ) do
 
-		local p = v:GetPos();
+		if( v != LocalPlayer() or ( v == LocalPlayer() and hook.Run( "ShouldDrawLocalPlayer", LocalPlayer() ) ) ) then
 
-		local dist = LocalPlayer():GetPos():Distance( p );
+			local p = v:GetPos();
 
-		if( dist < 1000 ) then
+			local dist = LocalPlayer():GetPos():Distance( p );
 
-			local amul = 1;
-			if( dist >= 700 ) then
+			if( dist < 1000 ) then
 
-				amul = 1 - ( ( dist - 700 ) / 300 );
+				local amul = 1;
+				if( dist >= 700 ) then
 
-			end
+					amul = 1 - ( ( dist - 700 ) / 300 );
 
-			surface.SetAlphaMultiplier( amul );
-			
-			local r = v:EyePos() + Vector( 0, 0, 10 );
-			local pr = r:ToScreen();
-			
-			local t = v:Nick();
+				end
 
-			surface.SetFont( "NSS 18" );
-			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-			local w, h = surface.GetTextSize( t );
+				surface.SetAlphaMultiplier( amul );
+				
+				local r = v:EyePos() + Vector( 0, 0, 10 );
+				local pr = r:ToScreen();
+				
+				local t = v:Nick();
 
-			local wSpace = 10;
-
-			w = w + wSpace;
-
-			local x = pr.x - w / 2;
-			local y = pr.y - h / 2 - 48;
-
-			local drawHealth = false;
-			if( v:Health() < v:GetMaxHealth() ) then
-				drawHealth = true;
-			end
-
-			local hAdd = 0;
-			if( drawHealth ) then
-				hAdd = 14 + padding;
-			end
-
-			surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARK );
-			surface.DrawRect( x - padding, y - padding, w + padding * 2, h + padding * 2 + hAdd );
-
-			surface.SetDrawColor( team.GetColor( v:Team() ) );
-			surface.DrawRect( x + w - wSpace + ( wSpace / 2 - 4 / 2 + padding / 2 ), y + h / 2 - 4 / 2, 4, 4 );
-
-			surface.SetTextPos( x, y );
-			surface.DrawText( t );
-
-			y = y + h + padding;
-
-			if( drawHealth ) then
-
-				local t = v:Health() .. "%";
-				surface.SetFont( "NSS 14" );
-				surface.SetTextColor( self:GetSkin().COLOR_HEALTH );
+				surface.SetFont( "NSS 18" );
+				surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 				local w, h = surface.GetTextSize( t );
-				surface.SetTextPos( pr.x - w / 2, y );
+
+				local wSpace = 10;
+
+				w = w + wSpace;
+
+				local x = pr.x - w / 2;
+				local y = pr.y - h / 2 - 48;
+
+				local drawHealth = false;
+				if( v:Health() < v:GetMaxHealth() ) then
+					drawHealth = true;
+				end
+
+				local hAdd = 0;
+				if( drawHealth ) then
+					hAdd = 14 + padding;
+				end
+
+				surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARK );
+				surface.DrawRect( x - padding, y - padding, w + padding * 2, h + padding * 2 + hAdd );
+
+				surface.SetDrawColor( team.GetColor( v:Team() ) );
+				surface.DrawRect( x + w - wSpace + ( wSpace / 2 - 4 / 2 + padding / 2 ), y + h / 2 - 4 / 2, 4, 4 );
+
+				surface.SetTextPos( x, y );
 				surface.DrawText( t );
 
-			end
+				y = y + h + padding;
 
-			surface.SetAlphaMultiplier( 1 );
+				if( drawHealth ) then
+
+					local t = v:Health() .. "%";
+					surface.SetFont( "NSS 14" );
+					surface.SetTextColor( self:GetSkin().COLOR_HEALTH );
+					local w, h = surface.GetTextSize( t );
+					surface.SetTextPos( pr.x - w / 2, y );
+					surface.DrawText( t );
+
+				end
+
+				surface.SetAlphaMultiplier( 1 );
+
+			end
 
 		end
 
@@ -976,9 +957,10 @@ end
 
 function GM:HUDDrawVersion()
 
+	local y = 40;
+
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE_TRANS );
 	surface.SetFont( "NSS 16" );
-	local y = 40;
 	local t = "Need Some Space β";
 	local w, h = surface.GetTextSize( t );
 	surface.SetTextPos( ScrW() - w - 40, y );

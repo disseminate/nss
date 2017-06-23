@@ -217,7 +217,7 @@ function GM:PlayerButtonDown( ply, i )
 
 	else
 
-		if( CLIENT and IsFirstTimePredicted() ) then
+		if( CLIENT and IsFirstTimePredicted() and ply:Alive() ) then
 
 			ply:CheckInventory();
 

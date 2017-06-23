@@ -152,7 +152,7 @@ end
 
 function GM:DamageShip( sys )
 	
-	if( true ) then GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_GOOD ) return end
+	--if( true ) then GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_GOOD ) return end
 
 	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
 

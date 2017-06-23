@@ -58,6 +58,13 @@ function GM:ShowItemPanel()
 
 end
 
+local function nShowItemPanel( len )
+
+	GAMEMODE:ShowItemPanel();
+
+end
+net.Receive( "nShowItemPanel", nShowItemPanel );
+
 function GM:UpdateItemHUD()
 
 	if( !LocalPlayer().Inventory ) then return end
@@ -267,3 +274,12 @@ local function nSetPowerup( len )
 
 end
 net.Receive( "nSetPowerup", nSetPowerup );
+
+local function nClearPowerup( len )
+
+	local ply = net.ReadEntity();
+
+	ply.Powerup = nil;
+
+end
+net.Receive( "nClearPowerup", nClearPowerup );

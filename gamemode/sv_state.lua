@@ -30,6 +30,7 @@ function GM:Reset()
 		v:Spawn();
 		v:ResetAllStats();
 		v:ClearInventory();
+		v.Powerup = nil;
 
 	end
 

@@ -86,14 +86,4 @@ function GM:OnStateTransition( prev, state )
 
 	end
 
-	if( CLIENT ) then
-
-		if( state == STATE_PREGAME ) then
-			surface.PlaySound( Sound( "nss/nss_round_start.wav" ) );
-		elseif( state == STATE_POSTGAME ) then
-			surface.PlaySound( Sound( "nss/nss_round_win.wav" ) );
-		end
-
-	end
-
 end

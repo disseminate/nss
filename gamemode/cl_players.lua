@@ -22,6 +22,8 @@ local function nSetSpawnTime( len )
 	LocalPlayer().DeadReason = r;
 	LocalPlayer().DeadThirdCam = cam;
 
+	GAMEMODE:HideItemPanel();
+
 end
 net.Receive( "nSetSpawnTime", nSetSpawnTime );
 
