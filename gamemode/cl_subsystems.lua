@@ -61,13 +61,12 @@ end
 
 function GM:MakeTerminalSolve( ply, ent, mode )
 
-	self:HideItemPanel();
-
 	ply.TerminalSolveActive = true;
 	ply.TerminalSolveEnt = ent;
 	ply.TerminalSolveMode = mode;
 	if( ply == LocalPlayer() ) then
 		self.NextTerminalSolveKey = KEY_1;
+		self:HideItemPanel();
 
 		self.TerminalSolveProgress = 0;
 	end
@@ -85,7 +84,7 @@ function GM:TerminalIncrement( mul )
 		add = add * self.Powerups[LocalPlayer().Powerup].FaultMul;
 	end
 
-	self.TerminalSolveProgress = self.TerminalSolveProgress + add;
+	self.TerminalSolveProgress = math.Clamp( self.TerminalSolveProgress + add, 0, 1 );
 	if( self.TerminalSolveProgress >= 1 ) then
 		if( LocalPlayer().TerminalSolveEnt and LocalPlayer().TerminalSolveEnt:IsValid() ) then
 			net.Start( "nTerminalSolve" );
@@ -101,18 +100,29 @@ function GM:TerminalIncrement( mul )
 end
 
 function GM:ClearTerminalSolve( ply )
-	
-	self:ShowItemPanel();
 
 	ply.TerminalSolveActive = false;
 	ply.TerminalSolveEnt = nil;
 	ply.TerminalSolveMode = nil;
 
 	if( ply == LocalPlayer() ) then
+		self:ShowItemPanel();
 		self.TerminalSolveProgress = nil;
 	end
 
 end
+
+local function nClearTerminalSolve( len )
+
+	local ply = net.ReadEntity();
+	if( ply and ply:IsValid() ) then
+
+		GAMEMODE:ClearTerminalSolve( ply );
+
+	end
+
+end
+net.Receive( "nClearTerminalSolve", nClearTerminalSolve );
 
 local function nStartTerminalSolve( len )
 
@@ -127,23 +137,3 @@ local function nStartTerminalSolve( len )
 
 end
 net.Receive( "nStartTerminalSolve", nStartTerminalSolve );
-
-function GM:TerminalSolveThink()
-
-	for _, v in pairs( player.GetAll() ) do
-		
-		if( v.TerminalSolveActive ) then
-
-			if( !v.TerminalSolveEnt or !v.TerminalSolveEnt:IsValid() ) then
-				self:ClearTerminalSolve( v );
-			elseif( !v.TerminalSolveEnt:IsDamaged() ) then
-				self:ClearTerminalSolve( v );
-			elseif( v.TerminalSolveEnt:GetPos():Distance( v:GetPos() ) > 100 ) then
-				self:ClearTerminalSolve( v );
-			end
-
-		end
-
-	end
-
-end

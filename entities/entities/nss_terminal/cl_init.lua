@@ -29,8 +29,12 @@ function ENT:Draw()
 
 		if( self.LightOn ) then
 
-			render.SetMaterial( self.SpriteMat );
-			render.DrawSprite( self:GetPos() + self:GetUp() * 48 + self:GetForward() * 4, 16, 16, Color( 255, 0, 0 ) );
+			for i = 1, 3 do
+				if( self:GetNeedsTeam( i ) ) then
+					render.SetMaterial( self.SpriteMat );
+					render.DrawSprite( self:GetPos() + self:GetUp() * 48 + self:GetForward() * 6 + self:GetRight() * ( i - 2 ) * 24, 16, 16, team.GetColor( i ) );
+				end
+			end
 
 		end
 

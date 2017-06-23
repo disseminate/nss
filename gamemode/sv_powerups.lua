@@ -41,12 +41,19 @@ function meta:DropItem( id )
 		end
 
 		self:EmitSound( Sound( "physics/plaster/ceiling_tile_impact_soft" .. math.random( 1, 3 ) .. ".wav" ) );
+		self:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_GMOD_GESTURE_ITEM_THROW, true );
+
+		net.Start( "nSetGesture" );
+			net.WriteEntity( self );
+			net.WriteUInt( ACT_GMOD_GESTURE_ITEM_THROW, 12 );
+		net.Broadcast();
 
 	end
 
 	self.Inventory[id] = nil;
 
 end
+util.AddNetworkString( "nSetGesture" );
 
 function meta:SendInventory()
 

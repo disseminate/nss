@@ -58,6 +58,13 @@ function GM:ShowItemPanel()
 
 end
 
+local function nShowItemPanel( len )
+
+	GAMEMODE:ShowItemPanel();
+
+end
+net.Receive( "nShowItemPanel", nShowItemPanel );
+
 function GM:UpdateItemHUD()
 
 	if( !LocalPlayer().Inventory ) then return end
@@ -123,10 +130,9 @@ function GM:OpenWorkbench( ent )
 
 	local d = self:CreatePanel( self.WorkbenchPanel, FILL );
 	d:DockPadding( 10, 10, 10, 10 );
-		local title = self:CreateLabel( d, TOP, "Name", "NSS Title 32", 7 );
-		local desc = self:CreateLabel( d, TOP, "Desc", "NSS 16", 7 );
+		local title = self:CreateLabel( d, TOP, "Name", "NSS Title 32", 8 );
+		local desc = self:CreateLabel( d, TOP, "Desc", "NSS 16", 8 );
 		desc:SetWrap( true );
-		desc:SetAutoStretchVertical( true );
 		desc:SetTall( 4 * 16 );
 		desc:DockMargin( 0, 0, 0, 30 );
 
@@ -134,6 +140,7 @@ function GM:OpenWorkbench( ent )
 		local padding = 6;
 
 		local reqLabel = self:CreateLabel( d, TOP, I18( "required_items" ), "NSS 16", 7 );
+		reqLabel:DockMargin( 0, 0, 0, 10 );
 
 		local reqPanel = self:CreatePanel( d, TOP, 0, ih );
 		reqPanel:SetPaintBackground( false );
@@ -162,19 +169,20 @@ function GM:OpenWorkbench( ent )
 						GAMEMODE.Powerups[SelectedPowerup].OnCreate( LocalPlayer() );
 					end
 
-					chat.AddText( I18( "you_created" ) .. " ", Color( 255, 0, 0 ), GAMEMODE.Powerups[SelectedPowerup].Name, Color( 255, 255, 255 ), "." );
+					chat.AddText( Color( 255, 255, 255 ), I18( "you_created" ) .. " ", Color( 255, 0, 0 ), GAMEMODE.Powerups[SelectedPowerup].Name, Color( 255, 255, 255 ), "." );
 
 				end
 
 			end
 
 		end );
+		bCraft:SetBackgroundColor( team.GetColor( LocalPlayer():Team() ) );
 
 	d:SetVisible( false );
 
 	for k, v in SortedPairsByMemberValue( self.Powerups, "Name" ) do
 
-		self:CreateButton( list, TOP, 0, 30, v.Name, "NSS 18", function()
+		local b = self:CreateButton( list, TOP, 0, 30, v.Name, "NSS 18", function()
 			SelectedPowerup = k;
 
 			d:SetVisible( true );
@@ -209,6 +217,7 @@ function GM:OpenWorkbench( ent )
 				bCraft:SetDisabled( true );
 			end
 		end );
+		b:DockMargin( 0, 0, 0, 6 );
 
 	end
 
@@ -265,3 +274,12 @@ local function nSetPowerup( len )
 
 end
 net.Receive( "nSetPowerup", nSetPowerup );
+
+local function nClearPowerup( len )
+
+	local ply = net.ReadEntity();
+
+	ply.Powerup = nil;
+
+end
+net.Receive( "nClearPowerup", nClearPowerup );

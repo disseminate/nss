@@ -76,7 +76,7 @@ function GM:SubsystemThink()
 
 							else
 
-								if( ply.ASSDamage > 0 ) then
+								if( ply.ASSDamage and ply.ASSDamage > 0 ) then
 
 									local amt = math.min( ply.ASSDamage, 5 );
 									ply:SetHealth( ply:Health() + amt );
@@ -124,10 +124,36 @@ function GM:SubsystemThink()
 
 	end
 
+	for _, v in pairs( player.GetAll() ) do
+		
+		if( v.TerminalSolveActive ) then
+
+			if( !v:Alive() ) then
+
+				self:ClearTerminalSolve( v );
+
+			else
+				
+				if( !v.TerminalSolveEnt or !v.TerminalSolveEnt:IsValid() ) then
+					self:ClearTerminalSolve( v );
+				elseif( !v.TerminalSolveEnt:IsDamaged() ) then
+					self:ClearTerminalSolve( v );
+				elseif( v.TerminalSolveEnt:GetPos():Distance( v:GetPos() ) > 100 ) then
+					self:ClearTerminalSolve( v );
+				end
+
+			end
+
+		end
+
+	end
+
 end
 
 function GM:DamageShip( sys )
 	
+	--if( true ) then GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_GOOD ) return end
+
 	GAMEMODE:SetSubsystemState( sys, SUBSYSTEM_STATE_BROKEN );
 
 	ScreenShake( 3 );
@@ -248,6 +274,10 @@ end
 
 function GM:StartTerminalSolve( ent, ply )
 
+	ply.TerminalSolveActive = true;
+	ply.TerminalSolveEnt = ent;
+	ply.TerminalSolveMode = ent:GetTerminalSolveMode();
+
 	net.Start( "nStartTerminalSolve" );
 		net.WriteEntity( ply );
 		net.WriteEntity( ent );
@@ -255,6 +285,19 @@ function GM:StartTerminalSolve( ent, ply )
 
 end
 util.AddNetworkString( "nStartTerminalSolve" );
+
+function GM:ClearTerminalSolve( ply )
+
+	ply.TerminalSolveActive = false;
+	ply.TerminalSolveEnt = nil;
+	ply.TerminalSolveMode = nil;
+
+	net.Start( "nClearTerminalSolve" );
+		net.WriteEntity( ply );
+	net.Broadcast();
+
+end
+util.AddNetworkString( "nClearTerminalSolve" );
 
 local function nTerminalSolve( len, ply )
 

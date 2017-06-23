@@ -20,6 +20,10 @@ tab.MouseDown = function( ply, mv, cmd )
 			
 			ply:EmitSound( Sound( "ambient/machines/machine1_hit" .. math.random( 1, 2 ) .. ".wav" ), 80, math.random( 90, 110 ) );
 
+			net.Start( "nJetpackEffect" );
+				net.WriteEntity( ply );
+			net.SendPVS( ply:GetPos() );
+
 		end
 
 	end
@@ -33,6 +37,26 @@ tab.DrawHUD = function()
 		surface.DrawProgressCircle( ScrW() / 2, ScrH() / 2, ( LocalPlayer().NextJetpack - CurTime() ) / 1.5, 16 );
 
 	end
+
+end
+
+if( CLIENT ) then
+
+	net.Receive( "nJetpackEffect", function( len )
+
+		local ply = net.ReadEntity();
+
+		local ed = EffectData();
+		ed:SetEntity( ply );
+		ed:SetNormal( ply:GetAimVector() * -1 );
+		ed:SetMagnitude( 32 );
+		util.Effect( "nss_rocket", ed );
+
+	end );
+
+else
+
+	util.AddNetworkString( "nJetpackEffect" );
 
 end
 

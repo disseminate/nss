@@ -60,6 +60,41 @@ function GM:PlayerSpawn( ply )
 
 	ply:SetColorToTeam();
 
+	if( ply:IsBot() and !ply.Joined ) then
+
+		ply.Joined = true;
+
+		ply:SetTeamAuto();
+		ply:SetColorToTeam();
+		ply:ClearInventory();
+
+	end
+	
+	if( ply.Powerup ) then
+		ply.Powerup = nil;
+
+		net.Start( "nClearPowerup" );
+			net.WriteEntity( ply );
+		net.Broadcast();
+	end
+
+end
+util.AddNetworkString( "nClearPowerup" );
+util.AddNetworkString( "nShowItemPanel" );
+
+function GM:PlayerDeathThink( ply )
+
+	if( ply.NextSpawnTime && ply.NextSpawnTime > CurTime() ) then return end
+
+	if( ply:IsBot() or ply:KeyPressed( IN_ATTACK ) or ply:KeyPressed( IN_ATTACK2 ) or ply:KeyPressed( IN_JUMP ) ) then
+	
+		ply:Spawn();
+
+		net.Start( "nShowItemPanel" );
+		net.Send( ply );
+	
+	end
+	
 end
 
 function meta:SetColorToTeam()
@@ -173,3 +208,13 @@ function GM:GetFallDamage( ply, speed )
 	return 0;
 
 end
+
+function GM:PlayerSwitchFlashlight( ply, enabled )
+
+	if( enabled and !ply.Joined ) then return false end
+
+	return true;
+
+end
+
+util.AddNetworkString( "nSetGestureTyping" );

@@ -23,7 +23,7 @@ function GM:StateThink()
 	if( #player.GetJoined() == 0 ) then return end
 
 	if( self:GetState() != self.CacheState ) then
-
+		
 		self:OnStateTransition( self.CacheState, self:GetState() );
 		self.CacheState = self:GetState();
 		

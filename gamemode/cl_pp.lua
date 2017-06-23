@@ -18,9 +18,7 @@ end
 
 function GM:PrePlayerDraw( ply )
 
-	if( !ply:IsBot() ) then
-		if( !ply.Joined ) then return true end
-	end
+	if( !ply.Joined ) then return true end
 
 end
 
@@ -41,7 +39,7 @@ end
 
 function GM:SetupWorldFog()
 
-	if( self:GetState() != STATE_LOSE and LocalPlayer().JOINED ) then
+	if( self:GetState() != STATE_LOST and LocalPlayer().Joined ) then
 
 		if( self:ASSTriggered() ) then
 

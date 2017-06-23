@@ -65,6 +65,12 @@ function HUDSetMap( key, val )
 
 end
 
+function HUDGetMap( key, default )
+
+	return GAMEMODE["HUDTween_" .. key] or default;
+
+end
+
 function HUDApproachMap( key, val, tween )
 	tween = tween or FrameTime();
 
@@ -108,18 +114,25 @@ function GM:HUDPaint()
 		self:HUDPaintDead();
 	else
 		self:HUDPaintItems();
+		self:HUDPaintPlayers();
 
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
 		self:HUDPaintHealth();
 		self:HUDPaintSubsystemSolve();
-		self:HUDCinematicBars();
+		self:HUDPaintPowerup();
 
 		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
 			self.Powerups[LocalPlayer().Powerup].DrawHUD();
 		end
 
+		self:HUDPaintHints();
+
 		self.LostHUDTime = nil;
+	end
+
+	if( LocalPlayer().Joined ) then
+		self:HUDDrawVersion();
 	end
 
 end
@@ -156,10 +169,6 @@ end
 function GM:HUDPaintDead()
 
 	surface.BackgroundBlur( 0, 0, ScrW(), ScrH() );
-	
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, 0, ScrW(), 50 );
-	surface.DrawRect( 0, ScrH() - 50, ScrW(), 50 );
 
 	surface.SetFont( "NSS Title 100" );
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
@@ -206,24 +215,6 @@ function GM:HUDPaintDead()
 
 end
 
-function GM:HUDCinematicBars()
-
-	local disp = false;
-	if( self:GetState() == STATE_POSTGAME or self:GetState() == STATE_LOST ) then
-		disp = true;
-	end
-	
-	local h = 50;
-	local y = HUDApproachMap( "CinematicBars", disp and 0 or h, FrameTime() * 2 );
-
-	if( y > h - 0.1 ) then return end
-
-	surface.SetDrawColor( self:GetSkin().COLOR_BLACK );
-	surface.DrawRect( 0, -y, ScrW(), h );
-	surface.DrawRect( 0, ScrH() - h + y, ScrW(), h );
-
-end
-
 function GM:HUDPaintLost()
 
 	local a = 0;
@@ -236,8 +227,6 @@ function GM:HUDPaintLost()
 		a = math.Clamp( tSince - 1.5, 0, 1 );
 			
 		surface.BackgroundBlur( 0, 0, ScrW(), ScrH(), a );
-
-		self:HUDCinematicBars();
 
 		surface.SetAlphaMultiplier( a );
 
@@ -290,6 +279,7 @@ function GM:HUDPaintLost()
 		if( !self.ExplosionFXTime ) then
 			self.ExplosionFXTime = CurTime();
 			surface.PlaySound( Sound( "ambient/explosions/explode_" .. math.random( 2, 6 ) .. ".wav" ) );
+			surface.PlaySound( Sound( "music/stingers/hl1_stinger_song16.mp3" ) );
 		end
 
 		if( CurTime() - self.ExplosionFXTime < 2 ) then
@@ -308,15 +298,12 @@ function GM:HUDPaintLost()
 	else
 
 		self.ExplosionFXTime = nil;
-		self:HUDCinematicBars();
 
 	end
 
 end
 
 function GM:HUDPaintWon()
-
-	self:HUDCinematicBars();
 
 	local text = I18( "success_title" );
 	local col = self:GetSkin().COLOR_WIN;
@@ -381,7 +368,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 
 	local colh = math.min( ScrH() * 0.5, ScrH() - y - 200 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
@@ -466,7 +453,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 - ( pad / 2 ) - colw;
 	local y = HUDApproachMap( "StatsY2", 240, FrameTime() * 3 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 
 	surface.SetFont( "NSS 32" );
@@ -481,7 +468,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 + ( pad / 2 );
 	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 	
 	surface.SetFont( "NSS 32" );
@@ -496,7 +483,7 @@ function GM:HUDPaintStats( ct ) -- ct starts at 0
 	local x = ScrW() / 2 + ( pad / 2 ) + colw + pad;
 	local y = HUDApproachMap( "StatsY3", 240, FrameTime() * 2 );
 
-	surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+	surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARKER );
 	surface.DrawRect( x, y, colw, colh );
 	
 	surface.SetFont( "NSS 32" );
@@ -550,6 +537,102 @@ function GM:HUDPaintItems()
 			surface.DrawText( t );
 
 			surface.SetAlphaMultiplier( 1 );
+
+		end
+
+	end
+
+end
+
+function GM:HUDPaintPlayers()
+
+	local padding = 6;
+
+	for _, v in pairs( player.GetAll() ) do
+
+		if( v:Alive() ) then
+			
+			if( v != LocalPlayer() or ( v == LocalPlayer() and hook.Run( "ShouldDrawLocalPlayer", LocalPlayer() ) ) ) then
+
+				local p = v:GetPos();
+
+				local dist = LocalPlayer():GetPos():Distance( p );
+
+				if( dist < 1000 ) then
+
+					local amul = 1;
+					if( dist >= 700 ) then
+
+						amul = 1 - ( ( dist - 700 ) / 300 );
+
+					end
+
+					local r = v:EyePos() + Vector( 0, 0, 10 );
+
+					local trace = { };
+					trace.start = EyePos();
+					trace.endpos = v:EyePos();
+					trace.filter = { LocalPlayer(), v };
+					trace.mask = MASK_BLOCKLOS
+					local tr = util.TraceLine( trace );
+
+					if( tr.Fraction == 1.0 ) then
+
+						surface.SetAlphaMultiplier( amul );
+						local pr = r:ToScreen();
+						
+						local t = v:Nick();
+
+						surface.SetFont( "NSS 18" );
+						surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+						local w, h = surface.GetTextSize( t );
+
+						local wSpace = 10;
+
+						w = w + wSpace;
+
+						local x = pr.x - w / 2;
+						local y = pr.y - h / 2 - 48;
+
+						local drawHealth = false;
+						if( v:Health() < v:GetMaxHealth() ) then
+							drawHealth = true;
+						end
+
+						local hAdd = 0;
+						if( drawHealth ) then
+							hAdd = 14 + padding;
+						end
+
+						surface.SetDrawColor( self:GetSkin().COLOR_GLASS_DARK );
+						surface.DrawRect( x - padding, y - padding, w + padding * 2, h + padding * 2 + hAdd );
+
+						surface.SetDrawColor( team.GetColor( v:Team() ) );
+						surface.DrawRect( x + w - wSpace + ( wSpace / 2 - 4 / 2 + padding / 2 ), y + h / 2 - 4 / 2, 4, 4 );
+
+						surface.SetTextPos( x, y );
+						surface.DrawText( t );
+
+						y = y + h + padding;
+
+						if( drawHealth ) then
+
+							local t = v:Health() .. "%";
+							surface.SetFont( "NSS 14" );
+							surface.SetTextColor( self:GetSkin().COLOR_HEALTH );
+							local w, h = surface.GetTextSize( t );
+							surface.SetTextPos( pr.x - w / 2, y );
+							surface.DrawText( t );
+
+						end
+
+						surface.SetAlphaMultiplier( 1 );
+
+					end
+
+				end
+
+			end
 
 		end
 
@@ -853,5 +936,57 @@ function GM:HUDPaintSubsystemSolve()
 		HUDSetMap( "TerminalSolveW", 0 );
 
 	end
+
+end
+
+function GM:HUDPaintPowerup()
+
+	if( LocalPlayer().Powerup and LocalPlayer().Powerup != "" ) then
+
+		surface.SetFont( "NSS 24" );
+		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+		local t = self.Powerups[LocalPlayer().Powerup].Name;
+		local w, h = surface.GetTextSize( t );
+		surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
+		surface.DrawRect( ScrW() - 40 - w - 12, ScrH() - 40 - h - 12, w + 12, h + 12 );
+		surface.SetTextPos( ScrW() - 40 - w - 6, ScrH() - 40 - h - 6 );
+		surface.DrawText( t );
+
+	end
+
+end
+
+function GM:HUDPaintHints()
+
+	LocalPlayer():CheckInventory();
+
+	if( !self:Hint( "inv_throw" ) and table.Count( LocalPlayer().Inventory ) > 0 ) then
+
+		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+		surface.SetTextPos( ScrW() / 2 + 230, ScrH() - 32 - 20 + 3 );
+		surface.SetFont( "NSS 20" );
+		surface.DrawText( "Press a number to throw inventory!" );
+
+	end
+
+end
+
+function GM:HUDDrawVersion()
+
+	local y = 40;
+
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE_TRANS );
+	surface.SetFont( "NSS 16" );
+	local t = "Need Some Space β";
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
+
+	y = y + h;
+	surface.SetFont( "NSS 14" );
+	local t = "Subject to change.";
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
 
 end

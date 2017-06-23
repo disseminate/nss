@@ -17,7 +17,7 @@ tab.DestroyedPostDrawSkybox = function()
 		GAMEMODE.NextWarpFlash = CurTime();
 	end
 
-	if( CurTime() >= GAMEMODE.NextWarpFlash ) then
+	if( CurTime() >= GAMEMODE.NextWarpFlash and GAMEMODE:GetState() == STATE_GAME ) then
 		GAMEMODE.NextWarpFlash = CurTime() + math.Rand( 3, 7 );
 
 		GAMEMODE.WarpFlashTime = CurTime();
@@ -28,8 +28,8 @@ tab.DestroyedPostDrawSkybox = function()
 	end
 
 	if( GAMEMODE.WarpFlashTime ) then
-		local t = math.Clamp( CurTime() - GAMEMODE.WarpFlashTime, 0, 0.5 );
-		local a = 1 - ( t * 2 );
+		local t = math.Clamp( CurTime() - GAMEMODE.WarpFlashTime, 0, 0.25 );
+		local a = 1 - ( t * 4 );
 		
 		if( a > 0 ) then
 			mat:SetFloat( "$alpha", a );

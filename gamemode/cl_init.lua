@@ -11,6 +11,7 @@ include( "sh_subsystems.lua" );
 include( "cl_binds.lua" );
 include( "cl_calcview.lua" );
 include( "cl_gui.lua" );
+include( "cl_hints.lua" );
 include( "cl_hud.lua" );
 include( "cl_map.lua" );
 include( "cl_players.lua" );

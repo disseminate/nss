@@ -11,7 +11,31 @@ tab.OnJump = function( ply )
 		
 		ply:EmitSound( Sound( "ambient/machines/machine1_hit" .. math.random( 1, 2 ) .. ".wav" ), 80, math.random( 90, 110 ) );
 
+		net.Start( "nJumpBoots" );
+			net.WriteEntity( ply );
+		net.SendPVS( ply:GetPos() );
+
 	end
+
+end
+
+if( CLIENT ) then
+
+	net.Receive( "nJumpBoots", function( len )
+
+		local ply = net.ReadEntity();
+
+		local ed = EffectData();
+		ed:SetEntity( ply );
+		ed:SetNormal( Vector( 0, 0, -1 ) );
+		ed:SetMagnitude( 0 );
+		util.Effect( "nss_rocket", ed );
+
+	end );
+
+else
+
+	util.AddNetworkString( "nJumpBoots" );
 
 end
 
