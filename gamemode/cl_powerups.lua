@@ -82,6 +82,7 @@ function GM:UpdateItemHUD()
 		self.ItemPanel:SetPos( ScrW() / 2 - ow / 2, ScrH() - oh );
 		self.ItemPanel:DockPadding( padding, padding, padding, padding );
 		self.ItemPanel.Slots = { };
+		self.ItemPanel:SetPaintBackground( false );
 
 		for i = 1, 6 do
 
