@@ -279,6 +279,7 @@ function GM:HUDPaintLost()
 		if( !self.ExplosionFXTime ) then
 			self.ExplosionFXTime = CurTime();
 			surface.PlaySound( Sound( "ambient/explosions/explode_" .. math.random( 2, 6 ) .. ".wav" ) );
+			surface.PlaySound( Sound( "music/stingers/hl1_stinger_song16.mp3" ) );
 		end
 
 		if( CurTime() - self.ExplosionFXTime < 2 ) then
