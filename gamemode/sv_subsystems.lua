@@ -76,7 +76,7 @@ function GM:SubsystemThink()
 
 							else
 
-								if( ply.ASSDamage > 0 ) then
+								if( ply.ASSDamage and ply.ASSDamage > 0 ) then
 
 									local amt = math.min( ply.ASSDamage, 5 );
 									ply:SetHealth( ply:Health() + amt );

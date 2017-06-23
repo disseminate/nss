@@ -17,7 +17,7 @@ tab.DestroyedPostDrawSkybox = function()
 		GAMEMODE.NextWarpFlash = CurTime();
 	end
 
-	if( CurTime() >= GAMEMODE.NextWarpFlash ) then
+	if( CurTime() >= GAMEMODE.NextWarpFlash and GAMEMODE:GetState() == STATE_GAME ) then
 		GAMEMODE.NextWarpFlash = CurTime() + math.Rand( 3, 7 );
 
 		GAMEMODE.WarpFlashTime = CurTime();
