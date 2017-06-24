@@ -50,6 +50,15 @@ function GM:ScoreboardShow()
 						row.AvatarImage:SetSize( 40, 0 );
 						row.AvatarImage:SetPlayer( v );
 
+						local b = GAMEMODE:CreateButton( row.AvatarImage, FILL, 0, 0, "", "NSS 16", function()
+
+							if( !v:IsBot() ) then
+								gui.OpenURL( "http://steamcommunity.com/profiles/" .. v:SteamID64() );
+							end
+
+						end );
+						b.Paint = function() end
+
 						row.Name = GAMEMODE:CreateLabel( row, LEFT, v:Nick(), "NSS 16", 4 ):DockMarginInline( 10, 0, 0, 0 );
 						
 						local i = self:GetSkin().ICON_AUDIO_ON;
