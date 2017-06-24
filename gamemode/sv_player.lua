@@ -144,7 +144,7 @@ util.AddNetworkString( "nPlayers" );
 function meta:SendShipHealth()
 
 	net.Start( "nSetShipHealth" );
-		net.WriteUInt( GAMEMODE.ShipHealth, 4 );
+		net.WriteUInt( GAMEMODE.ShipHealth, MaxUIntBits( SHIP_HEALTH ) );
 	net.Send( self );
 
 end

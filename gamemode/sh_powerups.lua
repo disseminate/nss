@@ -15,7 +15,7 @@ function meta:InvHasSpace()
 
 	self:CheckInventory();
 
-	if( table.Count( self.Inventory ) >= 6 ) then return false; end
+	if( table.Count( self.Inventory ) >= INV_SIZE ) then return false; end
 
 	return true;
 

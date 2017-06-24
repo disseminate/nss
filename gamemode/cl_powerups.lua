@@ -3,11 +3,11 @@ local meta = FindMetaTable( "Player" );
 local function nInvSend( len )
 
 	LocalPlayer().Inventory = { };
-	local n = net.ReadUInt( MaxUIntBits( 6 ) );
+	local n = net.ReadUInt( MaxUIntBits( INV_SIZE ) );
 
 	for i = 1, n do
 
-		local id = net.ReadUInt( MaxUIntBits( 6 ) );
+		local id = net.ReadUInt( MaxUIntBits( INV_SIZE ) );
 		local class = net.ReadString();
 
 		LocalPlayer().Inventory[id] = class;
@@ -23,7 +23,7 @@ local function nInvAdd( len )
 
 	LocalPlayer():CheckInventory();
 
-	local id = net.ReadUInt( MaxUIntBits( 6 ) );
+	local id = net.ReadUInt( MaxUIntBits( INV_SIZE ) );
 	local class = net.ReadString();
 
 	LocalPlayer().Inventory[id] = class;
@@ -75,7 +75,7 @@ function GM:UpdateItemHUD()
 
 	if( !self.ItemPanel or !self.ItemPanel:IsValid() ) then
 
-		local ow = padding * 7 + w * 6;
+		local ow = padding * ( INV_SIZE + 1 ) + w * INV_SIZE;
 		local oh = h + padding * 2;
 
 		self.ItemPanel = self:CreatePanel( nil, NODOCK, ow, oh );
@@ -83,10 +83,10 @@ function GM:UpdateItemHUD()
 		self.ItemPanel:DockPadding( padding, padding, padding, padding );
 		self.ItemPanel.Slots = { };
 
-		for i = 1, 6 do
+		for i = 1, INV_SIZE do
 
 			self.ItemPanel.Slots[i] = self:CreatePanel( self.ItemPanel, LEFT, w, h );
-			if( i < 6 ) then
+			if( i < INV_SIZE ) then
 				self.ItemPanel.Slots[i]:DockMargin( 0, 0, padding, 0 );
 			end
 
@@ -97,7 +97,7 @@ function GM:UpdateItemHUD()
 
 	end
 
-	for i = 1, 6 do
+	for i = 1, INV_SIZE do
 
 		if( self.ItemPanel.Slots[i].Item and self.ItemPanel.Slots[i].Item:IsValid() ) then
 			self.ItemPanel.Slots[i].Item:Remove();

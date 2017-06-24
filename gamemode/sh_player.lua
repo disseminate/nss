@@ -233,7 +233,7 @@ function GM:PlayerButtonDown( ply, i )
 						if( ply.Inventory[n] ) then
 
 							net.Start( "nDropInventory" );
-								net.WriteUInt( n, MaxUIntBits( 6 ) );
+								net.WriteUInt( n, MaxUIntBits( INV_SIZE ) );
 							net.SendToServer();
 
 							ply.Inventory[n] = nil;

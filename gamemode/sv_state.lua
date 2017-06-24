@@ -14,9 +14,9 @@ function GM:Reset()
 
 	self:ResetState();
 
-	self.ShipHealth = 5;
+	self.ShipHealth = SHIP_HEALTH;
 	net.Start( "nSetShipHealth" );
-		net.WriteUInt( self.ShipHealth, 4 );
+		net.WriteUInt( self.ShipHealth, MaxUIntBits( SHIP_HEALTH ) );
 	net.Broadcast();
 
 	self:ResetSubsystems();
