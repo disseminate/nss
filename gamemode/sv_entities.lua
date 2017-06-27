@@ -168,12 +168,16 @@ function meta:CreateMapEnt( n )
 	if( !self:IsSuperAdmin() ) then return end
 
 	local class;
+	local addPos = Vector();
 	if( n == 1 ) then
 		class = "nss_terminal";
+		addPos = Vector( 0, 0, 1 );
 	elseif( n == 2 ) then
 		class = "nss_workbench";
+		addPos = Vector( 0, 0, 17 );
 	elseif( n == 3 ) then
 		class = "nss_ass";
+		addPos = Vector( 0, 0, 26 );
 	elseif( n == 6 ) then
 		GAMEMODE:SetMapEditorCamera( self, self:EyePos(), self:EyeAngles() );
 		return;
@@ -188,7 +192,7 @@ function meta:CreateMapEnt( n )
 	local d = self:GetPos() - tr.HitPos;
 
 	local e = ents.Create( class );
-	e:SetPos( tr.HitPos );
+	e:SetPos( tr.HitPos + addPos );
 	e:SetAngles( Vector( d.x, d.y, 0 ):Angle() );
 	e:Spawn();
 	e:Activate();

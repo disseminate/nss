@@ -30,6 +30,8 @@ function GM:Reset( nospawn )
 
 		if( !nospawn ) then
 			v:Spawn();
+		else
+			v:SetHealth( v:GetMaxHealth() );
 		end
 
 		v:ResetAllStats();
