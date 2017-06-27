@@ -98,16 +98,35 @@ function GM:UpdateItemHUD()
 
 	end
 
-	for i = 1, INV_SIZE do
+	if( self.MapEditMode ) then
 
-		if( self.ItemPanel.Slots[i].Item and self.ItemPanel.Slots[i].Item:IsValid() ) then
-			self.ItemPanel.Slots[i].Item:Remove();
+		for i = 1, INV_SIZE do
+
+			if( self.ItemPanel.Slots[i].Item and self.ItemPanel.Slots[i].Item:IsValid() ) then
+				self.ItemPanel.Slots[i].Item:Remove();
+			end
+
 		end
+		
+		self.ItemPanel.Slots[1].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[1], FILL, 0, 0, "models/props_combine/combine_interface00" .. math.random( 1, 3 ) .. ".mdl", "Terminal" );
+		self.ItemPanel.Slots[2].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[2], FILL, 0, 0, "models/props_wasteland/controlroom_desk001b.mdl", "Workbench" );
+		self.ItemPanel.Slots[3].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[3], FILL, 0, 0, "models/props_c17/gaspipes006a.mdl", "ASS" );
+		self.ItemPanel.Slots[6].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[6], FILL, 0, 0, "models/maxofs2d/camera.mdl", "Camera Position" );
 
-		if( LocalPlayer().Inventory[i] ) then
-			
-			local v = LocalPlayer().Inventory[i];
-			self.ItemPanel.Slots[i].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[i], FILL, 0, 0, GAMEMODE.Items[v].Model, GAMEMODE.Items[v].Name );
+	else
+
+		for i = 1, INV_SIZE do
+
+			if( self.ItemPanel.Slots[i].Item and self.ItemPanel.Slots[i].Item:IsValid() ) then
+				self.ItemPanel.Slots[i].Item:Remove();
+			end
+
+			if( LocalPlayer().Inventory[i] ) then
+				
+				local v = LocalPlayer().Inventory[i];
+				self.ItemPanel.Slots[i].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[i], FILL, 0, 0, GAMEMODE.Items[v].Model, GAMEMODE.Items[v].Name );
+
+			end
 
 		end
 

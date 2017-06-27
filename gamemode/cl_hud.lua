@@ -1,7 +1,6 @@
 GM.NoHUDDraw = {
 	"CHudAmmo",
 	"CHudBattery",
-	"CHudCrosshair",
 	"CHudHealth",
 	"CHudSecondaryAmmo",
 	"CHudWeaponSelection",
@@ -104,6 +103,12 @@ function GM:HUDPaint()
 		HUDSetMap( "StatsY3", -ScrH() );
 	end
 
+	if( LocalPlayer().Joined and self.MapEditMode ) then
+		self:HUDPaintMapEditor();
+		self:HUDDrawVersion();
+		return;
+	end
+
 	if( !LocalPlayer().Joined ) then
 		self:HUDPaintNotJoined();
 	elseif( self:GetState() == STATE_LOST ) then
@@ -133,6 +138,45 @@ function GM:HUDPaint()
 
 	if( LocalPlayer().Joined ) then
 		self:HUDDrawVersion();
+	end
+
+end
+
+function GM:HUDPaintMapEditor()
+
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+	
+	if( LocalPlayer():IsSuperAdmin() ) then
+		
+		local y = 40;
+		for i = 1, 4 do
+			
+			if( i == 1 ) then
+				surface.SetFont( "NSS 20" );
+			else
+				surface.SetFont( "NSS 16" );
+			end
+			local text = I18( "map_editor_prompt" .. i );
+			local w2, h2 = surface.GetTextSize( text );
+			surface.SetTextPos( 40, y );
+			surface.DrawText( text );
+
+			if( i == 1 ) then
+				y = y + 30;
+			else
+				y = y + 16;
+			end
+
+		end
+
+	else
+
+		surface.SetFont( "NSS 20" );
+		local text = I18( "map_editor_user" );
+		local w2, h2 = surface.GetTextSize( text );
+		surface.SetTextPos( 40, 40 );
+		surface.DrawText( text );
+
 	end
 
 end

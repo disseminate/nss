@@ -217,7 +217,7 @@ function GM:PlayerButtonDown( ply, i )
 
 	else
 
-		if( CLIENT and IsFirstTimePredicted() and ply:Alive() ) then
+		if( CLIENT and IsFirstTimePredicted() and ply:Alive() and !self.MapEditMode ) then
 
 			ply:CheckInventory();
 
@@ -246,6 +246,24 @@ function GM:PlayerButtonDown( ply, i )
 
 					end
 
+				end
+
+			end
+
+		end
+
+		if( self.MapEditMode and ply:Alive() and ply.Joined and ply:IsSuperAdmin() ) then
+
+			if( i >= KEY_1 and i <= KEY_6 ) then
+
+				local n = i - KEY_1 + 1;
+
+				if( SERVER ) then
+					ply:CreateMapEnt( n );
+				elseif( IsFirstTimePredicted() ) then
+					if( n == 6 ) then
+						chat.AddText( self:GetSkin().COLOR_WHITE, "Updated camera position." );
+					end
 				end
 
 			end

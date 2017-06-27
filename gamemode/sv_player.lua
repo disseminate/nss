@@ -16,6 +16,8 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendState();
 	ply:SendShipHealth();
 	ply:ResetAllStats();
+	ply:SendMapEditMode();
+	ply:SendCameraInfo();
 
 	ply:SetTeam( TEAM_UNJOINED );
 
@@ -218,3 +220,9 @@ function GM:PlayerSwitchFlashlight( ply, enabled )
 end
 
 util.AddNetworkString( "nSetGestureTyping" );
+
+function GM:CanPlayerSuicide( ply )
+
+	return !self.MapEditMode;
+
+end

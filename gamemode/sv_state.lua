@@ -10,7 +10,7 @@ function GM:ResetState()
 
 end
 
-function GM:Reset()
+function GM:Reset( nospawn )
 
 	self:ResetState();
 
@@ -24,13 +24,20 @@ function GM:Reset()
 	self.LoseResetTime = nil;
 
 	game.CleanUpMap();
+	self:InitPostEntity();
 
 	for _, v in pairs( player.GetAll() ) do
 
-		v:Spawn();
+		if( !nospawn ) then
+			v:Spawn();
+		end
+
 		v:ResetAllStats();
 		v:ClearInventory();
 		v.Powerup = nil;
+
+		v:RemoveEFlags( EFL_NOCLIP_ACTIVE );
+		v:SetMoveType( MOVETYPE_WALK );
 
 	end
 
