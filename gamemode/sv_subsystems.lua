@@ -1,4 +1,4 @@
-GM.ShipHealth = GM.ShipHealth or 5;
+GM.ShipHealth = GM.ShipHealth or SHIP_HEALTH;
 
 function GM:GetNextDamageTime()
 
@@ -171,7 +171,7 @@ function GM:DamageShip( sys )
 	end
 
 	net.Start( "nSetShipHealth" );
-		net.WriteUInt( self.ShipHealth, 4 );
+		net.WriteUInt( self.ShipHealth, MaxUIntBits( SHIP_HEALTH ) );
 	net.Broadcast();
 
 end

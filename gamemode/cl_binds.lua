@@ -27,6 +27,56 @@ function GM:PlayerBindPress( ply, bind, down )
 
 		end
 
+		if( bind == "+menu" and LocalPlayer().Joined and LocalPlayer():IsSuperAdmin() ) then
+
+			net.Start( "nSetMapEditMode" );
+				net.WriteBool( !GAMEMODE.MapEditMode );
+			net.SendToServer();
+
+			return true;
+
+		end
+
+		if( GAMEMODE.MapEditMode and LocalPlayer().Joined and LocalPlayer():IsSuperAdmin() ) then
+
+			if( bind == "undo" ) then
+
+				net.Start( "nMapEditorUndo" );
+				net.SendToServer();
+
+				return true;
+
+			end
+
+			if( bind == "+reload" ) then
+				
+				net.Start( "nMapEditorEditPos" );
+				net.SendToServer();
+
+				return true;
+
+			end
+
+			if( bind == "+attack2" ) then
+
+				net.Start( "nMapEditorRemove" );
+				net.SendToServer();
+
+				return true;
+
+			end
+
+			if( bind == "noclip" ) then
+
+				net.Start( "nMapEditorNoclip" );
+				net.SendToServer();
+
+				return true;
+
+			end
+
+		end
+
 	end
 
 	return self.BaseClass:PlayerBindPress( ply, bind, down );

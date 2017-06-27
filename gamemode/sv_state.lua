@@ -10,13 +10,13 @@ function GM:ResetState()
 
 end
 
-function GM:Reset()
+function GM:Reset( nospawn )
 
 	self:ResetState();
 
-	self.ShipHealth = 5;
+	self.ShipHealth = SHIP_HEALTH;
 	net.Start( "nSetShipHealth" );
-		net.WriteUInt( self.ShipHealth, 4 );
+		net.WriteUInt( self.ShipHealth, MaxUIntBits( SHIP_HEALTH ) );
 	net.Broadcast();
 
 	self:ResetSubsystems();
@@ -24,13 +24,22 @@ function GM:Reset()
 	self.LoseResetTime = nil;
 
 	game.CleanUpMap();
+	self:InitPostEntity();
 
 	for _, v in pairs( player.GetAll() ) do
 
-		v:Spawn();
+		if( !nospawn ) then
+			v:Spawn();
+		else
+			v:SetHealth( v:GetMaxHealth() );
+		end
+
 		v:ResetAllStats();
 		v:ClearInventory();
 		v.Powerup = nil;
+
+		v:RemoveEFlags( EFL_NOCLIP_ACTIVE );
+		v:SetMoveType( MOVETYPE_WALK );
 
 	end
 

@@ -41,4 +41,10 @@ EXPORTS["en"] = {
 	["create"] = "Create",
 	["required_items"] = "Required Items",
 	["you_created"] = "You've created",
+
+	["map_editor_prompt1"] = "This map is not NSS-compatible! Add some entities using the numpad. Noclip is now enabled.",
+	["map_editor_prompt2"] = "Press R to toggle or cycle axes on an entity.",
+	["map_editor_prompt3"] = "Right click an entity to remove it.",
+	["map_editor_prompt4"] = "Press Q to exit map editor mode and save changes.",
+	["map_editor_user"] = "The admin is editing the map. Please be patient!",
 };

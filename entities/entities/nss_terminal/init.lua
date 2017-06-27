@@ -42,7 +42,7 @@ function ENT:ProblemSolve( ply )
 		end
 	end
 
-	if( solved ) then
+	if( solved or !ply ) then
 		
 		GAMEMODE:SetSubsystemState( self:GetSubsystem(), SUBSYSTEM_STATE_GOOD );
 
@@ -85,6 +85,19 @@ function ENT:CreateRandomItem( ply )
 end
 
 function ENT:Think()
+
+	if( GAMEMODE:GetState() == STATE_MAPEDIT ) then
+
+		if( self:GetStartTime() > 0 ) then
+
+			self:ProblemSolve();
+
+		elseif( self.WarningSound ) then
+			self.WarningSound:Stop();
+			self.WarningSound = nil;
+		end
+
+	end
 
 	if( #player.GetJoined() == 0 ) then return end
 	if( GAMEMODE:GetState() != STATE_GAME ) then return end

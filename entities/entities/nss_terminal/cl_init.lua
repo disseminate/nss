@@ -1,6 +1,7 @@
 include( "shared.lua" );
 
 ENT.SpriteMat = Material( "nss/sprites/glow01" );
+ENT.RenderGroup = RENDERGROUP_BOTH;
 
 function ENT:Draw()
 

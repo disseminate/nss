@@ -15,6 +15,12 @@ local function nJoin( len )
 	local ply = net.ReadEntity();
 	ply.Joined = true;
 
+	if( ply == LocalPlayer() and GAMEMODE.MapEditMode and ply:IsSuperAdmin() ) then
+
+		GAMEMODE:UpdateItemHUD();
+
+	end
+
 end
 net.Receive( "nJoin", nJoin );
 

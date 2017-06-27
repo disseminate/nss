@@ -16,6 +16,8 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendState();
 	ply:SendShipHealth();
 	ply:ResetAllStats();
+	ply:SendMapEditMode();
+	ply:SendCameraInfo();
 
 	ply:SetTeam( TEAM_UNJOINED );
 
@@ -144,7 +146,7 @@ util.AddNetworkString( "nPlayers" );
 function meta:SendShipHealth()
 
 	net.Start( "nSetShipHealth" );
-		net.WriteUInt( GAMEMODE.ShipHealth, 4 );
+		net.WriteUInt( GAMEMODE.ShipHealth, MaxUIntBits( SHIP_HEALTH ) );
 	net.Send( self );
 
 end
@@ -218,3 +220,9 @@ function GM:PlayerSwitchFlashlight( ply, enabled )
 end
 
 util.AddNetworkString( "nSetGestureTyping" );
+
+function GM:CanPlayerSuicide( ply )
+
+	return !self.MapEditMode;
+
+end

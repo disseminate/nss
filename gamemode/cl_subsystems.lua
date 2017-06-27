@@ -1,4 +1,4 @@
-GM.ShipHealth = GM.ShipHealth or 5;
+GM.ShipHealth = GM.ShipHealth or SHIP_HEALTH;
 
 local function nSetSubsystemState( len )
 
@@ -34,7 +34,7 @@ net.Receive( "nResetSubsystems", nResetSubsystems );
 
 local function nSetShipHealth( len )
 
-	local hp = net.ReadUInt( 4 );
+	local hp = net.ReadUInt( MaxUIntBits( SHIP_HEALTH ) );
 
 	GAMEMODE.ShipHealth = hp;
 

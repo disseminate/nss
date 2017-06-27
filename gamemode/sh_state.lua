@@ -1,5 +1,9 @@
 function GM:GetState()
 
+	if( self.MapEditMode ) then
+		return STATE_MAPEDIT;
+	end
+
 	if( !self.StateCycleStart ) then
 		return STATE_PREGAME;
 	end
@@ -21,6 +25,10 @@ function GM:GetState()
 end
 
 function GM:TimeLeftInState()
+
+	if( self.MapEditMode ) then
+		return math.huge;
+	end
 
 	if( !self.StateCycleStart ) then
 		return 0;
@@ -68,7 +76,7 @@ function GM:OnStateTransition( prev, state )
 	end
 
 	if( CLIENT ) then
-		if( state == STATE_GAME or state == STATE_PREGAME ) then
+		if( state == STATE_GAME or state == STATE_PREGAME or ( state == STATE_MAPEDIT and LocalPlayer():IsSuperAdmin() ) ) then
 			self:ShowItemPanel();
 		else
 			self:HideItemPanel();

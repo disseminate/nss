@@ -4,9 +4,9 @@ function meta:AddItem( class )
 
 	self:CheckInventory();
 
-	if( table.Count( self.Inventory ) >= 6 ) then return end
+	if( table.Count( self.Inventory ) >= INV_SIZE ) then return end
 
-	for i = 1, 6 do
+	for i = 1, INV_SIZE do
 		if( !self.Inventory[i] ) then
 			self.Inventory[i] = class;
 			return i;
@@ -58,9 +58,9 @@ util.AddNetworkString( "nSetGesture" );
 function meta:SendInventory()
 
 	net.Start( "nInvSend" );
-		net.WriteUInt( table.Count( self.Inventory ), MaxUIntBits( 6 ) );
+		net.WriteUInt( table.Count( self.Inventory ), MaxUIntBits( INV_SIZE ) );
 		for k, v in pairs( self.Inventory ) do
-			net.WriteUInt( k, MaxUIntBits( 6 ) );
+			net.WriteUInt( k, MaxUIntBits( INV_SIZE ) );
 			net.WriteString( v );
 		end
 	net.Send( self );
@@ -84,7 +84,7 @@ function meta:SendInventoryID( k )
 	if( !self.Inventory[k] ) then return end
 
 	net.Start( "nInvAdd" );
-		net.WriteUInt( k, MaxUIntBits( 6 ) );
+		net.WriteUInt( k, MaxUIntBits( INV_SIZE ) );
 		net.WriteString( self.Inventory[k] );
 	net.Send( self );
 
@@ -93,7 +93,7 @@ util.AddNetworkString( "nInvAdd" );
 
 local function nDropInventory( len, ply )
 	
-	local k = net.ReadUInt( MaxUIntBits( 6 ) );
+	local k = net.ReadUInt( MaxUIntBits( INV_SIZE ) );
 
 	ply:CheckInventory();
 	if( !ply.Inventory[k] ) then return end
