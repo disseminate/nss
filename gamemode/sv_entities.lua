@@ -29,6 +29,7 @@ util.AddNetworkString( "nSendCameraInfo" );
 local function nSetMapEditMode( len, ply )
 
 	if( !ply:IsSuperAdmin() ) then return end
+	if( GAMEMODE:MapHasTerminals() ) then return end
 
 	GAMEMODE.MapEditMode = net.ReadBool();
 
@@ -262,6 +263,16 @@ function GM:InitPostEntity()
 			v.Class = tonumber( v.Class );
 			v.ID = tonumber( v.ID );
 
+			for _, v in pairs( ents.GetAll() ) do
+
+				if( v.MapEditID and v.MapEditID == v.ID ) then
+
+					v:Remove();
+					
+				end
+
+			end
+
 			local class;
 			if( v.Class == 1 ) then
 				class = "nss_terminal";
@@ -291,7 +302,7 @@ function GM:InitPostEntity()
 
 	end
 
-	if( !self:MapHasTerminals() ) then
+	if( #ents.FindByClass( "nss_terminal" ) == 0 ) then
 
 		self.MapEditMode = true;
 

@@ -11,7 +11,17 @@ function GM:MapHasTerminals()
 	local etab = ents.FindByClass( "nss_terminal" );
 	if( #etab == 0 ) then return false end
 
-	return true;
+	for _, v in pairs( etab ) do
+		
+		if( v:MapCreationID() >= 0 ) then
+
+			return true;
+
+		end
+
+	end
+
+	return false;
 
 end
 

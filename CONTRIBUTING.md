@@ -8,6 +8,10 @@ Please make a pull request on a new branch. Branches should be named in the mann
 
 If you'd like to translate the gamemode, take a look at `gamemode/i18/en.lua` as a starting point. Subsystems, powerups, etc. are not translated by default.
 
+## Non-NSS Maps
+
+The map editor can be found ingame on non-`nss_*` maps by pressing Q. You need a Superadmin rank to do this.
+
 # Mapping
 
 Use the `nss.fgd` provided in this repository.
