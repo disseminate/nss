@@ -30,6 +30,7 @@ local function nSetMapEditMode( len, ply )
 
 	if( !ply:IsSuperAdmin() ) then return end
 	if( GAMEMODE:MapHasTerminals() ) then return end
+	if( GAMEMODE:GetState() == STATE_POSTGAME or GAMEMODE:GetState() == STATE_LOST ) then return end
 
 	GAMEMODE.MapEditMode = net.ReadBool();
 

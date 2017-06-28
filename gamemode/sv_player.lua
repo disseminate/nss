@@ -183,6 +183,11 @@ end
 
 function GM:ScalePlayerDamage( ply, hg, dmg )
 
+	if( self:GetState() != STATE_GAME ) then
+		dmg:ScaleDamage( 0 );
+		return true;
+	end
+
 	if( ply.Powerup and self.Powerups[ply.Powerup].DamageMul ) then
 		dmg:ScaleDamage( self.Powerups[ply.Powerup].DamageMul );
 	end
