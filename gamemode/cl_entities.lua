@@ -23,7 +23,20 @@ function GM:CreateMapSettings()
 	end
 
 	self.MapSettingsPanel = self:CreateFrame( "Map Settings", 300, 600 );
-	local b = self:CreateButton( self.MapSettingsPanel, BOTTOM, 0, 50, I18( "map_editor_update_cam_pos" ), "NSS 18", function()
+	self.MapSettingsPanel:DockPadding( 10, 34, 10, 10 );
+
+	local b = self:CreateButton( self.MapSettingsPanel, BOTTOM, 0, 30, I18( "map_editor_clear_all" ), "NSS 18", function()
+
+		self:CreateConfirm( "Are you sure? All map entities will be removed.", function()
+			net.Start( "nMapEditorClear" );
+			net.SendToServer();
+		end );
+
+	end );
+	b:DockMargin( 0, 50, 0, 0 );
+	b:SetBackgroundColor( self:GetSkin().COLOR_LOSE );
+
+	local b = self:CreateButton( self.MapSettingsPanel, TOP, 0, 50, I18( "map_editor_update_cam_pos" ), "NSS 18", function()
 
 		net.Start( "nSetMapEditorCamera" );
 		net.SendToServer();

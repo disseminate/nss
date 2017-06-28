@@ -86,6 +86,26 @@ end
 net.Receive( "nMapEditorRemove", nMapEditorRemove );
 util.AddNetworkString( "nMapEditorRemove" );
 
+local function nMapEditorClear( len, ply )
+
+	if( !ply:IsSuperAdmin() ) then return end
+
+	for _, v in pairs( ents.GetAll() ) do
+
+		if( v.MapEditID ) then
+
+			v:Remove();
+
+		end
+
+	end
+
+	sql.Query( "DELETE FROM nss_creations WHERE Map = " .. sql.SQLStr( game.GetMap() ) .. ";" );
+
+end
+net.Receive( "nMapEditorClear", nMapEditorClear );
+util.AddNetworkString( "nMapEditorClear" );
+
 local function nMapEditorNoclip( len, ply )
 
 	if( !ply:IsSuperAdmin() ) then return end

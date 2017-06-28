@@ -49,4 +49,8 @@ EXPORTS["en"] = {
 	["map_editor_user"] = "The admin is editing the map. Please be patient!",
 	["map_editor_update_cam_pos"] = "Update Camera Position",
 	["map_editor_updated_cam_pos"] = "Updated camera position.",
+	["map_editor_clear_all"] = "Clear All Map Data",
+
+	["ok"] = "OK",
+	["cancel"] = "Cancel",
 };

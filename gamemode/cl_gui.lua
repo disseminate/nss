@@ -293,3 +293,22 @@ function GM:CreateSpawnIcon( p, dock, w, h, mdl, tt )
 	return n;
 
 end
+
+function GM:CreateConfirm( text, cb )
+
+	local f = self:CreateFrame( "Confirm", 270, 130 );
+	f:DockPadding( 10, 34, 10, 10 );
+
+	local p = self:CreatePanel( f, BOTTOM, 0, 30 );
+	p:SetPaintBackground( false );
+		self:CreateButton( p, RIGHT, 80, 0, I18( "ok" ), "NSS 18", function()
+			f:FadeOut();
+			cb();
+		end ):DockMargin( 10, 0, 0, 0 );
+		self:CreateButton( p, FILL, 80, 0, I18( "cancel" ), "NSS 18", function()
+			f:FadeOut();
+		end );
+	local t = self:CreateLabel( f, FILL, text, "NSS 16", 7 );
+	t:SetWrap( true );
+
+end
