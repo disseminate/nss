@@ -27,7 +27,7 @@ function GM:PlayerBindPress( ply, bind, down )
 
 		end
 
-		if( bind == "+menu" and LocalPlayer().Joined and LocalPlayer():IsSuperAdmin() ) then
+		if( bind == "+menu" and LocalPlayer().Joined and LocalPlayer():IsSuperAdmin() and ( self:GetState() != STATE_POSTGAME and self:GetState() != STATE_LOST ) ) then
 
 			net.Start( "nSetMapEditMode" );
 				net.WriteBool( !GAMEMODE.MapEditMode );
