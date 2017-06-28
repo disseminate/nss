@@ -47,4 +47,6 @@ EXPORTS["en"] = {
 	["map_editor_prompt3"] = "Right click an entity to remove it.",
 	["map_editor_prompt4"] = "Press Q to exit map editor mode and save changes.",
 	["map_editor_user"] = "The admin is editing the map. Please be patient!",
+	["map_editor_update_cam_pos"] = "Update Camera Position",
+	["map_editor_updated_cam_pos"] = "Updated camera position.",
 };

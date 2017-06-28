@@ -12,19 +12,15 @@ function meta:SendMapEditMode()
 end
 util.AddNetworkString( "nMapEditMode" );
 
-function meta:SendCameraInfo()
+function meta:SendMapInfo()
 
-	if( GAMEMODE.CamPos and GAMEMODE.CamAng ) then
-		
-		net.Start( "nSendCameraInfo" );
-			net.WriteVector( GAMEMODE.CamPos );
-			net.WriteAngle( GAMEMODE.CamAng );
-		net.Send( self );
-
-	end
+	net.Start( "nSendMapInfo" );
+		net.WriteVector( GAMEMODE.CamPos or Vector() );
+		net.WriteAngle( GAMEMODE.CamAng or Angle() );
+	net.Send( self );
 
 end
-util.AddNetworkString( "nSendCameraInfo" );
+util.AddNetworkString( "nSendMapInfo" );
 
 local function nSetMapEditMode( len, ply )
 
@@ -165,6 +161,16 @@ end
 net.Receive( "nMapEditorClearPos", nMapEditorClearPos );
 util.AddNetworkString( "nMapEditorClearPos" );
 
+local function nSetMapEditorCamera( len, ply )
+	
+	if( !ply:IsSuperAdmin() ) then return end
+
+	GAMEMODE:SetMapEditorCamera( ply:EyePos(), ply:EyeAngles() );
+
+end
+net.Receive( "nSetMapEditorCamera", nSetMapEditorCamera );
+util.AddNetworkString( "nSetMapEditorCamera" );
+
 function meta:CreateMapEnt( n )
 
 	if( !self:IsSuperAdmin() ) then return end
@@ -180,40 +186,41 @@ function meta:CreateMapEnt( n )
 	elseif( n == 3 ) then
 		class = "nss_ass";
 		addPos = Vector( 0, 0, 26 );
-	elseif( n == 6 ) then
-		GAMEMODE:SetMapEditorCamera( self, self:EyePos(), self:EyeAngles() );
-		return;
 	end
 
-	local trace = { };
-	trace.start = self:GetShootPos();
-	trace.endpos = trace.start + self:GetAimVector() * 16384;
-	trace.filter = self;
-	local tr = util.TraceLine( trace );
+	if( class ) then
 
-	local d = self:GetPos() - tr.HitPos;
+		local trace = { };
+		trace.start = self:GetShootPos();
+		trace.endpos = trace.start + self:GetAimVector() * 16384;
+		trace.filter = self;
+		local tr = util.TraceLine( trace );
 
-	local e = ents.Create( class );
-	e:SetPos( tr.HitPos + addPos );
-	e:SetAngles( Vector( d.x, d.y, 0 ):Angle() );
-	e:Spawn();
-	e:Activate();
+		local d = self:GetPos() - tr.HitPos;
 
-	self.UndoEnt = e;
+		local e = ents.Create( class );
+		e:SetPos( tr.HitPos + addPos );
+		e:SetAngles( Vector( d.x, d.y, 0 ):Angle() );
+		e:Spawn();
+		e:Activate();
 
-	local maxId = 1;
-	for _, v in pairs( ents.GetAll() ) do
+		self.UndoEnt = e;
 
-		if( v.MapEditID ) then
+		local maxId = 1;
+		for _, v in pairs( ents.GetAll() ) do
 
-			maxId = math.max( maxId, v.MapEditID );
+			if( v.MapEditID ) then
+
+				maxId = math.max( maxId, v.MapEditID );
+
+			end
 
 		end
+		e.MapEditID = maxId + 1;
+
+		sql.Query( "INSERT INTO nss_creations (Map, ID, Class, Pos, Ang) VALUES (" .. sql.SQLStr( game.GetMap() ) .. ", " .. e.MapEditID .. ", " .. n .. ", " .. sql.SQLStr( tostring( e:GetPos() ) ) .. ", " .. sql.SQLStr( tostring( e:GetAngles() ) ) .. ");" );
 
 	end
-	e.MapEditID = maxId + 1;
-
-	sql.Query( "INSERT INTO nss_creations (Map, ID, Class, Pos, Ang) VALUES (" .. sql.SQLStr( game.GetMap() ) .. ", " .. e.MapEditID .. ", " .. n .. ", " .. sql.SQLStr( tostring( e:GetPos() ) ) .. ", " .. sql.SQLStr( tostring( e:GetAngles() ) ) .. ");" );
 
 end
 
@@ -236,9 +243,7 @@ end
 net.Receive( "nMapEditorUndo", nMapEditorUndo );
 util.AddNetworkString( "nMapEditorUndo" );
 
-function GM:SetMapEditorCamera( ply, pos, ang )
-
-	if( !ply:IsSuperAdmin() ) then return end
+function GM:SetMapEditorCamera( pos, ang )
 
 	GAMEMODE.CamPos = pos;
 	GAMEMODE.CamAng = ang;
@@ -246,7 +251,7 @@ function GM:SetMapEditorCamera( ply, pos, ang )
 	sql.Query( "DELETE FROM nss_cameras WHERE Map = " .. sql.SQLStr( game.GetMap() ) .. ";" );
 	sql.Query( "INSERT INTO nss_cameras (Map, Pos, Ang) VALUES (" .. sql.SQLStr( game.GetMap() ) .. ", " .. sql.SQLStr( tostring( pos ) ) .. ", " .. sql.SQLStr( tostring( ang ) ) .. ");" );
 
-	net.Start( "nSendCameraInfo" );
+	net.Start( "nSendMapInfo" );
 		net.WriteVector( GAMEMODE.CamPos );
 		net.WriteAngle( GAMEMODE.CamAng );
 	net.Broadcast();

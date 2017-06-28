@@ -10,7 +10,7 @@ function ENT:RenderOverride()
 
 	self:DrawModel();
 
-	if( GAMEMODE:ASSTriggered() ) then
+	if( GAMEMODE:ASSTriggered() or GAMEMODE.MapEditMode ) then
 
 		if( !self.Mesh ) then
 			self:CreateMesh();

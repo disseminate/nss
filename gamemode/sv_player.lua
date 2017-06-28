@@ -17,7 +17,7 @@ function GM:PlayerInitialSpawn( ply )
 	ply:SendShipHealth();
 	ply:ResetAllStats();
 	ply:SendMapEditMode();
-	ply:SendCameraInfo();
+	ply:SendMapInfo();
 
 	ply:SetTeam( TEAM_UNJOINED );
 

@@ -68,10 +68,11 @@ local widget_mapedit_move = {
 
 	end,
 
-	OnArrowDragged = function( self, num, dist, pl, mv )
+	OnArrowDragged = function( self, num, dist, ply, mv )
 
 		-- Prediction doesn't work properly yet.. because of the confusion with the bone moving, and the parenting, Agh.
 		if ( CLIENT ) then return end
+		if( !ply:IsSuperAdmin() ) then return end
 
 		local ent = self:GetParent()
 		if ( !IsValid( ent ) ) then return end
