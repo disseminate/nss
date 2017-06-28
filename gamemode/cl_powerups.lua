@@ -111,7 +111,7 @@ function GM:UpdateItemHUD()
 		self.ItemPanel.Slots[1].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[1], FILL, 0, 0, "models/props_combine/combine_interface00" .. math.random( 1, 3 ) .. ".mdl", "Terminal" );
 		self.ItemPanel.Slots[2].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[2], FILL, 0, 0, "models/props_wasteland/controlroom_desk001b.mdl", "Workbench" );
 		self.ItemPanel.Slots[3].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[3], FILL, 0, 0, "models/props_c17/gaspipes006a.mdl", "ASS" );
-		self.ItemPanel.Slots[6].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[6], FILL, 0, 0, "models/maxofs2d/camera.mdl", "Camera Position" );
+		self.ItemPanel.Slots[6].Item = self:CreateSpawnIcon( self.ItemPanel.Slots[6], FILL, 0, 0, "models/Mechanics/gears/gear12x6.mdl", "Settings" );
 
 	else
 

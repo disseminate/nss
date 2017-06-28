@@ -14,4 +14,10 @@ function ENT:Use( ply )
 
 end
 
+function ENT:UpdateTransmitState()
+
+	return TRANSMIT_ALWAYS;
+
+end
+
 util.AddNetworkString( "nOpenWorkbench" );

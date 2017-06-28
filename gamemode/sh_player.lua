@@ -262,7 +262,7 @@ function GM:PlayerButtonDown( ply, i )
 					ply:CreateMapEnt( n );
 				elseif( IsFirstTimePredicted() ) then
 					if( n == 6 ) then
-						chat.AddText( self:GetSkin().COLOR_WHITE, "Updated camera position." );
+						self:CreateMapSettings();
 					end
 				end
 

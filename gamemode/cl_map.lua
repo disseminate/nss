@@ -2,11 +2,14 @@ GM.IntroCam = { };
 GM.IntroCam["nss_test"] = { Vector( 364, 430, 338 ), Angle( 25, -128, 0 ) };
 GM.IntroCam["nss_infalliable"] = { Vector( -4613, -2872, 695 ), Angle( 5, 45, 0 ) };
 
-local function nSendCameraInfo( len )
+local function nSendMapInfo( len )
 
 	local pos = net.ReadVector();
 	local ang = net.ReadAngle();
-	GAMEMODE.IntroCam[game.GetMap()] = { pos, ang };
+
+	if( pos != Vector() or ang != Angle() ) then
+		GAMEMODE.IntroCam[game.GetMap()] = { pos, ang };
+	end
 
 end
-net.Receive( "nSendCameraInfo", nSendCameraInfo );
+net.Receive( "nSendMapInfo", nSendMapInfo );
