@@ -5,3 +5,9 @@ You are a member of the crew of the Starship Infallible. You've just come out of
 ## Installation
 
 Checkout this repository to `garrysmod/garrysmod/gamemodes`.
+
+## Maps
+
+`nss_*` maps by default have the ability to function with NSS. No setup required!
+
+For maps not designed for use with NSS, players with the `superadmin` rank can press Q to open the map editor. Instructions will be displayed ingame.
