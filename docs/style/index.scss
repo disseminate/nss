@@ -103,6 +103,8 @@ section {
 
 	@media only screen and (max-width: $small) {
 		padding: 30px;
+		padding-left: 20px;
+		padding-right: 20px;
 	}
 	
 	font-size: 20px;
@@ -115,9 +117,9 @@ section {
 	margin: auto;
 
 	@media only screen and (max-width: $small) {
-		max-width: 95%;
+		max-width: 100%;
 	}
-	@media only screen and (max-width: $med) {
+	@media only screen and (max-width: $med) and (min-width: $small + 1) {
 		max-width: 85%;
 	}
 }
@@ -180,6 +182,10 @@ a {
 		width: 50%;
 		margin-left: auto;
 		margin-right: auto;
+
+		@media only screen and (max-width: $small) {
+			width: 75%;
+		}
 	}
 }
 
@@ -207,6 +213,11 @@ a {
 	padding-top: 150px;
 	padding-bottom: 150px;
 	background: $color-grey;
+
+	@media only screen and (max-width: $small) {
+		padding-top: 100px;
+		padding-bottom: 100px;
+	}
 
 	.container {
 		.download {
