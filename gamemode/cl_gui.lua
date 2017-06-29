@@ -141,6 +141,8 @@ function GM:CreateFrame( title, w, h )
 		end
 	end );
 	closeBut:SetPos( w - 24, 0 );
+	closeBut:SetIconPadding( 4 );
+	closeBut:SetIconColor( self:GetSkin().COLOR_CLOSEBUTTON );
 
 	return n;
 
@@ -236,6 +238,7 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 	n:SetSize( w, h );
 	n:SetText( "" );
 	n.Icon = icon;
+	n.IconPadding = 0;
 
 	function n:SetIcon( icon )
 
@@ -250,8 +253,20 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 		local y = ( h - dim ) / 2;
 
 		surface.SetMaterial( self.Icon );
-		surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-		surface.DrawTexturedRect( x, y, dim, dim );
+		surface.SetDrawColor( self.IconColor or self:GetSkin().COLOR_WHITE );
+		surface.DrawTexturedRect( x + self.IconPadding, y + self.IconPadding, dim - self.IconPadding * 2, dim - self.IconPadding * 2 );
+
+	end
+
+	function n:SetIconColor( col )
+
+		self.IconColor = col;
+
+	end
+
+	function n:SetIconPadding( pad )
+
+		self.IconPadding = pad;
 
 	end
 
