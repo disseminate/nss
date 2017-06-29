@@ -1014,7 +1014,7 @@ function GM:HUDPaintHints()
 		surface.SetTextColor( self:GetSkin().COLOR_WHITE );
 		surface.SetTextPos( ScrW() / 2 + 230, ScrH() - 32 - 20 + 3 );
 		surface.SetFont( "NSS 20" );
-		surface.DrawText( "Press a number to throw inventory!" );
+		surface.DrawText( I18( "inv_throw_hint" ) );
 
 	end
 

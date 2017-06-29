@@ -45,6 +45,8 @@ end
 
 function ENT:GetNeedsTeam( team )
 
+	if( !team ) then return false end
+	if( !self["GetNeedsTeam" .. team] ) then return false end
 	return self["GetNeedsTeam" .. team]( self );
 
 end
