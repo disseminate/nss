@@ -172,10 +172,15 @@ function GM:HUDPaintMapEditor()
 	else
 
 		surface.SetFont( "NSS 20" );
-		local text = I18( "map_editor_user" );
-		local w2, h2 = surface.GetTextSize( text );
-		surface.SetTextPos( 40, 40 );
-		surface.DrawText( text );
+		local y = 40;
+		for i = 1, 2 do
+			local text = I18( "map_editor_user" .. i );
+			local w2, h2 = surface.GetTextSize( text );
+			surface.SetTextPos( 40, y );
+			surface.DrawText( text );
+
+			y = y + 20;
+		end
 
 	end
 
