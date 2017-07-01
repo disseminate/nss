@@ -292,10 +292,6 @@ function GM:ClearTerminalSolve( ply )
 	ply.TerminalSolveEnt = nil;
 	ply.TerminalSolveDiff = nil;
 
-	if( self.TerminalPanel and self.TerminalPanel:IsValid() ) then
-		self.TerminalPanel:FadeOut();
-	end
-
 	net.Start( "nClearTerminalSolve" );
 		net.WriteEntity( ply );
 	net.Broadcast();

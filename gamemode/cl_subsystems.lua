@@ -124,6 +124,10 @@ function GM:ClearTerminalSolve( ply )
 	if( ply == LocalPlayer() ) then
 		self:ShowItemPanel();
 		self.TerminalSolveProgress = nil;
+
+		if( self.TerminalPanel and self.TerminalPanel:IsValid() ) then
+			self.TerminalPanel:FadeOut();
+		end
 	end
 
 end
