@@ -39,6 +39,7 @@ SKIN.ICON_KEYCAP = Material( "nss/icons/keycap" );
 SKIN.ICON_NO = Material( "nss/icons/no" );
 SKIN.ICON_CHECK = Material( "nss/icons/check" );
 SKIN.ICON_CLOSE = Material( "nss/icons/close" );
+SKIN.ICON_TARGET = Material( "nss/icons/target" );
 
 SKIN.MAT_RING = Material( "nss/vgui/openring" );
 

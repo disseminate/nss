@@ -348,24 +348,23 @@ function GM:CreateSpinnerPuzzle( p, dock, w, h, diff, onSuccess )
 
 	function f:Paint( w, h )
 
-		DisableClipping( true );
-
 		surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
 		for i = 1, diff do
-			surface.DrawSegmentedCircle( w / 2, h / 2, 0.9 * ( h / 2 ) * levels[i][1], CurTime() * levels[i][2] );
+			surface.DrawSegmentedCircle( w / 2, h / 2, 0.8 * ( h / 2 ) * levels[i][1], CurTime() * levels[i][2] );
 		end
+
+		surface.SetMaterial( self:GetSkin().ICON_TARGET );
+		surface.DrawTexturedRect( w / 2 - w / 14, h / 2 - w / 14, w / 7, w / 7 );
 
 		if( levels[self.CursorLevel + 1] ) then
 
 			surface.SetMaterial( self:GetSkin().ICON_ARROW2 );
-			local x = math.cos( self.CursorPos - math.pi / 2 ) * ( h / 2 ) * ( levels[self.CursorLevel + 1][1] );
-			local y = math.sin( self.CursorPos - math.pi / 2 ) * ( h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			local x = math.cos( self.CursorPos - math.pi / 2 ) * ( 0.9 * h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			local y = math.sin( self.CursorPos - math.pi / 2 ) * ( 0.9 * h / 2 ) * ( levels[self.CursorLevel + 1][1] );
 			
-			surface.DrawTexturedRectRotated( w / 2 + x, h / 2 + y, 32, 32, 180 - self.CursorPos * ( 180 / math.pi ) + 90 );
+			surface.DrawTexturedRectRotated( w / 2 + x, h / 2 + y, w / 24, w / 24, 180 - self.CursorPos * ( 180 / math.pi ) + 90 );
 
 		end
-
-		DisableClipping( false );
 
 	end
 

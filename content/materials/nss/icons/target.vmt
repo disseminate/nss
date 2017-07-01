@@ -1,0 +1,6 @@
+UnlitGeneric
+{
+	$basetexture "nss/icons/target"
+	$translucent 1
+	$transparent 1
+}

@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Anti-Electrostatics";
 tab.Acronym = "FRI";
+tab.Desc = "Prevents dust particles from coating surfaces. Destruction would lead to decreased friction.";
 tab.Teams = { TEAM_PRO };
 
 tab.OnDestroyed = function()
