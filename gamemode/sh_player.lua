@@ -124,125 +124,31 @@ function GM:ShouldCollide( e1, e2 )
 end
 
 function GM:PlayerButtonDown( ply, i )
-	
-	if( ply.TerminalSolveActive ) then
 
-		local g = ACT_GMOD_GESTURE_RANGE_FRENZY;
+	if( CLIENT and IsFirstTimePredicted() and ply:Alive() and !self.MapEditMode ) then
 
-		if( ply.TerminalSolveMode == TASK_MASH ) then
+		ply:CheckInventory();
 
-			if( i == KEY_1 ) then
+		-- Needs to be clientside to check for this:
+		if( !ply.Workbench ) then
 
-				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement();
-				elseif( SERVER ) then
-					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
-
-					net.Start( "nSetGestureTyping" );
-						net.WriteEntity( ply );
-					net.SendOmit( ply );
-				end
-
-				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
-
-			end
-
-		elseif( ply.TerminalSolveMode == TASK_ALTERNATE ) then
-
-			if( !self.NextTerminalSolveKey ) then
-				self.NextTerminalSolveKey = KEY_1;
-			end
-
-			if( i == self.NextTerminalSolveKey ) then
-
-				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement( 0.8 );
-				end
-
-				if( self.NextTerminalSolveKey == KEY_1 ) then
-					self.NextTerminalSolveKey = KEY_2;
-				else
-					self.NextTerminalSolveKey = KEY_1;
-				end
+			if( !ply.NextItemThrow or ( ply.NextItemThrow and CurTime() >= ply.NextItemThrow ) ) then
 				
-			end
+				if( i >= KEY_1 and i <= KEY_6 ) then
 
-			if( i >= KEY_1 and i <= KEY_2 ) then
-				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
-				if( SERVER ) then
-					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
+					local n = i - KEY_1 + 1;
 
-					net.Start( "nSetGestureTyping" );
-						net.WriteEntity( ply );
-					net.SendOmit( ply );
-				end
-			end
+					if( ply.Inventory[n] ) then
 
-		elseif( ply.TerminalSolveMode == TASK_ROW ) then
+						net.Start( "nDropInventory" );
+							net.WriteUInt( n, MaxUIntBits( INV_SIZE ) );
+						net.SendToServer();
 
-			if( !self.NextTerminalSolveKey ) then
-				self.NextTerminalSolveKey = KEY_1;
-			end
+						ply.Inventory[n] = nil;
 
-			if( i == self.NextTerminalSolveKey ) then
+						self:UpdateItemHUD();
 
-				if( CLIENT and IsFirstTimePredicted() ) then
-					self:TerminalIncrement( 0.6 );
-				end
-
-				if( self.NextTerminalSolveKey == KEY_1 ) then
-					self.NextTerminalSolveKey = KEY_2;
-				elseif( self.NextTerminalSolveKey == KEY_2 ) then
-					self.NextTerminalSolveKey = KEY_3;
-				elseif( self.NextTerminalSolveKey == KEY_3 ) then
-					self.NextTerminalSolveKey = KEY_4;
-				else
-					self.NextTerminalSolveKey = KEY_1;
-				end
-				
-			end
-
-			if( i >= KEY_1 and i <= KEY_4 ) then
-				ply:AnimRestartGesture( GESTURE_SLOT_ATTACK_AND_RELOAD, g, true );
-				if( SERVER ) then
-					ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
-
-					net.Start( "nSetGestureTyping" );
-						net.WriteEntity( ply );
-					net.SendOmit( ply );
-				end
-			end
-
-		end
-
-	else
-
-		if( CLIENT and IsFirstTimePredicted() and ply:Alive() and !self.MapEditMode ) then
-
-			ply:CheckInventory();
-
-			-- Needs to be clientside to check for this:
-			if( !ply.Workbench ) then
-
-				if( !ply.NextItemThrow or ( ply.NextItemThrow and CurTime() >= ply.NextItemThrow ) ) then
-					
-					if( i >= KEY_1 and i <= KEY_6 ) then
-
-						local n = i - KEY_1 + 1;
-
-						if( ply.Inventory[n] ) then
-
-							net.Start( "nDropInventory" );
-								net.WriteUInt( n, MaxUIntBits( INV_SIZE ) );
-							net.SendToServer();
-
-							ply.Inventory[n] = nil;
-
-							self:UpdateItemHUD();
-
-							self:SetHint( "inv_throw" );
-
-						end
+						self:SetHint( "inv_throw" );
 
 					end
 
@@ -252,20 +158,20 @@ function GM:PlayerButtonDown( ply, i )
 
 		end
 
-		if( self.MapEditMode and ply:Alive() and ply.Joined and ply:IsSuperAdmin() ) then
+	end
 
-			if( i >= KEY_1 and i <= KEY_6 ) then
+	if( self.MapEditMode and ply:Alive() and ply.Joined and ply:IsSuperAdmin() ) then
 
-				local n = i - KEY_1 + 1;
+		if( i >= KEY_1 and i <= KEY_6 ) then
 
-				if( SERVER ) then
-					ply:CreateMapEnt( n );
-				elseif( IsFirstTimePredicted() ) then
-					if( n == 6 ) then
-						self:CreateMapSettings();
-					end
+			local n = i - KEY_1 + 1;
+
+			if( SERVER ) then
+				ply:CreateMapEnt( n );
+			elseif( IsFirstTimePredicted() ) then
+				if( n == 6 ) then
+					self:CreateMapSettings();
 				end
-
 			end
 
 		end

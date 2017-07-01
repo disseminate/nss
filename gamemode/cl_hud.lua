@@ -44,7 +44,16 @@ function surface.DrawProgressCircle( x, y, perc, radius, bgCol )
 	bgCol = bgCol or GAMEMODE:GetSkin().COLOR_GLASS;
 	
 	surface.SetDrawColor( bgCol );
+	draw.NoTexture();
 	surface.DrawPoly( v );
+
+end
+
+function surface.DrawSegmentedCircle( x0, y0, r, ang )
+
+	surface.SetMaterial( GAMEMODE:GetSkin().MAT_RING );
+
+	surface.DrawTexturedRectRotated( x0, y0, r * 2, r * 2, ang );
 
 end
 
@@ -124,7 +133,6 @@ function GM:HUDPaint()
 		self:HUDPaintTime();
 		self:HUDPaintSubsystems();
 		self:HUDPaintHealth();
-		self:HUDPaintSubsystemSolve();
 		self:HUDPaintPowerup();
 
 		if( LocalPlayer().Powerup and self.Powerups[LocalPlayer().Powerup].DrawHUD ) then
@@ -879,115 +887,6 @@ function GM:HUDPaintHealth()
 
 end
 
-function GM:HUDPaintSubsystemSolve()
-
-	if( LocalPlayer().TerminalSolveActive ) then
-
-		local prog = HUDApproachMap( "TerminalSolveW", math.EaseInOut( self.TerminalSolveProgress, 0, 1 ), FrameTime() * 20 );
-
-		local barw = 300;
-		local barh = 50;
-		local x = ScrW() / 2 - barw / 2;
-		local y = ScrH() - barh - 40;
-
-		surface.SetDrawColor( self:GetSkin().COLOR_GLASS );
-		surface.DrawRect( x, y, barw, barh );
-		surface.SetDrawColor( self:GetSkin().COLOR_TERMINALSOLVE );
-		surface.DrawRect( ScrW() / 2 - ( barw - 4 ) * 0.5, y + 2, prog * ( barw - 4 ) * 0.5, barh - 4 );
-		surface.DrawRect( ScrW() / 2 + ( barw - 4 ) * 0.5 * ( 1 - prog ), y + 2, prog * ( barw - 4 ) * 0.5, barh - 4 );
-		
-		if( LocalPlayer().TerminalSolveMode == TASK_MASH ) then
-			
-			local kw = HUDApproachMap( "KeyCapW", math.floor( CurTime() * 2 ) % 2 == 0 and 120 or 100, FrameTime() * 4 );
-
-			local kx = ScrW() / 2 - ( kw / 2 );
-			local ky = ScrH() - 40 - barh - 40 - kw;
-			surface.SetMaterial( self:GetSkin().ICON_KEYCAP );
-			surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-			surface.DrawTexturedRect( kx, ky, kw, kw );
-			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-			surface.SetFont( "NSS 48" );
-			surface.SetTextPos( kx + 24, ky + 16 );
-			surface.DrawText( "1" );
-
-		elseif( LocalPlayer().TerminalSolveMode == TASK_ALTERNATE ) then
-
-			if( !self.NextTerminalSolveKey ) then
-				self.NextTerminalSolveKey = KEY_1;
-			end
-
-			local kw1 = HUDApproachMap( "KeyCapW1", self.NextTerminalSolveKey == KEY_1 and 120 or 80, FrameTime() * 8 );
-			local kw2 = HUDApproachMap( "KeyCapW2", self.NextTerminalSolveKey == KEY_2 and 120 or 80, FrameTime() * 8 );
-
-			local kx = ScrW() / 2 - kw1 - 20;
-			local ky = ScrH() - 40 - barh - 40 - kw1;
-			local k2x = ScrW() / 2 + 20;
-			local k2y = ScrH() - 40 - barh - 40 - kw2;
-
-			surface.SetMaterial( self:GetSkin().ICON_KEYCAP );
-			surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-			surface.DrawTexturedRect( kx, ky, kw1, kw1 );
-			surface.DrawTexturedRect( k2x, k2y, kw2, kw2 );
-
-			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-			surface.SetFont( "NSS 48" );
-			surface.SetTextPos( kx + 24, ky + 16 );
-			surface.DrawText( "1" );
-			
-			surface.SetTextPos( k2x + 24, k2y + 16 );
-			surface.DrawText( "2" );
-
-		elseif( LocalPlayer().TerminalSolveMode == TASK_ROW ) then
-
-			if( !self.NextTerminalSolveKey ) then
-				self.NextTerminalSolveKey = KEY_1;
-			end
-
-			local kw1 = HUDApproachMap( "KeyCapW1", self.NextTerminalSolveKey == KEY_1 and 120 or 80, FrameTime() * 8 );
-			local kw2 = HUDApproachMap( "KeyCapW2", self.NextTerminalSolveKey == KEY_2 and 120 or 80, FrameTime() * 8 );
-			local kw3 = HUDApproachMap( "KeyCapW3", self.NextTerminalSolveKey == KEY_3 and 120 or 80, FrameTime() * 8 );
-			local kw4 = HUDApproachMap( "KeyCapW4", self.NextTerminalSolveKey == KEY_4 and 120 or 80, FrameTime() * 8 );
-
-			local kx = ScrW() / 2 - kw2 - 40 - kw1 - 20;
-			local ky = ScrH() - 40 - barh - 40 - kw1;
-			local k2x = ScrW() / 2 - kw2 - 20;
-			local k2y = ScrH() - 40 - barh - 40 - kw2;
-			local k3x = ScrW() / 2 + 20;
-			local k3y = ScrH() - 40 - barh - 40 - kw3;
-			local k4x = ScrW() / 2 + 20 + kw3 + 40;
-			local k4y = ScrH() - 40 - barh - 40 - kw4;
-
-			surface.SetMaterial( self:GetSkin().ICON_KEYCAP );
-			surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-			surface.DrawTexturedRect( kx, ky, kw1, kw1 );
-			surface.DrawTexturedRect( k2x, k2y, kw2, kw2 );
-			surface.DrawTexturedRect( k3x, k3y, kw3, kw3 );
-			surface.DrawTexturedRect( k4x, k4y, kw4, kw4 );
-
-			surface.SetTextColor( self:GetSkin().COLOR_WHITE );
-			surface.SetFont( "NSS 48" );
-			surface.SetTextPos( kx + 24, ky + 16 );
-			surface.DrawText( "1" );
-			
-			surface.SetTextPos( k2x + 24, k2y + 16 );
-			surface.DrawText( "2" );
-
-			surface.SetTextPos( k3x + 24, k3y + 16 );
-			surface.DrawText( "3" );
-
-			surface.SetTextPos( k4x + 24, k4y + 16 );
-			surface.DrawText( "4" );
-
-		end
-
-	else
-
-		HUDSetMap( "TerminalSolveW", 0 );
-
-	end
-
-end
-
 function GM:HUDPaintPowerup()
 
 	if( LocalPlayer().Powerup and LocalPlayer().Powerup != "" ) then
@@ -1023,7 +922,7 @@ end
 function GM:HUDDrawVersion()
 
 	local y = 40;
-
+	
 	surface.SetTextColor( self:GetSkin().COLOR_WHITE_TRANS );
 	surface.SetFont( "NSS 16" );
 	local t = "Need Some Space β";

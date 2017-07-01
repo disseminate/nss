@@ -55,4 +55,6 @@ EXPORTS["en"] = {
 
 	["ok"] = "OK",
 	["cancel"] = "Cancel",
+
+	["terminal"] = "Terminal",
 };

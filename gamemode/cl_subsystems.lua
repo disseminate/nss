@@ -59,16 +59,32 @@ function GM:SubsystemThink()
 
 end
 
-function GM:MakeTerminalSolve( ply, ent, mode )
+function GM:MakeTerminalSolve( ply, ent, diff )
 
 	ply.TerminalSolveActive = true;
 	ply.TerminalSolveEnt = ent;
-	ply.TerminalSolveMode = mode;
-	if( ply == LocalPlayer() ) then
-		self.NextTerminalSolveKey = KEY_1;
-		self:HideItemPanel();
+	ply.TerminalSolveDiff = diff;
+	
+	self.TerminalPanel = self:CreateFrame( I18( "terminal" ), 600, 600 );
+	self.TerminalPanel:DockPadding( 10, 34, 10, 10 );
+	self.TerminalPanel:SetKeyboardInputEnabled( true );
+	self.TerminalPanel.OnClose = function()
+		self:ClearTerminalSolve( LocalPlayer() );
+	end;
+	self.TerminalPanel.Puzzle = self:CreateSpinnerPuzzle( self.TerminalPanel, FILL, nil, nil, diff, function()
+	
+		if( LocalPlayer().TerminalSolveEnt and LocalPlayer().TerminalSolveEnt:IsValid() ) then
+			net.Start( "nTerminalSolve" );
+				net.WriteEntity( LocalPlayer().TerminalSolveEnt );
+			net.SendToServer();
+		end
 
-		self.TerminalSolveProgress = 0;
+		self:ClearTerminalSolve( LocalPlayer() );
+	
+	end );
+
+	if( ply == LocalPlayer() ) then
+		self:HideItemPanel();
 	end
 
 end
@@ -103,7 +119,7 @@ function GM:ClearTerminalSolve( ply )
 
 	ply.TerminalSolveActive = false;
 	ply.TerminalSolveEnt = nil;
-	ply.TerminalSolveMode = nil;
+	ply.TerminalSolveDiff = nil;
 
 	if( ply == LocalPlayer() ) then
 		self:ShowItemPanel();
@@ -131,9 +147,9 @@ local function nStartTerminalSolve( len )
 
 	if( !ent or !ent:IsValid() ) then return end
 	
-	local mode = ent:GetTerminalSolveMode();
+	local diff = ent:GetTerminalSolveDiff();
 
-	GAMEMODE:MakeTerminalSolve( ply, ent, mode );
+	GAMEMODE:MakeTerminalSolve( ply, ent, diff );
 
 end
 net.Receive( "nStartTerminalSolve", nStartTerminalSolve );

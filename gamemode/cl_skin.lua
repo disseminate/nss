@@ -33,11 +33,14 @@ SKIN.COLOR_BRONZE = Color( 150, 90, 56 );
 SKIN.ICON_AUDIO_ON = Material( "nss/icons/audio-on" );
 SKIN.ICON_AUDIO_OFF = Material( "nss/icons/audio-off" );
 SKIN.ICON_ARROW = Material( "nss/icons/arrow" );
+SKIN.ICON_ARROW2 = Material( "nss/icons/arrow2" );
 SKIN.ICON_CHEVRON = Material( "nss/icons/chevron" );
 SKIN.ICON_KEYCAP = Material( "nss/icons/keycap" );
 SKIN.ICON_NO = Material( "nss/icons/no" );
 SKIN.ICON_CHECK = Material( "nss/icons/check" );
 SKIN.ICON_CLOSE = Material( "nss/icons/close" );
+
+SKIN.MAT_RING = Material( "nss/vgui/openring" );
 
 function SKIN:PaintFrame( panel, w, h )
 

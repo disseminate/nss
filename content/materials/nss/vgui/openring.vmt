@@ -1,0 +1,4 @@
+UnlitGeneric {
+	$basetexture "nss/vgui/openring"
+	$translucent 1
+}

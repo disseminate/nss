@@ -327,3 +327,87 @@ function GM:CreateConfirm( text, cb )
 	t:SetWrap( true );
 
 end
+
+function GM:CreateSpinnerPuzzle( p, dock, w, h, diff, onSuccess )
+
+	local f = vgui.Create( "DPanel", p );
+	f:Dock( dock );
+	if( w and h ) then
+		f:SetSize( w, h );
+	end
+
+	f.CursorPos = 0;
+	f.CursorLevel = 0;
+
+	local levels = {
+		{ 1, 100 },
+		{ 0.7, 150 },
+		{ 0.45, 200 },
+		{ 0.25, 300 },
+	};
+
+	function f:Paint( w, h )
+
+		DisableClipping( true );
+
+		surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+		for i = 1, diff do
+			surface.DrawSegmentedCircle( w / 2, h / 2, 0.9 * ( h / 2 ) * levels[i][1], CurTime() * levels[i][2] );
+		end
+
+		if( levels[self.CursorLevel + 1] ) then
+
+			surface.SetMaterial( self:GetSkin().ICON_ARROW2 );
+			local x = math.cos( self.CursorPos - math.pi / 2 ) * ( h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			local y = math.sin( self.CursorPos - math.pi / 2 ) * ( h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			
+			surface.DrawTexturedRectRotated( w / 2 + x, h / 2 + y, 32, 32, 180 - self.CursorPos * ( 180 / math.pi ) + 90 );
+
+		end
+
+		DisableClipping( false );
+
+	end
+
+	function f:Think()
+		
+		if( input.IsKeyDown( KEY_A ) ) then
+			f.CursorPos = f.CursorPos - FrameTime();
+		elseif( input.IsKeyDown( KEY_D ) ) then
+			f.CursorPos = f.CursorPos + FrameTime();
+		end
+
+	end
+
+	function f:OnKeyCodePressed( i )
+
+		if( i == KEY_W ) then
+			self:Advance();
+		end
+
+	end
+
+	function f:Advance()
+		local pos = self.CursorPos * ( 180 / math.pi );
+		local ringPos = -math.abs( CurTime() * levels[self.CursorLevel + 1][2] ) % 360;
+
+		net.Start( "nTerminalSolveFX" );
+		net.SendToServer();
+		
+		if( math.abs( math.AngleDifference( pos, ringPos ) ) < 15 ) then
+			self.CursorLevel = math.Clamp( self.CursorLevel + 1, 0, 4 );
+		else
+			self.CursorLevel = math.Clamp( self.CursorLevel - 1, 0, 4 );
+		end
+
+		if( self.CursorLevel == diff ) then
+			onSuccess();
+		end
+
+	end
+
+	f:RequestFocus();
+
+	return f;
+
+end
