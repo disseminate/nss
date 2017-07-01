@@ -1038,4 +1038,20 @@ function GM:HUDDrawVersion()
 	surface.SetTextPos( ScrW() - w - 40, y );
 	surface.DrawText( t );
 
+	surface.SetTextColor( self:GetSkin().COLOR_WHITE );
+
+	y = y + h + 20;
+	surface.SetFont( "NSS 14" );
+	local t = "Time Until Contest Deadline";
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
+
+	y = y + h;
+	surface.SetFont( "NSS 16" );
+	local t = os.date( "%d days, %H hours, %M minutes", os.difftime( 1501545599, os.time() ) );
+	local w, h = surface.GetTextSize( t );
+	surface.SetTextPos( ScrW() - w - 40, y );
+	surface.DrawText( t );
+
 end

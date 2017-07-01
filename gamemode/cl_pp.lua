@@ -59,13 +59,13 @@ function GM:SetupWorldFog()
 			render.FogMaxDensity( d );
 			render.FogColor( 200, 220, 255 );
 
+			return true;
+
 		else
 
 			self.FogStart = nil;
 
 		end
-
-		return true;
 
 	else
 
