@@ -141,6 +141,8 @@ function GM:CreateFrame( title, w, h )
 		end
 	end );
 	closeBut:SetPos( w - 24, 0 );
+	closeBut:SetIconPadding( 4 );
+	closeBut:SetIconColor( self:GetSkin().COLOR_CLOSEBUTTON );
 
 	return n;
 
@@ -236,6 +238,7 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 	n:SetSize( w, h );
 	n:SetText( "" );
 	n.Icon = icon;
+	n.IconPadding = 0;
 
 	function n:SetIcon( icon )
 
@@ -250,8 +253,20 @@ function GM:CreateIconButton( p, dock, w, h, icon, click )
 		local y = ( h - dim ) / 2;
 
 		surface.SetMaterial( self.Icon );
-		surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
-		surface.DrawTexturedRect( x, y, dim, dim );
+		surface.SetDrawColor( self.IconColor or self:GetSkin().COLOR_WHITE );
+		surface.DrawTexturedRect( x + self.IconPadding, y + self.IconPadding, dim - self.IconPadding * 2, dim - self.IconPadding * 2 );
+
+	end
+
+	function n:SetIconColor( col )
+
+		self.IconColor = col;
+
+	end
+
+	function n:SetIconPadding( pad )
+
+		self.IconPadding = pad;
 
 	end
 
@@ -310,5 +325,88 @@ function GM:CreateConfirm( text, cb )
 		end );
 	local t = self:CreateLabel( f, FILL, text, "NSS 16", 7 );
 	t:SetWrap( true );
+
+end
+
+function GM:CreateSpinnerPuzzle( p, dock, w, h, diff, onSuccess )
+
+	local f = vgui.Create( "DPanel", p );
+	f:Dock( dock );
+	if( w and h ) then
+		f:SetSize( w, h );
+	end
+
+	f.CursorPos = 0;
+	f.CursorLevel = 0;
+
+	local levels = {
+		{ 1, 100 },
+		{ 0.7, 150 },
+		{ 0.45, 200 },
+		{ 0.25, 300 },
+	};
+
+	function f:Paint( w, h )
+
+		surface.SetDrawColor( self:GetSkin().COLOR_WHITE );
+		for i = 1, diff do
+			surface.DrawSegmentedCircle( w / 2, h / 2, 0.8 * ( h / 2 ) * levels[i][1], CurTime() * levels[i][2] );
+		end
+
+		surface.SetMaterial( self:GetSkin().ICON_TARGET );
+		surface.DrawTexturedRect( w / 2 - w / 14, h / 2 - w / 14, w / 7, w / 7 );
+
+		if( levels[self.CursorLevel + 1] ) then
+
+			surface.SetMaterial( self:GetSkin().ICON_ARROW2 );
+			local x = math.cos( self.CursorPos - math.pi / 2 ) * ( 0.9 * h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			local y = math.sin( self.CursorPos - math.pi / 2 ) * ( 0.9 * h / 2 ) * ( levels[self.CursorLevel + 1][1] );
+			
+			surface.DrawTexturedRectRotated( w / 2 + x, h / 2 + y, w / 24, w / 24, 180 - self.CursorPos * ( 180 / math.pi ) + 90 );
+
+		end
+
+	end
+
+	function f:Think()
+		
+		if( input.IsKeyDown( KEY_A ) ) then
+			f.CursorPos = f.CursorPos - FrameTime();
+		elseif( input.IsKeyDown( KEY_D ) ) then
+			f.CursorPos = f.CursorPos + FrameTime();
+		end
+
+	end
+
+	function f:OnKeyCodePressed( i )
+
+		if( i == KEY_W ) then
+			self:Advance();
+		end
+
+	end
+
+	function f:Advance()
+		local pos = self.CursorPos * ( 180 / math.pi );
+		local ringPos = -math.abs( CurTime() * levels[self.CursorLevel + 1][2] ) % 360;
+
+		net.Start( "nTerminalSolveFX" );
+		net.SendToServer();
+		
+		if( math.abs( math.AngleDifference( pos, ringPos ) ) < 15 ) then
+			self.CursorLevel = math.Clamp( self.CursorLevel + 1, 0, 4 );
+		else
+			self.CursorLevel = math.Clamp( self.CursorLevel - 1, 0, 4 );
+		end
+
+		if( self.CursorLevel == diff ) then
+			onSuccess();
+		end
+
+	end
+
+	f:RequestFocus();
+
+	return f;
 
 end

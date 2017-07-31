@@ -276,7 +276,7 @@ function GM:StartTerminalSolve( ent, ply )
 
 	ply.TerminalSolveActive = true;
 	ply.TerminalSolveEnt = ent;
-	ply.TerminalSolveMode = ent:GetTerminalSolveMode();
+	ply.TerminalSolveDiff = ent:GetTerminalSolveDiff();
 
 	net.Start( "nStartTerminalSolve" );
 		net.WriteEntity( ply );
@@ -290,7 +290,7 @@ function GM:ClearTerminalSolve( ply )
 
 	ply.TerminalSolveActive = false;
 	ply.TerminalSolveEnt = nil;
-	ply.TerminalSolveMode = nil;
+	ply.TerminalSolveDiff = nil;
 
 	net.Start( "nClearTerminalSolve" );
 		net.WriteEntity( ply );
@@ -314,3 +314,17 @@ local function nTerminalSolve( len, ply )
 end
 net.Receive( "nTerminalSolve", nTerminalSolve );
 util.AddNetworkString( "nTerminalSolve" );
+
+local function nTerminalSolveFX( len, ply )
+
+	if( !ply.TerminalSolveActive ) then return end
+
+	ply:EmitSound( Sound( "ambient/machines/keyboard" .. math.random( 1, 6 ) .. "_clicks.wav" ) );
+
+	net.Start( "nSetGestureTyping" );
+		net.WriteEntity( ply );
+	net.Broadcast();
+
+end
+net.Receive( "nTerminalSolveFX", nTerminalSolveFX );
+util.AddNetworkString( "nTerminalSolveFX" );

@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Airlock Controllers";
 tab.Acronym = "ALC";
+tab.Desc = "Controls the state of airlocks on the ship.";
 tab.Teams = { TEAM_ENG, TEAM_PRO };
 
 tab.OnDestroyed = function()

@@ -1,7 +1,6 @@
 UnlitGeneric
 {
-	$basetexture "nss/icons/close"
+	$basetexture "nss/icons/arrow2"
 	$translucent 1
 	$transparent 1
-	$vertexcolor 1
 }

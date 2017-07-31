@@ -4,4 +4,5 @@
 	"title"			"Need Some Space"
 	"menusystem" 	"1"
 	"maps"			"^nss_"
+	"workshopid"	"959507256"
 }

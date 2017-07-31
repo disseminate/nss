@@ -48,6 +48,6 @@ end
 
 function GM:ASSTriggered() -- hehe
 
-	return self:ASSMul() > 0;
+	return self:ASSMul() > 0 and self:GetState() == STATE_GAME;
 
 end

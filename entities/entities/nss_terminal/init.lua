@@ -16,7 +16,7 @@ function ENT:SelectProblem( id )
 	self:SetSubsystem( id );
 	self:SetExplodeDuration( math.Rand( 35, 75 ) );
 	self:SetStartTime( CurTime() );
-	self:SetTerminalSolveMode( math.random( TASK_MASH, TASK_ROW ) );
+	self:SetTerminalSolveDiff( math.random( 2, 4 ) );
 
 	for i = 1, 3 do
 		if( table.HasValue( ss.Teams, i ) ) then
@@ -106,6 +106,13 @@ function ENT:Think()
 
 		if( CurTime() >= self:GetStartTime() + self:GetExplodeDuration() ) then
 			
+			if( true ) then
+
+				self:ProblemSolve();
+				return;
+
+			end
+			
 			self:Explode();
 
 		end
@@ -137,7 +144,7 @@ function ENT:OnRemove()
 end
 
 function ENT:Explode()
-
+	
 	local ed = EffectData();
 	ed:SetOrigin( self:GetPos() + Vector( 0, 0, 8 ) );
 	util.Effect( "Explosion", ed );

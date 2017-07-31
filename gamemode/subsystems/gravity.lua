@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Gravity Generators";
 tab.Acronym = "GRV";
+tab.Desc = "Creates artificial gravity field. Damage would result in unstable gravity.";
 tab.Teams = { TEAM_PRO, TEAM_OFF };
 
 tab.OnDestroyed = function()

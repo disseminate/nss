@@ -41,6 +41,7 @@ EXPORTS["en"] = {
 	["create"] = "Create",
 	["required_items"] = "Required Items",
 	["you_created"] = "You've created",
+	["inv_throw_hint"] = "Press a number to throw inventory!",
 
 	["map_editor_prompt1"] = "This map is not NSS-compatible! Add some entities using the numpad. Noclip is now enabled.",
 	["map_editor_prompt2"] = "Press R to toggle or cycle axes on an entity.",
@@ -54,4 +55,6 @@ EXPORTS["en"] = {
 
 	["ok"] = "OK",
 	["cancel"] = "Cancel",
+
+	["terminal"] = "Terminal",
 };

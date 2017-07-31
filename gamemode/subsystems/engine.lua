@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Engine";
 tab.Acronym = "ENG";
+tab.Desc = "Provides control for main thrusters.";
 tab.Teams = { TEAM_ENG, TEAM_PRO, TEAM_OFF };
 
 tab.DestroyedThink = function()

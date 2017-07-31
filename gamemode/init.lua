@@ -13,6 +13,7 @@ include( "sv_effects.lua" );
 include( "sv_entities.lua" );
 include( "sv_player.lua" );
 include( "sv_powerups.lua" );
+include( "sv_resource.lua" );
 include( "sv_teams.lua" );
 include( "sv_think.lua" );
 include( "sv_subsystems.lua" );

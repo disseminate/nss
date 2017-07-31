@@ -29,7 +29,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "String", 0, "Subsystem" );
 	self:NetworkVar( "Float", 0, "ExplodeDuration" );
 	self:NetworkVar( "Float", 1, "StartTime" );
-	self:NetworkVar( "Int", 0, "TerminalSolveMode" );
+	self:NetworkVar( "Int", 0, "TerminalSolveDiff" );
 
 	self:NetworkVar( "Bool", 0, "NeedsTeam1" ); -- teams
 	self:NetworkVar( "Bool", 1, "NeedsTeam2" );
@@ -45,6 +45,8 @@ end
 
 function ENT:GetNeedsTeam( team )
 
+	if( !team ) then return false end
+	if( !self["GetNeedsTeam" .. team] ) then return false end
 	return self["GetNeedsTeam" .. team]( self );
 
 end

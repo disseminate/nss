@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Atmospheric Shielding";
 tab.Acronym = "SHI";
+tab.Desc = "Prevents debris from damaging the exterior.";
 tab.Teams = { TEAM_ENG };
 
 tab.DestroyedThink = function()

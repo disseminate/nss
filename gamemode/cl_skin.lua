@@ -24,6 +24,8 @@ SKIN.COLOR_LOSE = Color( 200, 0, 0 );
 SKIN.COLOR_WIN = Color( 50, 255, 100 );
 SKIN.COLOR_TERMINALSOLVE = Color( 40, 160, 255 );
 
+SKIN.COLOR_CLOSEBUTTON = Color( 220, 0, 0 );
+
 SKIN.COLOR_GOLD = Color( 201, 137, 16 );
 SKIN.COLOR_SILVER = Color( 168, 168, 168 );
 SKIN.COLOR_BRONZE = Color( 150, 90, 56 );
@@ -31,11 +33,15 @@ SKIN.COLOR_BRONZE = Color( 150, 90, 56 );
 SKIN.ICON_AUDIO_ON = Material( "nss/icons/audio-on" );
 SKIN.ICON_AUDIO_OFF = Material( "nss/icons/audio-off" );
 SKIN.ICON_ARROW = Material( "nss/icons/arrow" );
+SKIN.ICON_ARROW2 = Material( "nss/icons/arrow2" );
 SKIN.ICON_CHEVRON = Material( "nss/icons/chevron" );
 SKIN.ICON_KEYCAP = Material( "nss/icons/keycap" );
 SKIN.ICON_NO = Material( "nss/icons/no" );
 SKIN.ICON_CHECK = Material( "nss/icons/check" );
 SKIN.ICON_CLOSE = Material( "nss/icons/close" );
+SKIN.ICON_TARGET = Material( "nss/icons/target" );
+
+SKIN.MAT_RING = Material( "nss/vgui/openring" );
 
 function SKIN:PaintFrame( panel, w, h )
 

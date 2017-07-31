@@ -1,6 +1,7 @@
 local tab = { };
 tab.Name = "Electrical";
 tab.Acronym = "ELE";
+tab.Desc = "Controls non-essential power, such as lighting.";
 tab.Teams = { TEAM_ENG };
 
 tab.OnDestroyed = function()
